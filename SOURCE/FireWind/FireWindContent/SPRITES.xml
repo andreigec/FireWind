@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:Generic="System.Collections.Generic">
+  <Asset Type="Generic:List[Project.SpriteBase]">
+    <Item>
+      <name>BATTERY</name>
+      <FrameHeight>128</FrameHeight>
+      <FrameWidth>128</FrameWidth>
+      <path>Sprites/Other/BATTERY</path>
+      <sprites/>
+    </Item>
+
+    <Item>
+      <name>LMB</name>
+      <FrameHeight>64</FrameHeight>
+      <FrameWidth>64</FrameWidth>
+      <path>Sprites/Other/LMB</path>
+      <sprites/>
+    </Item>
+
+    <Item>
+      <name>SHIELD</name>
+      <FrameHeight>128</FrameHeight>
+      <FrameWidth>128</FrameWidth>
+      <path>Sprites/Other/SHIELD</path>
+      <sprites/>
+    </Item>
+
+    <Item>
+      <name>ARMOUR</name>
+      <FrameHeight>128</FrameHeight>
+      <FrameWidth>128</FrameWidth>
+      <path>Sprites/Other/ARMOUR</path>
+      <sprites/>
+    </Item>
+
+    <Item>
+      <name>RMB</name>
+      <FrameHeight>64</FrameHeight>
+      <FrameWidth>64</FrameWidth>
+      <path>Sprites/Other/RMB</path>
+      <sprites/>
+    </Item>
+
+    <Item>
+      <name>WEAPONPIC_BOMB</name>
+      <FrameHeight>64</FrameHeight>
+      <FrameWidth>64</FrameWidth>
+      <path>Sprites/Weapons/WEAPONPIC_BOMB</path>
+      <sprites/>
+    </Item>
+
+    <Item>
+      <name>WEAPONPIC_LASER</name>
+      <FrameHeight>64</FrameHeight>
+      <FrameWidth>64</FrameWidth>
+      <path>Sprites/Weapons/WEAPONPIC_LASER</path>
+      <sprites/>
+    </Item>
+
+    <Item>
+      <name>WEAPONPIC_GAUSS</name>
+      <FrameHeight>64</FrameHeight>
+      <FrameWidth>64</FrameWidth>
+      <path>Sprites/Weapons/WEAPONPIC_GAUSS</path>
+      <sprites/>
+    </Item>
+
+    <Item>
+      <name>SHIP2</name>
+      <FrameHeight>64</FrameHeight>
+      <FrameWidth>128</FrameWidth>
+      <path>Sprites/Ships/Ship2/mig</path>
+      <sprites>
+        <Item>
+          <Key>FLY</Key>
+          <Value>
+            <startImageCount>0</startImageCount>
+            <endImageCount>0</endImageCount>
+          </Value>
+        </Item>
+        <Item>
+          <Key>FLIP</Key>
+          <Value>
+            <startImageCount>1</startImageCount>
+            <endImageCount>3</endImageCount>
+          </Value>
+        </Item>
+      </sprites>
+    </Item>
+
+    <Item>
+      <name>SHIP1</name>
+      <FrameHeight>64</FrameHeight>
+      <FrameWidth>64</FrameWidth>
+      <path>Sprites/Ships/Ship3/AlliedFighters</path>
+      <sprites>
+        <Item>
+          <Key>FLY</Key>
+          <Value>
+            <startImageCount>0</startImageCount>
+            <endImageCount>0</endImageCount>
+          </Value>
+        </Item>
+        <Item>
+          <Key>FLIP</Key>
+          <Value>
+            <startImageCount>1</startImageCount>
+            <endImageCount>4</endImageCount>
+          </Value>
+        </Item>
+      </sprites>
+    </Item>
+  </Asset>
+</XnaContent>

@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:Generic="System.Collections.Generic" xmlns:XML_Load="Model.XML_Load">
+  <Asset Type="Generic:List[Project.ShipBatteryPart]">
+    <Item>
+      <name>Stock Battery</name>
+      <Cost>1000</Cost>
+      <MaxEnergyModifier>1</MaxEnergyModifier>
+      <MaxShieldModifier>1</MaxShieldModifier>
+    </Item>
+    
+    <Item>
+      <name>V2 Battery</name>
+      <Cost>2000</Cost>
+      <MaxEnergyModifier>2</MaxEnergyModifier>
+      <MaxShieldModifier>2</MaxShieldModifier>
+    </Item>
+  </Asset>
+</XnaContent>

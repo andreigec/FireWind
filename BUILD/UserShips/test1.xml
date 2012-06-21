@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-16"?>
+<PlayerShipClass xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Credits>10000</Credits>
+  <Name>test1</Name>
+  <OwnedParts>
+    <ShipPart xsi:type="ShipBoosterPart">
+      <name>Stock Booster</name>
+    </ShipPart>
+    <ShipPart xsi:type="ShipHullPart">
+      <name>Stock Hull</name>
+    </ShipPart>
+    <ShipPart xsi:type="ShipWingsPart">
+      <name>Stock Wings</name>
+    </ShipPart>
+    <ShipPart xsi:type="ShipEnginePart">
+      <name>Stock Engine</name>
+    </ShipPart>
+    <ShipPart xsi:type="ShipGeneratorPart">
+      <name>Stock Generator</name>
+    </ShipPart>
+    <ShipPart xsi:type="ShipBatteryPart">
+      <name>Stock Battery</name>
+    </ShipPart>
+  </OwnedParts>
+  <OwnedWeapons>
+    <weapon>
+      <name>WEAPON_GAUSS</name>
+    </weapon>
+  </OwnedWeapons>
+  <OwnedShipBases>
+    <shipBase>
+      <name>SHIP1</name>
+    </shipBase>
+  </OwnedShipBases>
+  <PlayerShip>
+    <Parts>
+      <item>
+        <key>
+          <SlotLocationEnum>ShipBoosterPart</SlotLocationEnum>
+        </key>
+        <value>
+          <ShipPart xsi:type="ShipBoosterPart">
+            <name>Stock Booster</name>
+          </ShipPart>
+        </value>
+      </item>
+      <item>
+        <key>
+          <SlotLocationEnum>ShipHullPart</SlotLocationEnum>
+        </key>
+        <value>
+          <ShipPart xsi:type="ShipHullPart">
+            <name>Stock Hull</name>
+          </ShipPart>
+        </value>
+      </item>
+      <item>
+        <key>
+          <SlotLocationEnum>ShipWingsPart</SlotLocationEnum>
+        </key>
+        <value>
+          <ShipPart xsi:type="ShipWingsPart">
+            <name>Stock Wings</name>
+          </ShipPart>
+        </value>
+      </item>
+      <item>
+        <key>
+          <SlotLocationEnum>ShipEnginePart</SlotLocationEnum>
+        </key>
+        <value>
+          <ShipPart xsi:type="ShipEnginePart">
+            <name>Stock Engine</name>
+          </ShipPart>
+        </value>
+      </item>
+      <item>
+        <key>
+          <SlotLocationEnum>ShipGeneratorPart</SlotLocationEnum>
+        </key>
+        <value>
+          <ShipPart xsi:type="ShipGeneratorPart">
+            <name>Stock Generator</name>
+          </ShipPart>
+        </value>
+      </item>
+      <item>
+        <key>
+          <SlotLocationEnum>ShipBatteryPart</SlotLocationEnum>
+        </key>
+        <value>
+          <ShipPart xsi:type="ShipBatteryPart">
+            <name>Stock Battery</name>
+          </ShipPart>
+        </value>
+      </item>
+    </Parts>
+    <Slots>
+      <item>
+        <key>
+          <SlotLocationEnum>LeftWeapon</SlotLocationEnum>
+        </key>
+        <value>
+          <weapon>
+            <name>WEAPON_GAUSS</name>
+          </weapon>
+        </value>
+      </item>
+    </Slots>
+    <shipModel>
+      <name>SHIP1</name>
+    </shipModel>
+  </PlayerShip>
+  <DefaultLoad>true</DefaultLoad>
+  <SupportCraft />
+</PlayerShipClass>

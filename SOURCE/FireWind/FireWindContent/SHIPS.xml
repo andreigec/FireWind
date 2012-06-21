@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:Generic="System.Collections.Generic">
+  <Asset Type="Generic:List[Project.shipBase]">
+    <Item>
+      <name>SHIP1</name>
+      <Cost>1000</Cost>
+      <spriteName>SHIP1</spriteName>      
+      <BaseAccelIncrement>0.05</BaseAccelIncrement>
+      <BaseBrakeIncrement>0.005</BaseBrakeIncrement>
+      <BaseEnergyRegenSpeed>1</BaseEnergyRegenSpeed>
+      <BaseMaxAccel>0.5</BaseMaxAccel>
+      <BaseMaxArmour>50</BaseMaxArmour>
+      <BaseMaxBoosterMultiplier>1</BaseMaxBoosterMultiplier>
+      <BaseMaxBoosterTime>1</BaseMaxBoosterTime>
+      <BaseMaxEnergy>80</BaseMaxEnergy>
+      <BaseMaxShield>80</BaseMaxShield>
+      <BaseMaxSpeed>30</BaseMaxSpeed>
+      <BaseMaxSupportCraft>0</BaseMaxSupportCraft>
+      <BaseMaxTurnSpeed>3</BaseMaxTurnSpeed>      
+</Item>
+
+    <Item>
+      <name>SHIP2</name>
+      <Cost>1500</Cost>
+      <spriteName>SHIP2</spriteName>
+      <BaseAccelIncrement>0.05</BaseAccelIncrement>
+      <BaseBrakeIncrement>0.005</BaseBrakeIncrement>
+      <BaseEnergyRegenSpeed>2</BaseEnergyRegenSpeed>
+      <BaseMaxAccel>0.5</BaseMaxAccel>
+      <BaseMaxArmour>60</BaseMaxArmour>
+      <BaseMaxBoosterMultiplier>1</BaseMaxBoosterMultiplier>
+      <BaseMaxBoosterTime>2</BaseMaxBoosterTime>
+      <BaseMaxEnergy>100</BaseMaxEnergy>
+      <BaseMaxShield>100</BaseMaxShield>
+      <BaseMaxSpeed>50</BaseMaxSpeed>
+      <BaseMaxSupportCraft>0</BaseMaxSupportCraft>
+      <BaseMaxTurnSpeed>3</BaseMaxTurnSpeed>
+    </Item>
+  </Asset>
+</XnaContent>

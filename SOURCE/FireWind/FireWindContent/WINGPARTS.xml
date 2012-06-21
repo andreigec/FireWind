@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:Generic="System.Collections.Generic" xmlns:XML_Load="Model.XML_Load">
+  <Asset Type="Generic:List[Project.ShipWingsPart]">
+    <Item>
+      <name>Stock Wings</name>
+      <Cost>1000</Cost>
+      <MaxTurnModifier>1</MaxTurnModifier>
+    </Item>
+    
+    <Item>
+      <name>V2 Wings</name>
+      <Cost>2000</Cost>
+      <MaxTurnModifier>2</MaxTurnModifier>    
+  </Item>
+  </Asset>
+</XnaContent>

@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:Generic="System.Collections.Generic">
+  <Asset Type="Generic:List[Project.SpriteParticle]">
+    <Item>
+      <name>PARTICLE_GAUSS</name>
+      <FrameHeight>3</FrameHeight>
+      <FrameWidth>6</FrameWidth>
+      <rawPixelData>OXXXXXOXXXXXXOXXXXXO</rawPixelData>
+      <scale>1</scale>
+    </Item>
+
+    <Item>
+      <name>PARTICLE_BOMB</name>
+      <FrameHeight>4</FrameHeight>
+      <FrameWidth>4</FrameWidth>
+      <rawPixelData>XOOXOXXOXXXXOXXO</rawPixelData>
+      <scale>3</scale>
+    </Item>
+  </Asset>
+</XnaContent>

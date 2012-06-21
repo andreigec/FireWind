@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:Generic="System.Collections.Generic" xmlns:XML_Load="Model.XML_Load">
+  <Asset Type="Generic:List[Project.ShipEnginePart]">
+    <Item>
+      <name>Stock Engine</name>
+      <Cost>1000</Cost>
+      <AccelModifier>1</AccelModifier>
+      <BrakeModifier>1</BrakeModifier>
+      <MaxAccelModifier>1</MaxAccelModifier>
+      <MaxSpeedModifier>1</MaxSpeedModifier>
+    </Item>
+    <Item>
+      <name>V2 Engine</name>
+      <Cost>2000</Cost>
+      <AccelModifier>2</AccelModifier>
+      <BrakeModifier>2</BrakeModifier>
+      <MaxAccelModifier>2</MaxAccelModifier>
+      <MaxSpeedModifier>2</MaxSpeedModifier>
+    </Item>
+  </Asset>
+</XnaContent>

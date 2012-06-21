@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:Generic="System.Collections.Generic">
+  <Asset Type="Generic:List[Project.weapon]">
+    <Item>
+      <name>WEAPON_GAUSS</name>
+      <Cost>1000</Cost>
+      <CoolDown>100</CoolDown>
+      <Damage>20</Damage>
+      <EnergyPerShot>10</EnergyPerShot>
+      <ParticleName>PARTICLE_GAUSS</ParticleName>
+      <SlotPictureName>WEAPONPIC_GAUSS</SlotPictureName>
+      <Velocity>120</Velocity>      
+    </Item>
+
+    <Item>
+      <name>WEAPON_BEAM</name>
+      <Cost>1000</Cost>
+      <BeamRadius>2</BeamRadius>
+      <CoolDown>50</CoolDown>
+      <Damage>15</Damage>
+      <EnergyPerShot>10</EnergyPerShot>      
+      <IsBeam>1</IsBeam>
+      <SlotPictureName>WEAPONPIC_LASER</SlotPictureName>
+      <Velocity>150</Velocity>
+      
+    </Item>
+
+    <Item>
+      <name>WEAPON_BOMB</name>
+      <Cost>2000</Cost>
+      <AngleOfFire>270</AngleOfFire>
+      <CoolDown>1000</CoolDown>
+      <Damage>50</Damage>
+      <EnergyPerShot>50</EnergyPerShot>
+      <ExplosiveRadius>20</ExplosiveRadius>
+      <ParticleName>PARTICLE_BOMB</ParticleName>
+      <SlotPictureName>WEAPONPIC_BOMB</SlotPictureName>
+      <Velocity>20</Velocity>
+    </Item>
+  </Asset>
+</XnaContent>

@@ -1,0 +1,2 @@
+-pass shipareas on request when about to fly into area, not on join
+-client to tell server they are returning to base, and dispose of everything except psc

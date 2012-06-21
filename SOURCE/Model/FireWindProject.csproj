@@ -1,0 +1,373 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{80AF5BF5-A296-4CAB-AC8B-A3BD4A628DB3}</ProjectGuid>
+    <ProjectTypeGuids>{6D335F3A-9D43-41b4-9D22-F6F17C4BE596};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Project</RootNamespace>
+    <AssemblyName>FireWindProject</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <XnaFrameworkVersion>v4.0</XnaFrameworkVersion>
+    <XnaPlatform>Windows</XnaPlatform>
+    <XnaProfile>HiDef</XnaProfile>
+    <XnaCrossPlatformGroupID>73174b1f-0e4a-4124-b77f-2a015b0e5575</XnaCrossPlatformGroupID>
+    <XnaOutputType>Library</XnaOutputType>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\x86\Debug</OutputPath>
+    <DefineConstants>DEBUG;TRACE;WINDOWS</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoStdLib>true</NoStdLib>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <PlatformTarget>x86</PlatformTarget>
+    <XnaCompressContent>false</XnaCompressContent>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\x86\Release</OutputPath>
+    <DefineConstants>TRACE;WINDOWS</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoStdLib>true</NoStdLib>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <PlatformTarget>x86</PlatformTarget>
+    <XnaCompressContent>true</XnaCompressContent>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release With Debug|x86'">
+    <OutputPath>bin\x86\Release With Debug\</OutputPath>
+    <DefineConstants>TRACE;WINDOWS</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoStdLib>true</NoStdLib>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisLogFile>bin\x86\Release\FireWindProject.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;K:\Program Files\VS\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;K:\Program Files\VS\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\..\..\Apps\CSHARPLIBRARY\CSHARPLIBRARY\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
+    <Reference Include="Microsoft.Xna.Framework.Game, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
+    <Reference Include="Microsoft.Xna.Framework.Graphics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
+    <Reference Include="Microsoft.Xna.Framework.Net, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=MSIL" />
+    <Reference Include="mscorlib">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Net">
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Localisation.de.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Localisation.de.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Localisation.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Localisation.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Logging.cs" />
+    <Compile Include="Model\bSector\SectorConfig.cs" />
+    <Compile Include="Model\InstanceOwner.cs" />
+    <Compile Include="Model\Instances\IDrawableObject.cs" />
+    <Compile Include="Model\Instances\PlayerShipClass.cs" />
+    <Compile Include="Model\Instances\ShipInstanceShell.cs" />
+    <Compile Include="Controller\Manager.cs" />
+    <Compile Include="Model\Networking\GenericInstanceSynch\SectorConfigSynch.cs" />
+    <Compile Include="Model\Networking\Server\GameSynch\BuildingInstanceSynch.cs" />
+    <Compile Include="Model\Networking\GenericInstanceSynch\WeaponInstanceSynch.cs" />
+    <Compile Include="Model\Networking\Server\ActionList.cs" />
+    <Compile Include="Model\Networking\Server\GameSynch\Heartbeat.cs" />
+    <Compile Include="Model\Networking\Wrappers.cs" />
+    <Compile Include="Model\SerializableDictionary.cs" />
+    <Compile Include="Model\Server\XML Load\ILoadXMLBase.cs" />
+    <Compile Include="Model\Server\XML Load\IPurchasable.cs" />
+    <Compile Include="Model\Server\XML Load\shipparts\ShipPart.cs" />
+    <Compile Include="Model\Collisions.cs" />
+    <Compile Include="Model\Instances\BuildingInstance.cs" />
+    <Compile Include="Model\Instances\ShipInstanceAI.cs" />
+    <Compile Include="View\Client\DrawableScreens\ConsoleCL.cs" />
+    <Compile Include="View\Client\Control\MapControls.cs" />
+    <Compile Include="View\Client\Control\SectorControls.cs" />
+    <Compile Include="View\Client\DrawableScreens\WPF Screens\BaseScreenWF.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Client\DrawableScreens\WPF Screens\BaseScreenWF.Designer.cs">
+      <DependentUpon>BaseScreenWF.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\Client\DrawableScreens\WPF Screens\ChooseGameModeWF.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Client\DrawableScreens\WPF Screens\ChooseGameModeWF.Designer.cs">
+      <DependentUpon>ChooseGameModeWF.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\Client\DrawableScreens\WPF Screens\ChooseShipWF.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Client\DrawableScreens\WPF Screens\ChooseShipWF.Designer.cs">
+      <DependentUpon>ChooseShipWF.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\Client\DrawableScreens\WPF Screens\ConnectIPWF.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Client\DrawableScreens\WPF Screens\ConnectIPWF.Designer.cs">
+      <DependentUpon>ConnectIPWF.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\Client\DrawableScreens\WPF Screens\ConnectWaitWF.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Client\DrawableScreens\WPF Screens\ConnectWaitWF.Designer.cs">
+      <DependentUpon>ConnectWaitWF.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\Client\DrawableScreens\WPF Screens\ConnectWF.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Client\DrawableScreens\WPF Screens\ConnectWF.Designer.cs">
+      <DependentUpon>ConnectWF.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\Client\DrawableScreens\WPF Screens\CreateGambleGameWF.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Client\DrawableScreens\WPF Screens\CreateGambleGameWF.Designer.cs">
+      <DependentUpon>CreateGambleGameWF.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\Client\DrawableScreens\WPF Screens\CreateMPGameWF.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Client\DrawableScreens\WPF Screens\CreateMPGameWF.Designer.cs">
+      <DependentUpon>CreateMPGameWF.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\Client\DrawableScreens\WPF Screens\HangarScreenWF.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Client\DrawableScreens\WPF Screens\HangarScreenWF.Designer.cs">
+      <DependentUpon>HangarScreenWF.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\Client\DrawableScreens\WPF Screens\MainScreenWF.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Client\DrawableScreens\WPF Screens\MainScreenWF.Designer.cs">
+      <DependentUpon>MainScreenWF.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\Client\DrawableScreens\WPF Screens\OptionsWF.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Client\DrawableScreens\WPF Screens\OptionsWF.Designer.cs">
+      <DependentUpon>OptionsWF.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\Client\DrawableScreens\Full Screens\ShowVictoryScreen.cs" />
+    <Compile Include="View\Client\DrawableScreens\Full Screens\DestroyScreen.cs" />
+    <Compile Include="View\Client\DrawableScreens\WPF Screens\InputFieldWFControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="View\Client\DrawableScreens\WPF Screens\InputFieldWFControl.Designer.cs">
+      <DependentUpon>InputFieldWFControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\Client\DrawableScreens\WPF Screens\InputInformation.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Client\DrawableScreens\WPF Screens\InputInformation.Designer.cs">
+      <DependentUpon>InputInformation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\Client\DrawableScreens\WPF Screens\PurchasableItemWFControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="View\Client\DrawableScreens\WPF Screens\PurchasableItemWFControl.Designer.cs">
+      <DependentUpon>PurchasableItemWFControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\Client\DrawableScreens\WPF Screens\PurchasableItemWFControlItem.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="View\Client\DrawableScreens\WPF Screens\PurchasableItemWFControlItem.Designer.cs">
+      <DependentUpon>PurchasableItemWFControlItem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\Client\DrawableScreens\WPF Screens\RequiredItem.cs" />
+    <Compile Include="View\Client\DrawableScreens\WPF Screens\ShopScreens.cs" />
+    <Compile Include="View\Client\DrawableScreens\WPF Screens\ShopScreenWF.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Client\DrawableScreens\WPF Screens\ShopScreenWF.Designer.cs">
+      <DependentUpon>ShopScreenWF.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\Client\DrawableScreens\XNARoutines.cs" />
+    <Compile Include="View\Client\DrawableScreens\IdrawableType.cs" />
+    <Compile Include="Model\IshipAreaSynch.cs" />
+    <Compile Include="Model\Networking\Client\Client.cs" />
+    <Compile Include="Model\Networking\Client\GameSynch\ConnectedServerSynch.cs" />
+    <Compile Include="Model\Networking\Server\ConnectedClient.cs" />
+    <Compile Include="Model\Networking\ConnectedIPs.cs" />
+    <Compile Include="Model\Networking\Server\GameSynch\ConnectedClientSynch.cs" />
+    <Compile Include="Model\Networking\Server\GameSynch\MapSynch.cs" />
+    <Compile Include="Model\Networking\Server\GameSynch\SectorSynch.cs" />
+    <Compile Include="Model\Networking\GenericInstanceSynch\ShipInstanceSynch.cs" />
+    <Compile Include="Model\Networking\SynchStatus.cs" />
+    <Compile Include="Model\Networking\Client\ConnectedServer.cs" />
+    <Compile Include="Controller\GameControlClient.cs" />
+    <Compile Include="Model\heightmapClass.cs" />
+    <Compile Include="Model\Instances\ShipInstanceAIMap.cs" />
+    <Compile Include="Model\Instances\WeaponInstance.cs" />
+    <Compile Include="Model\cMap\mapTerrain.cs" />
+    <Compile Include="Model\aRegion\region.cs" />
+    <Compile Include="Model\bSector\sector.cs" />
+    <Compile Include="Controller\GameControlServer.cs" />
+    <Compile Include="Model\Networking\GameInitConfig.cs" />
+    <Compile Include="Model\Networking\HandleComm.cs" />
+    <Compile Include="Model\Networking\Message.cs" />
+    <Compile Include="Model\dAreaInfo\SharedID.cs" />
+    <Compile Include="Model\Networking\Server\GameSynch\RegionSynch.cs" />
+    <Compile Include="Model\Networking\Server\Server.cs" />
+    <Compile Include="Controller\SynchMain.cs" />
+    <Compile Include="Model\Networking\ISynchroniseInterfaces.cs" />
+    <Compile Include="View\Client\texturing.cs" />
+    <Compile Include="Model\VectorMove.cs" />
+    <Compile Include="Model\weaponSlot.cs" />
+    <Compile Include="Model\Server\XML Load\building.cs" />
+    <Compile Include="Model\Server\XML Load\loadXML.cs" />
+    <Compile Include="Model\cMap\map.cs" />
+    <Compile Include="Model\Instances\ShipInstance.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Model\Shared.cs" />
+    <Compile Include="Model\Server\XML Load\shipparts\shipBase.cs" />
+    <Compile Include="Model\SpriteAnimation.cs" />
+    <Compile Include="Model\Server\XML Load\SpriteBase.cs" />
+    <Compile Include="Model\Server\XML Load\SpriteBaseFastLoad.cs" />
+    <Compile Include="Model\Server\XML Load\SpriteDraw.cs" />
+    <Compile Include="Model\Instances\SpriteInstance.cs" />
+    <Compile Include="Model\Server\XML Load\SpriteParticle.cs" />
+    <Compile Include="Model\Server\XML Load\weapon.cs" />
+    <Compile Include="View\Client\Cameras\Camera2D.cs" />
+    <Compile Include="View\Client\Cameras\CameraFlat.cs" />
+    <Compile Include="View\Client\Cameras\CameraMap.cs" />
+    <Compile Include="View\Client\Cameras\CameraRegion.cs" />
+    <Compile Include="View\Client\Cameras\CameraSector.cs" />
+    <Compile Include="View\Client\DrawableScreens\Pop Up Screens\InGameMenuPopup.cs" />
+    <Compile Include="View\Client\DrawableScreens\FPS.cs" />
+    <Compile Include="View\Client\Input\KeyboardClass.cs" />
+    <Compile Include="View\Client\Input\KeyboardPress.cs" />
+    <Compile Include="View\Client\DrawableScreens\Full Screens\MapScreen.cs" />
+    <Compile Include="View\Client\DrawableScreens\MenuOptions.cs" />
+    <Compile Include="View\Client\DrawableScreens\Full Screens\SectorScreen.cs" />
+    <Compile Include="View\Client\DrawableScreens\Full Screens\TitlesScreen.cs" />
+    <Compile Include="View\Client\Input\MouseClass.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Localisation.de.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Localisation.de.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localisation.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>Localisation.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Client\DrawableScreens\WPF Screens\BaseScreenWF.resx">
+      <DependentUpon>BaseScreenWF.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Client\DrawableScreens\WPF Screens\ChooseGameModeWF.resx">
+      <DependentUpon>ChooseGameModeWF.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Client\DrawableScreens\WPF Screens\ChooseShipWF.resx">
+      <DependentUpon>ChooseShipWF.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Client\DrawableScreens\WPF Screens\ConnectIPWF.resx">
+      <DependentUpon>ConnectIPWF.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Client\DrawableScreens\WPF Screens\ConnectWaitWF.resx">
+      <DependentUpon>ConnectWaitWF.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Client\DrawableScreens\WPF Screens\ConnectWF.resx">
+      <DependentUpon>ConnectWF.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Client\DrawableScreens\WPF Screens\CreateGambleGameWF.resx">
+      <DependentUpon>CreateGambleGameWF.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Client\DrawableScreens\WPF Screens\CreateMPGameWF.resx">
+      <DependentUpon>CreateMPGameWF.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Client\DrawableScreens\WPF Screens\HangarScreenWF.resx">
+      <DependentUpon>HangarScreenWF.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Client\DrawableScreens\WPF Screens\MainScreenWF.resx">
+      <DependentUpon>MainScreenWF.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Client\DrawableScreens\WPF Screens\OptionsWF.resx">
+      <DependentUpon>OptionsWF.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Client\DrawableScreens\WPF Screens\InputFieldWFControl.resx">
+      <DependentUpon>InputFieldWFControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Client\DrawableScreens\WPF Screens\InputInformation.resx">
+      <DependentUpon>InputInformation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Client\DrawableScreens\WPF Screens\PurchasableItemWFControl.resx">
+      <DependentUpon>PurchasableItemWFControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Client\DrawableScreens\WPF Screens\PurchasableItemWFControlItem.resx">
+      <DependentUpon>PurchasableItemWFControlItem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Client\DrawableScreens\WPF Screens\ShopScreenWF.resx">
+      <DependentUpon>ShopScreenWF.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\ANDREICSLIB\SOURCE\ANDREICSLIB\ANDREICSLIB.csproj">
+      <Project>{469B8120-B6D8-48BD-97C4-AFAB63AEE304}</Project>
+      <Name>ANDREICSLIB</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\XNA-Winforms-Wrapper\SOURCE\XNA_Winforms_Wrapper\XNA_Winforms_Wrapper.csproj">
+      <Project>{D4F049E8-626D-4D6D-8ADE-400C6B6D701C}</Project>
+      <Name>XNA_Winforms_Wrapper</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />
+  <!--
+      To modify your build process, add your task inside one of the targets below and uncomment it. 
+      Other similar extension points exist, see Microsoft.Common.targets.
+      <Target Name="BeforeBuild">
+      </Target>
+      <Target Name="AfterBuild">
+      </Target>
+    -->
+</Project>

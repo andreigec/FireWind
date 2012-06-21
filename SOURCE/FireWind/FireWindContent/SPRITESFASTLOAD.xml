@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:Generic="System.Collections.Generic" xmlns:XML_Load="Model.XML_Load">
+  <Asset Type="Generic:List[Project.XML_Load.SpriteBaseFastLoad]">
+    <Item>
+      <name>Icons</name>
+      <FrameHeight>32</FrameHeight>
+      <FrameWidth>32</FrameWidth>
+      <frameName>Icon_</frameName>
+      <framesPerImage>1</framesPerImage>      
+      <path>GFX/Icons</path>      
+    </Item>
+  </Asset>
+</XnaContent>

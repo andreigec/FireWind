@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:Generic="System.Collections.Generic" xmlns:XML_Load="Model.XML_Load">
+  <Asset Type="Generic:List[Project.ShipGeneratorPart]">
+    <Item>
+      <name>Stock Generator</name>
+      <Cost>1000</Cost>
+      <EnergyRegenSpeedModifier>1</EnergyRegenSpeedModifier>
+    </Item>
+    
+    <Item>
+      <name>V2 Generator</name>
+      <Cost>2000</Cost>
+      <EnergyRegenSpeedModifier>2</EnergyRegenSpeedModifier>
+    </Item>
+  </Asset>
+</XnaContent>
