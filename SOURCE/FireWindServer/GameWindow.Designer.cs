@@ -34,7 +34,7 @@ namespace FireWindServer
 		/// </summary>
 		private void InitializeComponent()
 		{
-            this.consolelog = new ListViewUpdate();
+		    this.consolelog = new ListView();
             this.columnHeader1 = ((ColumnHeader)(new ColumnHeader()));
             this.columnHeader2 = ((ColumnHeader)(new ColumnHeader()));
             this.columnHeader4 = ((ColumnHeader)(new ColumnHeader()));
@@ -43,7 +43,7 @@ namespace FireWindServer
             this.columnHeader3 = ((ColumnHeader)(new ColumnHeader()));
             this.columnHeader6 = ((ColumnHeader)(new ColumnHeader()));
             this.panel1 = new Panel();
-            this.panelUpdates1 = new PanelUpdates();
+            this.panelUpdates1 = new Panel();
             this.SuspendLayout();
             // 
             // consolelog
@@ -109,8 +109,6 @@ namespace FireWindServer
             // 
             // panelUpdates1
             // 
-            this.panelUpdates1.BorderColour = Color.Black;
-            this.panelUpdates1.BorderWidth = 0;
             this.panelUpdates1.Dock = DockStyle.Top;
             this.panelUpdates1.Location = new Point(0, 0);
             this.panelUpdates1.Name = "panelUpdates1";
@@ -131,7 +129,7 @@ namespace FireWindServer
 
 		#endregion
 
-        public ListViewUpdate consolelog;
+        public ListView consolelog;
         private ColumnHeader columnHeader1;
         private ColumnHeader columnHeader2;
         private ColumnHeader columnHeader4;
@@ -140,6 +138,6 @@ namespace FireWindServer
         private ColumnHeader columnHeader3;
         private ColumnHeader columnHeader7;
         private Panel panel1;
-        private PanelUpdates panelUpdates1;
+        private Panel panelUpdates1;
 	}
 }

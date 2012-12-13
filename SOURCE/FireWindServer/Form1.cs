@@ -27,12 +27,15 @@ namespace FireWindServer
         #region licensing
 
         private const string AppTitle = "FireWind Dedicated Server";
-        private const double AppVersion = 0.1;
+        private const double AppVersion = 1.1;
         private const String HelpString = "";
 
-        private const String UpdatePath = "http://www.andreigec.net/games/firewind/firewind.zip";
-        private const String VersionPath = "http://www.andreigec.net/games/firewind/version.txt";
-        private const String ChangelogPath = "http://www.andreigec.net/games/firewind/changelog.txt";
+        private const String RepoName = "FireWind";
+        private const String UpdatePath = "https://github.com/EvilSeven/" + RepoName + "/zipball/master";
+        private const String VersionPath = "https://raw.github.com/EvilSeven/" + RepoName + "/master/INFO/version.txt";
+
+        private const String ChangelogPath =
+            "https://raw.github.com/EvilSeven/" + RepoName + "/master/INFO/changelog.txt";
 
         private readonly String OtherText =
             @"©" + DateTime.Now.Year +
@@ -42,6 +45,7 @@ Licensed under GNU LGPL (http://www.gnu.org/)
 
 Zip Assets © SharpZipLib (http://www.sharpdevelop.net/OpenSource/SharpZipLib/)
 ";
+
         #endregion
 
         public Form1()
@@ -69,7 +73,9 @@ Zip Assets © SharpZipLib (http://www.sharpdevelop.net/OpenSource/SharpZipLib/)
             mainserver.StartGame(new SectorConfigColosseum(SectorConfig.Size.medium));
             tabControl1.SelectedIndex = 0;
 
-            Licensing.CreateLicense(this, HelpString, AppTitle, AppVersion, OtherText, VersionPath, UpdatePath, ChangelogPath, menuStrip1);
+            var sd = new Licensing.SolutionDetails(HelpString, AppTitle, AppVersion, OtherText, VersionPath, UpdatePath,
+                                                   ChangelogPath);
+            Licensing.CreateLicense(this, sd, menuStrip1);
 
             //add log event
 #if DEBUG

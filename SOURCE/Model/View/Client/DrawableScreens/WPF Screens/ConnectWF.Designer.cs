@@ -36,7 +36,7 @@ namespace Project.View.Client.DrawableScreens.WPF_Screens
         private void InitializeComponent()
         {
             this.gobacktobase = new System.Windows.Forms.Button();
-            this.ippanel = new ANDREICSLIB.PanelUpdates();
+            this.ippanel = new ANDREICSLIB.PanelReplacement();
             this.connectbutton = new System.Windows.Forms.Button();
             this.creategamebutton = new System.Windows.Forms.Button();
             this.SuspendLayout();
@@ -110,7 +110,7 @@ namespace Project.View.Client.DrawableScreens.WPF_Screens
         #endregion
 
         private Button gobacktobase;
-        public PanelUpdates ippanel;
+        public ANDREICSLIB.PanelReplacement ippanel;
         private Button connectbutton;
         private Button creategamebutton;
     }

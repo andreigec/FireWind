@@ -1,4 +1,6 @@
-﻿namespace FireWindServer
+﻿using System.Windows.Forms;
+
+namespace FireWindServer
 {
     partial class ServerWindow
     {
@@ -45,7 +47,7 @@
             this.creategamebutton = new System.Windows.Forms.Button();
             this.stopselectedgamesbutton = new System.Windows.Forms.Button();
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.consolelog = new ANDREICSLIB.ListViewUpdate();
+            this.consolelog = new ListView();
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -305,7 +307,7 @@
         private System.Windows.Forms.Button creategamebutton;
         private System.Windows.Forms.Button stopselectedgamesbutton;
         private System.Windows.Forms.ColumnHeader columnHeader3;
-        public ANDREICSLIB.ListViewUpdate consolelog;
+        public ListView  consolelog;
         private System.Windows.Forms.ColumnHeader columnHeader4;
         private System.Windows.Forms.ColumnHeader columnHeader5;
         private System.Windows.Forms.ColumnHeader columnHeader6;
