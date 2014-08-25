@@ -10,7 +10,8 @@ namespace Project
 
         public enum SectorType
         {
-            Colosseum,GambleMatch
+            Colosseum,
+            GambleMatch
         }
 
         #endregion
@@ -37,7 +38,7 @@ namespace Project
             sizes.Add(Size.large, new Tuple<int, int>(20000, 5000));
         }
 
-        public abstract bool SectorComplete(sector s);
+        public abstract bool SectorComplete(Sector s);
 
         public int GetWidth()
         {
@@ -68,9 +69,9 @@ namespace Project
             return ret;
         }
 
-        public static SectorConfig CreateConfigGambleMatch(int shipcount,int shipcost)
+        public static SectorConfig CreateConfigGambleMatch(int shipcount, int shipcost)
         {
-            var ret = new SectorConfigGambleMatch(Size.small,shipcount,shipcost);
+            var ret = new SectorConfigGambleMatch(Size.small, shipcount, shipcost);
             return ret;
         }
     }
@@ -82,7 +83,7 @@ namespace Project
             return "Mission";
         }
 
-        public override bool SectorComplete(sector s)
+        public override bool SectorComplete(Sector s)
         {
             return false;
         }
@@ -95,7 +96,7 @@ namespace Project
             size = newsize;
         }
 
-        public override bool SectorComplete(sector s)
+        public override bool SectorComplete(Sector s)
         {
             return false;
         }
@@ -108,9 +109,6 @@ namespace Project
 
     public partial class SectorConfigGambleMatch : SectorConfig
     {
-        public int shipcount { get; private set; }
-        public int shipcost { get; private set; }
-
         public SectorConfigGambleMatch(Size newsize, int shipcount, int shipcost)
         {
             size = newsize;
@@ -118,16 +116,19 @@ namespace Project
             this.shipcount = shipcount;
         }
 
-        public override bool SectorComplete(sector s)
+        public int shipcount { get; private set; }
+        public int shipcost { get; private set; }
+
+        public override bool SectorComplete(Sector s)
         {
             //map is complete if:
             //-contains player ship
-            var firstplayership = s.thismap.ships.Find(sh => sh.instanceOwner.PlayerOwnerID != -1);
-            if (firstplayership==null)
+            ShipInstance firstplayership = s.thismap.ships.Find(sh => sh.instanceOwner.PlayerOwnerID != -1);
+            if (firstplayership == null)
                 return false;
 
             //-no ships with different factions than the first player ship
-            var shl =
+            IEnumerable<ShipInstance> shl =
                 s.thismap.ships.Where(sh => sh.instanceOwner.FactionOwner != firstplayership.instanceOwner.FactionOwner);
 
             if (shl.Count() == 0)

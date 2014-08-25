@@ -11,10 +11,10 @@ namespace Project
     public partial class SectorScreen
     {
         private const string option1 = "release all ships from hangers";
-        public sector DrawThis;
+        public Sector DrawThis;
         private MenuOptionsCreate menucreate;
 
-        public SectorScreen(sector drawThis)
+        public SectorScreen(Sector drawThis)
         {
             DrawThis = drawThis;
             MapScreen.drawThis = drawThis.thismap;
@@ -52,18 +52,18 @@ namespace Project
             menucreate = new MenuOptionsCreate();
             menucreate.rootOptions = new MenuOptions(null, false);
 
-            var one = menucreate.rootOptions.addChild(option1, false);
+            MenuOptions one = menucreate.rootOptions.addChild(option1, false);
 
             menucreate.currentOption = one;
         }
 
         private void DrawBuildings(Camera2D cam, GameTime gameTime)
         {
-            foreach (var b in DrawThis.thismap.buildings)
+            foreach (BuildingInstance b in DrawThis.thismap.buildings)
             {
-                var v = cam.ToLocalLocation(b.spriteInstance.move.Position.Middle);
-                var label = "B";
-                var use = Color.Purple;
+                Vector2 v = cam.ToLocalLocation(b.spriteInstance.move.Position.Middle);
+                string label = "B";
+                Color use = Color.Purple;
                 switch (b.buildingType)
                 {
                     case BuildingInstance.BuildingType.Civilian:
@@ -122,11 +122,11 @@ namespace Project
 
         private void DrawShips(Camera2D cam, GameTime gameTime)
         {
-            var f = GameControlClient.synchMain.myID;
-            foreach (var s in DrawThis.thismap.ships)
+            int f = GameControlClient.synchMain.myID;
+            foreach (ShipInstance s in DrawThis.thismap.ships)
             {
-                var v = cam.ToLocalLocation(s.spriteInstance.move.Position.Middle);
-                var disabled = s.disabled;
+                Vector2 v = cam.ToLocalLocation(s.spriteInstance.move.Position.Middle);
+                bool disabled = s.disabled;
                 DrawShip(cam, gameTime,
                          f == s.instanceOwner.FactionOwner, GameControlClient.playerShipClass.PlayerShip == s,
                          disabled, v,

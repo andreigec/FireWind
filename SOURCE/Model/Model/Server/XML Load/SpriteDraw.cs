@@ -10,14 +10,19 @@ namespace Project
 
     public class SpriteDraw : ILoadXMLBase
     {
-        public int FrameHeight;
-        public int FrameWidth;
+        public String name { get; set; }
+
+		public int FrameHeight;
+		public int FrameWidth;
+
+		public int ScaledWidth;
+		public int ScaledHeight;
 
         [ContentSerializerIgnore] public Texture2D image;
 
         #region ILoadXMLBase Members
 
-        public String name { get; set; }
+        
 
         #endregion
     }

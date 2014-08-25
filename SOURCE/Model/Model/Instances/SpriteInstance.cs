@@ -69,27 +69,33 @@ namespace Project.Model.Instances
         {
             float gravitymass = 0;
             if (ty is ShipInstance)
+            {
                 gravitymass = ShipInstance.GravityMass;
+                //fall faster if disabled
+                if (((ShipInstance)ty).disabled)
+                    gravitymass *= ShipInstance.DisabledGravityMassMultiplier;
+
+            }
             else if (ty is BuildingInstance)
                 gravitymass = BuildingInstance.GravityMass;
             else if (ty is WeaponInstance)
                 gravitymass = WeaponInstance.GravityMass;
 
-            IshipAreaSynch isa = ty.parentArea as map;
+            IshipAreaSynch isa = ty.parentArea as Map;
 
             //disabled
             if (gravitymass <= 0 || isa == null)
                 return;
-            var m = isa as map;
+            var m = isa as Map;
 
             if (ty is BuildingInstance)
             {
                 var bty = ty as BuildingInstance;
                 if (bty.falling)
                 {
-                    var h = bty.spriteInstance.move.Position.Middle.Y +
+                    float h = bty.spriteInstance.move.Position.Middle.Y +
                               (int) (bty.buildingModel.BaseSprite.FrameHeight/2f);
-                    var th = -1*
+                    int th = -1*
                              m.terrain.heightmap.heights[(int) bty.spriteInstance.move.Position.Middle.X].Last().Item2;
                     if (h < th)
                     {
@@ -106,9 +112,9 @@ namespace Project.Model.Instances
                     return;
             }
 
-            var gi = m.gravityIncrement*gravitymass;
-            var gki = m.gravityKickIn /= gravitymass;
-            var mg = m.maxGravity*gravitymass;
+            float gi = m.gravityIncrement*gravitymass;
+            float gki = m.gravityKickIn /= gravitymass;
+            float mg = m.maxGravity*gravitymass;
 
             currentGravity = (float) Shared.mapRange(move.Velocity, 0, gki, mg, 0);
 
@@ -141,16 +147,16 @@ namespace Project.Model.Instances
 
         public static Tuple<VectorMove, float, float> DeserialisePosition(List<string> args)
         {
-            var move = VectorMove.DeserialisePosition(args);
-            var ang = float.Parse(Shared.PopFirstListItem(args));
-            var cg = float.Parse(Shared.PopFirstListItem(args));
+            VectorMove move = VectorMove.DeserialisePosition(args);
+            float ang = float.Parse(Shared.PopFirstListItem(args));
+            float cg = float.Parse(Shared.PopFirstListItem(args));
 
             return new Tuple<VectorMove, float, float>(move, ang, cg);
         }
 
         public static void DeserialisePosition(List<string> args, SpriteInstance si)
         {
-            var tup = DeserialisePosition(args);
+            Tuple<VectorMove, float, float> tup = DeserialisePosition(args);
             si.move = tup.Item1;
             si.LookAngle = tup.Item2;
             si.currentGravity = tup.Item3;
@@ -184,20 +190,20 @@ namespace Project.Model.Instances
             if (basesprite == null)
                 return;
 
-            var isSpriteBase = basesprite is SpriteBase;
+            bool isSpriteBase = basesprite is SpriteBase;
             //bool isParticleBase = basesprite is SpriteParticle;
-            var SB = basesprite;
+            SpriteDraw SB = basesprite;
             var SB1 = basesprite as SpriteBase;
             //var SB2 = basesprite as SpriteParticle;
-            var cy = 0;
-            var cx = 0;
+            int cy = 0;
+            int cx = 0;
             if (isSpriteBase)
             {
                 cy = currentFrame/SB1.columnCount;
                 cx = currentFrame%SB1.columnCount;
             }
 
-            var r = LookAngle/180f;
+            float r = LookAngle/180f;
             r = r*3.14159f;
             /*
             var FH = SpriteEffects.FlipHorizontally;
@@ -210,7 +216,7 @@ namespace Project.Model.Instances
             */
             //scale = 1f;
             var middle = new Vector2(((float) SB.FrameWidth/2), ((float) SB.FrameHeight/2));
-            var load = SB.image;
+            Texture2D load = SB.image;
 
             cam.spriteBatch.Draw(load,
                                  move.Position.Middle,

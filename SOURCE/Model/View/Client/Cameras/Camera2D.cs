@@ -1,18 +1,15 @@
 ﻿using System;
-using System.Drawing;
 using ExternalUsage;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Project.Model;
 using Project.Model.mapInfo;
-using XNA_Winforms_Wrapper;
-using Color = Microsoft.Xna.Framework.Color;
 
 namespace Project.View.Client.Cameras
 {
     public abstract class Camera2D
     {
         private static string SegoeUIMono = "Segoe UI Mono";
+
         #region screen info
 
         public int ViewportHeight;
@@ -75,9 +72,9 @@ namespace Project.View.Client.Cameras
 
         public void DrawString(String s, Color c, Vector2 pos)
         {
-            var font = XNA.GetFont(SegoeUIMono);
-            var fontscale = 12 / 100f;
-            spriteBatch.DrawString(font, s, pos, c, 0, Vector2.Zero, fontscale,SpriteEffects.None,0);
+            SpriteFont font = XNA.GetFont(SegoeUIMono);
+            float fontscale = 12/100f;
+            spriteBatch.DrawString(font, s, pos, c, 0, Vector2.Zero, fontscale, SpriteEffects.None, 0);
         }
 
         // Auxiliary function to move the camera

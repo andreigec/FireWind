@@ -6,7 +6,7 @@ namespace Project
     {
         public void updateAI(GameTime gt)
         {
-            if (parentArea is map)
+            if (parentArea is Map)
                 updateAIMap(gt);
         }
     }

@@ -8,12 +8,11 @@ using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
-using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using Project.Networking;
-using Keys = Microsoft.Xna.Framework.Input.Keys;
 
 namespace Project.Model
 {
@@ -44,102 +43,9 @@ namespace Project.Model
 
     public static class Shared
     {
-
-        private static string GetWebPage(String address)
-        {
-            // used to build entire input
-            var sb = new StringBuilder();
-
-            // used on each read operation
-            var buf = new byte[8192];
-
-            // prepare the web page we will be asking for
-            var request = (HttpWebRequest)
-                WebRequest.Create(address);
-
-            // execute the request
-            var response = (HttpWebResponse)
-                request.GetResponse();
-
-            // we will read data via the response stream
-            var resStream = response.GetResponseStream();
-
-            string tempString = null;
-            int count = 0;
-
-            do
-            {
-                // fill the buffer with data
-                count = resStream.Read(buf, 0, buf.Length);
-
-                // make sure we read some data
-                if (count != 0)
-                {
-                    // translate from bytes to ASCII text
-                    tempString = Encoding.ASCII.GetString(buf, 0, count);
-
-                    // continue building the string
-                    sb.Append(tempString);
-                }
-            }
-            while (count > 0); // any more data to read?
-
-            // print out page source
-            return sb.ToString();
-        }
-
-        private static string GetLocalAddress()
-        {
-            IPHostEntry host;
-            host = Dns.GetHostEntry(Dns.GetHostName());
-            foreach (IPAddress ip in host.AddressList)
-            {
-                if (ip.AddressFamily == AddressFamily.InterNetwork)
-                {
-                    return ip.ToString();
-                }
-            }
-            return null;
-        }
-
-        private static string GetExternalAddress()
-        {
-            try
-            {
-                String addr = GetWebPage("http://checkip.dyndns.org");
-                if (string.IsNullOrEmpty(addr) == false)
-                {
-                    //remove up to :
-                    addr = addr.Substring(addr.IndexOf(':') + 2);
-
-                    //remove html
-                    addr = addr.Substring(0, addr.IndexOf('<'));
-
-                    return addr;
-                }
-                else
-                    return null;
-            }
-            catch (Exception)
-            {
-
-                return null;
-            }
-        }
-
-        public static string GetMyIPAddress()
-        {
-            string ret = null;
-            ret = GetExternalAddress();
-            if (ret == null)
-                ret = GetLocalAddress();
-
-            return ret;
-        }
-
         public static void serialiseFile<T>(T obj, String outputFilename)
         {
-            var f = serialiseText(obj);
+            string f = serialiseText(obj);
             var sw = new StreamWriter(outputFilename);
             sw.Write(f);
             sw.Close();
@@ -164,14 +70,14 @@ namespace Project.Model
             var doc = new XmlDocument();
             doc.LoadXml(text);
             var reader = new XmlNodeReader(doc.DocumentElement);
-            var ser = new XmlSerializer(typeof(T));
-            var obj = ser.Deserialize(reader);
-            return ((T)obj);
+            var ser = new XmlSerializer(typeof (T));
+            object obj = ser.Deserialize(reader);
+            return ((T) obj);
         }
 
         public static string GetFileText(String filename)
         {
-            var ret = "";
+            string ret = "";
             var sr = new StreamReader(filename);
             ret = sr.ReadToEnd();
             sr.Close();
@@ -180,7 +86,7 @@ namespace Project.Model
 
         public static T PopFirstListItem<T>(List<T> list)
         {
-            var item = list[0];
+            T item = list[0];
             list.RemoveAt(0);
             return item;
         }
@@ -220,13 +126,13 @@ namespace Project.Model
                     KeyValue = '/';
                     break;
                 default:
-                    if ((0x60 <= (int)keyData) && (0x69 >= (int)keyData))
+                    if ((0x60 <= (int) keyData) && (0x69 >= (int) keyData))
                     {
-                        KeyValue = (char)((int)keyData - 0x30);
+                        KeyValue = (char) ((int) keyData - 0x30);
                     }
                     else
                     {
-                        KeyValue = (char)keyData;
+                        KeyValue = (char) keyData;
                     }
                     break;
             }
@@ -235,20 +141,20 @@ namespace Project.Model
 
         public static string GetPropertyName<T, TReturn>(Expression<Func<T, TReturn>> expression)
         {
-            var body = (MemberExpression)expression.Body;
+            var body = (MemberExpression) expression.Body;
             return body.Member.Name;
         }
 
         public static bool flagChecked(UpdateModes value, UpdateModes comp)
         {
-            var res = (((value & comp) == comp) || ((value & UpdateModes.All) == UpdateModes.All));
+            bool res = (((value & comp) == comp) || ((value & UpdateModes.All) == UpdateModes.All));
             return res;
         }
 
         public static string GetStackTrace()
         {
             var stackTrace = new StackTrace();
-            var stackFrames = stackTrace.GetFrames();
+            StackFrame[] stackFrames = stackTrace.GetFrames();
             if (stackFrames == null)
                 return "";
 
@@ -258,17 +164,17 @@ namespace Project.Model
         public static double mapRange(double value, double rawValueStart, double rawValueEnd, double mapRangeStart,
                                       double mapRangeEnd)
         {
-            var dif = rawValueEnd - rawValueStart;
+            double dif = rawValueEnd - rawValueStart;
             if (dif == 0)
                 dif = 1;
 
-            var p = (value-rawValueStart) / (dif);
+            double p = (value - rawValueStart)/(dif);
             if (p > 1)
                 p = 1;
             if (p < 0)
                 p = 0;
 
-            var o = p * (mapRangeEnd - mapRangeStart);
+            double o = p*(mapRangeEnd - mapRangeStart);
             o += mapRangeStart;
 
             return o;
@@ -276,8 +182,8 @@ namespace Project.Model
 
         public static bool TimeSinceElapsed(ref double LastShotTimeStamp, GameTime GT, int millisecondsTrip)
         {
-            var now = GT.TotalGameTime.TotalMilliseconds;
-            var dif = now - LastShotTimeStamp;
+            double now = GT.TotalGameTime.TotalMilliseconds;
+            double dif = now - LastShotTimeStamp;
             if (dif > millisecondsTrip)
             {
                 LastShotTimeStamp = now;
@@ -288,8 +194,8 @@ namespace Project.Model
 
         public static bool TimeSinceElapsed(double LastShotTimeStamp, GameTime GT, int millisecondsTrip)
         {
-            var now = GT.TotalGameTime.TotalMilliseconds;
-            var dif = now - LastShotTimeStamp;
+            double now = GT.TotalGameTime.TotalMilliseconds;
+            double dif = now - LastShotTimeStamp;
             if (dif > millisecondsTrip)
             {
                 return true;
@@ -299,21 +205,21 @@ namespace Project.Model
 
         public static void copyTo<T>(T fromV, T to)
         {
-            var t = fromV.GetType();
-            var pi = t.GetProperties();
-            var fi = t.GetFields();
+            Type t = fromV.GetType();
+            PropertyInfo[] pi = t.GetProperties();
+            FieldInfo[] fi = t.GetFields();
 
-            foreach (var prop in pi)
+            foreach (PropertyInfo prop in pi)
             {
-                var prop2 = to.GetType().GetProperty(prop.Name);
-                var o = prop.GetValue(fromV, null);
+                PropertyInfo prop2 = to.GetType().GetProperty(prop.Name);
+                object o = prop.GetValue(fromV, null);
                 prop2.SetValue(to, o, null);
             }
 
-            foreach (var field in fi)
+            foreach (FieldInfo field in fi)
             {
-                var prop2 = to.GetType().GetField(field.Name);
-                var o = field.GetValue(fromV);
+                FieldInfo prop2 = to.GetType().GetField(field.Name);
+                object o = field.GetValue(fromV);
                 prop2.SetValue(to, o);
             }
         }
@@ -329,22 +235,22 @@ namespace Project.Model
 
         public static int SmoothInt(int value, int toPlace)
         {
-            var str = value.ToString();
-            var strc = str.ToCharArray();
+            string str = value.ToString();
+            char[] strc = str.ToCharArray();
 
             if (str.Length < toPlace)
                 toPlace = str.Length;
-            for (var a = 0; a < toPlace; a++)
+            for (int a = 0; a < toPlace; a++)
             {
-                var pos = str.Length - 1 - a;
+                int pos = str.Length - 1 - a;
                 strc[pos] = '0';
             }
 
-            var comb = strc.Aggregate("", (current, c) => current + c);
+            string comb = strc.Aggregate("", (current, c) => current + c);
 
             try
             {
-                var p = Int32.Parse(comb);
+                int p = Int32.Parse(comb);
                 return p;
             }
             catch (Exception)
@@ -368,15 +274,15 @@ namespace Project.Model
 
         public static float DegreeToRadian(int angle)
         {
-            return (float)(Math.PI * angle / 180.0f);
+            return (float) (Math.PI*angle/180.0f);
         }
 
 
         public static void removeStringFromArray(ref string[] arr, int index, int removeCount = 1)
         {
             var arr2 = new string[arr.Length - removeCount];
-            var count = 0;
-            for (var b = 0; b < arr.Length; b++)
+            int count = 0;
+            for (int b = 0; b < arr.Length; b++)
             {
                 if (b < index || b >= (index + removeCount))
                 {
@@ -390,8 +296,8 @@ namespace Project.Model
         public static void addStringToArray(ref string[] arr, String add, int index)
         {
             var arr2 = new string[arr.Length + 1];
-            var cindex = 0;
-            foreach (var s in arr)
+            int cindex = 0;
+            foreach (string s in arr)
             {
                 if (index == cindex)
                 {
@@ -402,7 +308,6 @@ namespace Project.Model
             }
             arr = arr2;
         }
-
 
 
         /*

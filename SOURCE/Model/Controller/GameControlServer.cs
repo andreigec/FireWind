@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using Microsoft.Xna.Framework;
 using Project.Model;
 using Project.Model.mapInfo;
-using Project.Networking.mapInfoSynch;
 
 namespace Project.Networking
 {
@@ -25,10 +23,10 @@ namespace Project.Networking
     public class GameControlServer
     {
         public GameInitConfig gameConfig;
-        public region gameRegion;
-        private UpdateModes updateFlags = UpdateModes.None;
+        public Region gameRegion;
 
         public SynchMain parentSynch;
+        private UpdateModes updateFlags = UpdateModes.None;
 
         //use static constructor
         private GameControlServer()
@@ -44,7 +42,7 @@ namespace Project.Networking
         {
             return Shared.flagChecked(updateFlags, comp);
         }
-        
+
         public static GameControlServer CreateGameControlServer(SynchMain sm, GameInitConfig cfg)
         {
             var gcs = new GameControlServer();
@@ -56,13 +54,13 @@ namespace Project.Networking
                 //server should do everything
                 gcs.updateFlags = UpdateModes.All;
                 //create the base region, and start updates
-                gcs.gameRegion = new region(gcs, SetID.CreateSetNew());
+                gcs.gameRegion = new Region(gcs, SetID.CreateSetNew());
             }
             else
             {
                 gcs.updateFlags = UpdateModes.MoveObjects | UpdateModes.UpdateTerrain;
             }
-            
+
             return gcs;
         }
 
@@ -72,12 +70,12 @@ namespace Project.Networking
             //remove player homeworld?
 
             //change ships to not be controlled
-            var sl = gameRegion.GetShipByOwner(playerID);
-            for (var a = 0; a < sl.Count; a++)
+            List<ShipInstance> sl = gameRegion.GetShipByOwner(playerID);
+            for (int a = 0; a < sl.Count; a++)
             {
-                var sh = sl[a];
+                ShipInstance sh = sl[a];
                 //TEMP REMOVE PLAYER SHIP
-                var m = sh.parentArea as map;
+                var m = sh.parentArea as Map;
                 sh.instanceOwner.ReleaseControl();
                 IShipAreaMIXIN.RemoveShipMixIn(m, sh);
             }
@@ -93,9 +91,9 @@ namespace Project.Networking
 
         public bool GiveCreditForShipDestruction(long victorID, ShipInstance destroyed)
         {
-            var am = ShipBaseItemsMIXIN.GetTotalItemsCost(destroyed)*2;
+            int am = ShipBaseItemsMIXIN.GetTotalItemsCost(destroyed)*2;
 
-            if (GameControlClient.PlayerShipSet()&&GameControlClient.playerShipClass.PlayerShip.ID==victorID)
+            if (GameControlClient.PlayerShipSet() && GameControlClient.playerShipClass.PlayerShip.ID == victorID)
             {
                 GameControlClient.playerShipClass.ChangeCredits(am);
                 return true;
@@ -104,7 +102,7 @@ namespace Project.Networking
             if (gameConfig.isServer())
             {
                 //get client
-                var cc = parentSynch.connectedClients.Where(s => s.ID == victorID);
+                IEnumerable<ConnectedClient> cc = parentSynch.connectedClients.Where(s => s.ID == victorID);
 
                 //an ai ship destroyed another, ignore
                 if (cc.Count() != 1)
@@ -112,7 +110,7 @@ namespace Project.Networking
                     return false;
                 }
 
-                var ccl = cc.First();
+                ConnectedClient ccl = cc.First();
                 ConnectedClient.GiveCredits(ccl, victorID, destroyed);
                 return true;
             }

@@ -14,7 +14,7 @@ namespace Project
 
             if (type == SectorType.Colosseum)
                 return SectorConfigColosseum.DeserialiseCreateF(args);
-            
+
             if (type == SectorType.GambleMatch)
                 return SectorConfigGambleMatch.DeserialiseCreateF(args);
 
@@ -46,10 +46,10 @@ namespace Project
         public static SectorConfig DeserialiseCreateF(List<string> args)
         {
             var size = (Size) int.Parse(Shared.PopFirstListItem(args));
-            var count = int.Parse(Shared.PopFirstListItem(args));
-            var cost = int.Parse(Shared.PopFirstListItem(args));
+            int count = int.Parse(Shared.PopFirstListItem(args));
+            int cost = int.Parse(Shared.PopFirstListItem(args));
 
-            var scc = new SectorConfigGambleMatch(size,count,cost);
+            var scc = new SectorConfigGambleMatch(size, count, cost);
             return scc;
         }
     }

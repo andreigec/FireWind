@@ -9,7 +9,7 @@ using Project.Networking.mapInfoSynch;
 
 namespace Project
 {
-    public partial class region : ISynchroniseInterfaceShipArea<ConnectedClient, SynchStatusArea, SynchStatusMain>
+    public partial class Region : ISynchroniseInterfaceShipArea<ConnectedClient, SynchStatusArea, SynchStatusMain>
     {
         #region IshipAreaSynch Members
 
@@ -43,7 +43,7 @@ namespace Project
 
             if (sectors != null)
             {
-                foreach (var s in sectors)
+                foreach (Sector s in sectors)
                 {
                     s.Cleanup(client);
                 }
@@ -55,7 +55,7 @@ namespace Project
             Init();
             IShipAreaMIXIN.RemoveObjectsList(this, new List<ConnectedIPs>(clients), SynchInfo);
 
-            foreach (var s in sectors)
+            foreach (Sector s in sectors)
             {
                 s.SynchroniseMain(clients);
             }
@@ -64,7 +64,7 @@ namespace Project
         public bool Synchronise(ConnectedClient client)
         {
             Init(client);
-            var SynchInfo = this.SynchInfo[client.ID];
+            SynchStatusArea SynchInfo = this.SynchInfo[client.ID];
             if (SynchInfo == null)
                 return false;
 
@@ -79,16 +79,15 @@ namespace Project
 
         public void RemoteCreate(ConnectedClient client, SynchStatusArea SynchInfo)
         {
-                addCreateRegionToQueue(client, SynchInfo);
+            addCreateRegionToQueue(client, SynchInfo);
         }
 
         public bool RemoteUpdate(ConnectedClient client, SynchStatusArea SynchInfo)
         {
             bool somecreated = false;
-            foreach (var s in sectors)
+            foreach (Sector s in sectors)
             {
                 somecreated = somecreated | s.Synchronise(client);
-
             }
             return somecreated;
         }
@@ -121,7 +120,7 @@ namespace Project
             o.Add(Message.sendVars.CreateRegion.ToString("d"));
             o.AddRange(SerialiseCreate());
 
-            var m = Message.CreateMessage(Message.Messages.SendingVars, o);
+            Message m = Message.CreateMessage(Message.Messages.SendingVars, o);
             parentGCS.parentSynch.AddMessageToWriteBuffer(m, cc);
             cc.AddResponseRequirement(m.ID, SynchInfo, SynchInfo.Created, true);
         }
@@ -140,11 +139,11 @@ namespace Project
 
         public static bool DeserialiseCreate(List<string> args, GameControlServer gcs)
         {
-            var ID = int.Parse(Shared.PopFirstListItem(args));
-            var width = int.Parse(Shared.PopFirstListItem(args));
-            var height = int.Parse(Shared.PopFirstListItem(args));
+            int ID = int.Parse(Shared.PopFirstListItem(args));
+            int width = int.Parse(Shared.PopFirstListItem(args));
+            int height = int.Parse(Shared.PopFirstListItem(args));
 
-            gcs.gameRegion = new region(gcs, SetID.CreateSetForce(ID), width, height);
+            gcs.gameRegion = new Region(gcs, SetID.CreateSetForce(ID), width, height);
 
             gcs.gameRegion.Init();
             gcs.gameRegion.SynchInfoMain.SendCreateDelete = false;

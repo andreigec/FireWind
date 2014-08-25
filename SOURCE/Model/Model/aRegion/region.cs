@@ -9,28 +9,11 @@ using Project.Networking;
 
 namespace Project
 {
-    public partial class region : SharedID, IshipAreaSynch
+    public partial class Region : SharedID, IshipAreaSynch
     {
-        public List<sector> sectors = new List<sector>();
+        public List<Sector> sectors = new List<Sector>();
 
-        public int width { get; private set; }
-        public int height { get; private set; }
-
-        //public List<sector> HomePlanets = new List<sector>();
-
-        [XmlIgnore]
-        public List<WeaponInstance> shots { get; set; }
-
-        [XmlIgnore]
-        public List<BuildingInstance> buildings { get; set; }
-
-        [XmlIgnore]
-        public List<ShipInstance> ships { get; set; }
-
-        [XmlIgnore]
-        public GameControlServer parentGCS { get; set; }
-
-        public region(GameControlServer parent, SetID cfg, int width = 200, int height = 200)
+        public Region(GameControlServer parent, SetID cfg, int width = 200, int height = 200)
         {
             IShipAreaMIXIN.InitClass(this);
             ISynchInterfaceMIXIN.InitClass(this);
@@ -46,22 +29,22 @@ namespace Project
 
         public ShipInstance getShipInstance(long ID)
         {
-            foreach (var shi in ships)
+            foreach (ShipInstance shi in ships)
             {
                 if (shi.ID.Equals(ID))
                     return shi;
             }
 
             //assigned to a sector
-            foreach (var sec in sectors)
+            foreach (Sector sec in sectors)
             {
-                foreach (var sh in sec.ships)
+                foreach (ShipInstance sh in sec.ships)
                 {
                     if (sh.ID.Equals(ID))
                         return sh;
                 }
 
-                foreach (var sh in sec.thismap.ships)
+                foreach (ShipInstance sh in sec.thismap.ships)
                 {
                     if (sh.ID.Equals(ID))
                         return sh;
@@ -72,16 +55,16 @@ namespace Project
 
         public List<ShipInstance> GetShipByOwner(long ownerID)
         {
-            var ret = ships.Where(s => s.instanceOwner.PlayerOwnerID == ownerID).ToList();
+            List<ShipInstance> ret = ships.Where(s => s.instanceOwner.PlayerOwnerID == ownerID).ToList();
 
-            foreach (var sec in sectors)
+            foreach (Sector sec in sectors)
             {
-                foreach (var s1 in sec.ships.Where(s => s.instanceOwner.PlayerOwnerID == ownerID))
+                foreach (ShipInstance s1 in sec.ships.Where(s => s.instanceOwner.PlayerOwnerID == ownerID))
                 {
                     ret.Add(s1);
                 }
 
-                foreach (var s1 in sec.thismap.ships.Where(s => s.instanceOwner.PlayerOwnerID == ownerID))
+                foreach (ShipInstance s1 in sec.thismap.ships.Where(s => s.instanceOwner.PlayerOwnerID == ownerID))
                 {
                     ret.Add(s1);
                 }
@@ -92,9 +75,9 @@ namespace Project
         public BuildingInstance getBuildingInstance(long buildID)
         {
             //assigned to a sector
-            foreach (var sec in sectors)
+            foreach (Sector sec in sectors)
             {
-                foreach (var bi in sec.thismap.buildings)
+                foreach (BuildingInstance bi in sec.thismap.buildings)
                 {
                     if (bi.ID.Equals(buildID))
                         return bi;
@@ -106,9 +89,9 @@ namespace Project
         public WeaponInstance getShotInstance(long shotID)
         {
             //assigned to a sector
-            foreach (var sec in sectors)
+            foreach (Sector sec in sectors)
             {
-                foreach (var sh in sec.thismap.shots)
+                foreach (WeaponInstance sh in sec.thismap.shots)
                 {
                     if (sh.ID.Equals(shotID))
                         return sh;
@@ -120,9 +103,9 @@ namespace Project
         public IEnumerable<WeaponInstance> GetPlayerShots(int playerID)
         {
             //assigned to a sector
-            foreach (var sec in sectors)
+            foreach (Sector sec in sectors)
             {
-                for (var a = 0; a < sec.thismap.shots.Count; a++)
+                for (int a = 0; a < sec.thismap.shots.Count; a++)
                 {
                     if (sec.thismap.shots[a].parentID == playerID)
                         yield return sec.thismap.shots[a];
@@ -134,8 +117,8 @@ namespace Project
         {
             if (ID == areaID)
                 return this;
-            var s1 = sectors.Where(s => s.ID == areaID);
-            var s2 = sectors.Where(s => s.thismap.ID == areaID);
+            IEnumerable<Sector> s1 = sectors.Where(s => s.ID == areaID);
+            IEnumerable<Sector> s2 = sectors.Where(s => s.thismap.ID == areaID);
 
             if (s1.Count() > 0)
                 return s1.First();
@@ -145,12 +128,33 @@ namespace Project
 
             return null;
         }
-        
+
         #endregion player
-       
-        public void addSector(sector sec)
+
+        public int width { get; private set; }
+        public int height { get; private set; }
+
+        //public List<sector> HomePlanets = new List<sector>();
+
+        #region IshipAreaSynch Members
+
+        [XmlIgnore]
+        public List<WeaponInstance> shots { get; set; }
+
+        [XmlIgnore]
+        public List<BuildingInstance> buildings { get; set; }
+
+        [XmlIgnore]
+        public List<ShipInstance> ships { get; set; }
+
+        [XmlIgnore]
+        public GameControlServer parentGCS { get; set; }
+
+        #endregion
+
+        public void addSector(Sector sec)
         {
-            var gcs = parentGCS;
+            GameControlServer gcs = parentGCS;
 
             sec.parentRegion = gcs.gameRegion;
             sec.parentGCS = gcs;
@@ -160,9 +164,9 @@ namespace Project
             gcs.gameRegion.sectors.Add(sec);
         }
 
-        public sector addSector(SectorConfig cfg)
+        public Sector addSector(SectorConfig cfg)
         {
-            var s = sector.addSector(cfg, this);
+            Sector s = Sector.addSector(cfg, this);
             sectors.Add(s);
 
             //add ships depending on config
@@ -170,11 +174,11 @@ namespace Project
             {
                 var gg = cfg as SectorConfigGambleMatch;
 
-                for (int a=0;a<gg.shipcount;a++)
+                for (int a = 0; a < gg.shipcount; a++)
                 {
-                    var sish = ShipInstanceShell.CreateShellShipFromCost(gg.shipcost);
+                    ShipInstanceShell sish = ShipInstanceShell.CreateShellShipFromCost(gg.shipcost);
 
-                    var si = ShipInstance.addShip(sish, SetID.CreateSetNew(),s.thismap);
+                    ShipInstance si = ShipInstance.addShip(sish, SetID.CreateSetNew(), s.thismap);
                     si.instanceOwner = new InstanceOwner(-1, -1, InstanceOwner.ControlType.NoPlayer, -1);
                     ActionList.AddJoinGameToAction(si);
                 }
@@ -182,15 +186,15 @@ namespace Project
             return s;
         }
 
-        public void RemoveSector(sector s)
+        public void RemoveSector(Sector s)
         {
             //remove all player ships
-            var ps = s.thismap.ships.Where(sh => sh.instanceOwner.PlayerOwnerID != -1);
+            IEnumerable<ShipInstance> ps = s.thismap.ships.Where(sh => sh.instanceOwner.PlayerOwnerID != -1);
 
-            while (ps.Count()>0)
+            while (ps.Count() > 0)
             {
-                var ship = ps.First();
-                GameControlClient.ResetShip(ship,this,false);
+                ShipInstance ship = ps.First();
+                GameControlClient.ResetShip(ship, this, false);
             }
 
             sectors.Remove(s);
@@ -198,19 +202,19 @@ namespace Project
 
         public void Update(GameTime gameTime)
         {
-            for (int a = 0; a < sectors.Count;a++ )
+            for (int a = 0; a < sectors.Count; a++)
             {
-                var s = sectors[a];
+                Sector s = sectors[a];
 
-                    //see if the map has been completed
-                    if (false)//s.Config.SectorComplete(s))
-                    {
-                        RemoveSector(s);
-                        continue;
-                    }
-
-                    s.Update(gameTime);
+                //see if the map has been completed
+                if (false) //s.Config.SectorComplete(s))
+                {
+                    RemoveSector(s);
+                    continue;
                 }
+
+                s.Update(gameTime);
+            }
         }
     }
 }

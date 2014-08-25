@@ -62,9 +62,9 @@ namespace Project.View.Client.Cameras
             if (gameTime.TotalGameTime.TotalSeconds < autoZoomTimeout)
                 return;
 
-            var vel = s.spriteInstance.move.Velocity; // +s.currentGravity;
+            double vel = s.spriteInstance.move.Velocity; // +s.currentGravity;
 
-            var ms = ShipBaseItemsMIXIN.GetMaxSpeed(s);
+            double ms = ShipBaseItemsMIXIN.GetMaxSpeed(s);
 
             var cl = (int) Shared.mapRange(vel, 0, ms, 6, 3);
 
@@ -86,8 +86,8 @@ namespace Project.View.Client.Cameras
         public void FocusOnPoint(Vector2 pos)
         {
             Pos = pos;
-            var diff1 = ((ViewportHeight/_zoom)/2);
-            var diff2 = pos.Y + diff1;
+            float diff1 = ((ViewportHeight/_zoom)/2);
+            float diff2 = pos.Y + diff1;
             if (diff2 > 0)
                 Pos.Y = diff1*-1;
         }

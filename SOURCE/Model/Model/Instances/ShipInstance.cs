@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Xml.Serialization;
 using ExternalUsage;
 using Microsoft.Xna.Framework;
@@ -16,53 +14,57 @@ namespace Project
     {
         [XmlIgnore]
         public static float GravityMass = 1;
+        [XmlIgnore]
+        public static float DisabledGravityMassMultiplier = 10;
 
         #region current
 
-        [XmlIgnore]
-        private const double ShieldExtendSeconds = 5;
-        [XmlIgnore]
-        public double CurrentAccel;
-        [XmlIgnore]
-        public double CurrentArmour;
+        [XmlIgnore] private const double ShieldExtendSeconds = 5;
+        [XmlIgnore] public double CurrentAccel;
+        [XmlIgnore] public double CurrentArmour;
 
-        [XmlIgnore]
-        public double CurrentEnergy;
-        [XmlIgnore]
-        public double CurrentShield;
+        [XmlIgnore] public double CurrentEnergy;
+        [XmlIgnore] public double CurrentShield;
 
-        public SerializableDictionary<SlotLocation.SlotLocationEnum, ShipPart> Parts { get; set; }
+        [XmlIgnore] private double ShowShieldTill;
 
-        [XmlIgnore]
-        private double ShowShieldTill;
-
-        public SerializableDictionary<SlotLocation.SlotLocationEnum, weapon> Slots { get; set; }
+        [XmlIgnore] public bool disabled;
 
         [XmlIgnore]
         public SerializableDictionary<SlotLocation.SlotLocationEnum, weaponslot> EquipSlots { get; set; }
 
         [XmlIgnore]
-        public bool disabled;
-
-        [XmlIgnore]
         public InstanceOwner instanceOwner { get; set; }
 
-        public shipBase shipModel { get; set; }
+        #region IDrawableObject Members
 
         [XmlIgnore]
         public IshipAreaSynch parentArea { get; set; }
 
         [XmlIgnore]
         public SpriteInstance spriteInstance { get; set; }
+
         [XmlIgnore]
         public GameControlServer parentGCS { get; set; }
+
+        #endregion
+
+        #region ShipBaseItems Members
+
+        public SerializableDictionary<SlotLocation.SlotLocationEnum, ShipPart> Parts { get; set; }
+        public SerializableDictionary<SlotLocation.SlotLocationEnum, weapon> Slots { get; set; }
+        public shipBase shipModel { get; set; }
+
+        #endregion
+
         #endregion current
 
         public ShipInstance()
         {
         }
 
-        private ShipInstance(GameControlServer gcs, shipBase shipmodel, SetID idcfg, IshipAreaSynch area = null, VectorMove move = null,
+        private ShipInstance(GameControlServer gcs, shipBase shipmodel, SetID idcfg, IshipAreaSynch area = null,
+                             VectorMove move = null,
                              float look = -1, InstanceOwner controller = null)
         {
             parentGCS = gcs;
@@ -86,13 +88,11 @@ namespace Project
             parentArea = area;
 
             //give all ship the stock parts by default
-            var stockparts = ShipInstanceShell.CreateStockShellShip();
+            ShipInstanceShell stockparts = ShipInstanceShell.CreateStockShellShip();
             AssignShellPartsToThis(this, stockparts);
         }
 
         #region IDrawableObject Members
-
-
 
         public void Draw(Camera2D cam, GameTime gameTime)
         {
@@ -131,14 +131,14 @@ namespace Project
 
         public static ShipInstance addShip(GameControlServer gcs, string shipname, SetID idcfg)
         {
-            var sm = loadXML.loadedShips[shipname];
+            shipBase sm = loadXML.loadedShips[shipname];
             var si = new ShipInstance(gcs, sm, idcfg);
             return si;
         }
 
         public static ShipInstance addShip(string shipname, SetID idcfg, IshipAreaSynch addto)
         {
-            var si = addShip(addto.parentGCS, shipname, idcfg);
+            ShipInstance si = addShip(addto.parentGCS, shipname, idcfg);
             addto.ships.Add(si);
             si.parentArea = addto;
             return si;
@@ -146,7 +146,7 @@ namespace Project
 
         public static ShipInstance addShip(ShipInstanceShell shell, SetID idcfg, IshipAreaSynch addto)
         {
-            var si = addShip(addto.parentGCS, shell.shipModel.name, idcfg);
+            ShipInstance si = addShip(addto.parentGCS, shell.shipModel.name, idcfg);
             addto.ships.Add(si);
             si.parentArea = addto;
 
@@ -157,7 +157,7 @@ namespace Project
 
         public void dealDamage(GameTime gt, WeaponInstance w)
         {
-            var dmg = w.weapon.Damage;
+            double dmg = w.weapon.Damage;
             //offset damage by shield
             if (CurrentShield > 0)
             {
@@ -169,14 +169,14 @@ namespace Project
                     return;
                 }
                 //otherwise subtract what the shield can block, and continue with the rest
-                var ch = CurrentShield;
+                double ch = CurrentShield;
                 CurrentShield -= ch;
                 dmg -= ch;
             }
             ShowShieldTill = 0;
 
             CurrentArmour -= dmg;
-            if (CurrentArmour <= 0)
+            if (CurrentArmour <= 0&&disabled==false)
             {
                 CurrentArmour = 0;
                 disabled = true;
@@ -223,7 +223,7 @@ namespace Project
 
         public bool AssignPart(ShipPart addthis)
         {
-            var sp = addthis.ShipPartToEnum();
+            SlotLocation.SlotLocationEnum sp = addthis.ShipPartToEnum();
 
             if (Parts.ContainsKey(sp))
                 Parts[sp] = null;
@@ -255,60 +255,61 @@ namespace Project
 
         public float getTurningSpeed()
         {
-            var ms = ShipBaseItemsMIXIN.GetMaxSpeed(this);
+            double ms = ShipBaseItemsMIXIN.GetMaxSpeed(this);
             if (ms <= 0)
                 return 0;
 
-            var s1 = (float)spriteInstance.move.Velocity / (float)ms;
-            var mts = ShipBaseItemsMIXIN.GetMaxTurnSpeed(this);
-            var s2 =
-                (s1 * mts);
+            float s1 = (float) spriteInstance.move.Velocity/(float) ms;
+            double mts = ShipBaseItemsMIXIN.GetMaxTurnSpeed(this);
+            double s2 =
+                (s1*mts);
             if (s2 > mts)
                 s2 = mts;
-            return (float)s2;
+            return (float) s2;
         }
 
         public void ChangeToSpeed(double WantSpeed, float origLookAngle)
         {
             //cant go faster than the max
-            var maxspeed = ShipBaseItemsMIXIN.GetMaxSpeed(this);
+            double maxspeed = ShipBaseItemsMIXIN.GetMaxSpeed(this);
             if (WantSpeed > maxspeed)
                 WantSpeed = maxspeed;
 
-            var currvel = spriteInstance.move.Velocity;
+            double currvel = spriteInstance.move.Velocity;
 
             //if there is no difference, return
-            if ((int)WantSpeed == (int)currvel)
+            if (Math.Abs(WantSpeed - currvel) < 0.1)
+            //if ((int) WantSpeed == (int) currvel)
                 return;
 
             //diff between current and wanted speed
-            var dif = WantSpeed - currvel;
+            double dif = WantSpeed - currvel;
 
             //if there is negative diff, we are trying to brake, cap difference to max brake increment
-            var maxturn = ShipBaseItemsMIXIN.GetMaxTurnSpeed(this);
-            var turndif = VectorMove.angleInBetween(origLookAngle, spriteInstance.LookAngle);
+            double maxturn = ShipBaseItemsMIXIN.GetMaxTurnSpeed(this);
+            float turndif = VectorMove.angleInBetween(origLookAngle, spriteInstance.LookAngle);
             if (dif < 0)
             {
-                var mb = ShipBaseItemsMIXIN.GetBrakeIncr(this);
+                double mb = ShipBaseItemsMIXIN.GetBrakeIncr(this);
                 if ((-dif) > mb)
                     dif = -mb;
             }
-            //otherwise its accel, cap to max accel increment
+                //otherwise its accel, cap to max accel increment
             else
             {
-                var ai = ShipBaseItemsMIXIN.GetAccelIncr(this);
+                double ai = ShipBaseItemsMIXIN.GetAccelIncr(this);
                 if (dif > ai)
                     dif = ai;
 
                 //remove some accel if turning
-                dif = Shared.mapRange(turndif, 0, maxturn, dif / 2f, dif);
+                dif = Shared.mapRange(turndif, 0, maxturn, dif/2f, dif);
             }
 
             //change the current accel based on the capped diff
             CurrentAccel += dif;
 
             //cap the currentaccel to max accel, dont cap max brake if negative
-            var ma = ShipBaseItemsMIXIN.GetMaxAccel(this);
+            double ma = ShipBaseItemsMIXIN.GetMaxAccel(this);
             if (CurrentAccel > ma)
                 CurrentAccel = ma;
 
@@ -325,16 +326,16 @@ namespace Project
 
         public void DrawShield(Camera2D cam, GameTime gameTime)
         {
-            var ts = gameTime.TotalGameTime.TotalSeconds;
+            double ts = gameTime.TotalGameTime.TotalSeconds;
             if (ShowShieldTill < ts)
                 return;
-            var shieldlength = ShowShieldTill - ts;
+            double shieldlength = ShowShieldTill - ts;
             //colour depends on the remaining length of the shield
-            var b = (int)Shared.mapRange(shieldlength, 0, ShieldExtendSeconds, 0, 255);
+            var b = (int) Shared.mapRange(shieldlength, 0, ShieldExtendSeconds, 0, 255);
             var c = new Color(50, 50, b);
 
             //width depends on remaining shield
-            var width = (int)Shared.mapRange(CurrentShield, 0, ShipBaseItemsMIXIN.GetMaxShield(this), 1, 5);
+            var width = (int) Shared.mapRange(CurrentShield, 0, ShipBaseItemsMIXIN.GetMaxShield(this), 1, 5);
 
             XNA.DrawEllipse(cam.spriteBatch, spriteInstance.basesprite.FrameWidth, spriteInstance.basesprite.FrameHeight,
                             0, c, width, spriteInstance.move.Position.Middle);
@@ -345,16 +346,16 @@ namespace Project
             return (outOfBounds || instanceOwner.BeingControlled() == false || forceAI);
         }
 
-        public static bool IsOnMap(ShipInstance si, map mIN)
+        public static bool IsOnMap(ShipInstance si, Map mIN)
         {
-            if (si == null || si.parentArea == null || ((si.parentArea is map) == false))
+            if (si == null || si.parentArea == null || ((si.parentArea is Map) == false))
                 return false;
 
-            var m = si.parentArea as map;
+            var m = si.parentArea as Map;
             return m == mIN;
         }
 
-        public void UpdateMap(GameTime gameTime, map m)
+        public void UpdateMap(GameTime gameTime, Map m)
         {
             if (disabled == false)
             {
@@ -376,7 +377,7 @@ namespace Project
             if (disabled)
             {
                 //make sure when the player is disabled, the only moving force is gravity
-                var origAngle = spriteInstance.LookAngle;
+                float origAngle = spriteInstance.LookAngle;
                 VectorMove.UpdateAngle(ref spriteInstance.LookAngle, 270, 1);
 
                 ChangeToSpeed(0, origAngle);
@@ -391,21 +392,21 @@ namespace Project
 
             spriteInstance.enforceGravity(gameTime, this);
 
-                spriteInstance.Update(gameTime);
+            spriteInstance.Update(gameTime);
         }
 
         public void UpdateShipEnergy(GameTime gt)
         {
-            var me = ShipBaseItemsMIXIN.GetMaxEnergy(this);
-            var regen = ShipBaseItemsMIXIN.GetEnergyRegen(this);
-            CurrentEnergy += regen * (gt.ElapsedGameTime.TotalMilliseconds * .01);
+            double me = ShipBaseItemsMIXIN.GetMaxEnergy(this);
+            double regen = ShipBaseItemsMIXIN.GetEnergyRegen(this);
+            CurrentEnergy += regen*(gt.ElapsedGameTime.TotalMilliseconds*.01);
             if (CurrentEnergy > me)
                 CurrentEnergy = me;
 
-            var ms = ShipBaseItemsMIXIN.GetMaxShield(this);
+            double ms = ShipBaseItemsMIXIN.GetMaxShield(this);
             if (CurrentEnergy == me && CurrentShield < ms)
             {
-                var dif = ms - CurrentShield;
+                double dif = ms - CurrentShield;
                 //cap energy regen to max energy
                 if (dif > me)
                     dif = me;
@@ -424,9 +425,9 @@ namespace Project
 
         public static void CreateBuildingExitVector(BuildingInstance bi, ShipInstance si)
         {
-            var m = bi.parentArea as map;
+            var m = bi.parentArea as Map;
             //exit velocity is the max speed possible
-            var maxs = ShipBaseItemsMIXIN.GetMaxSpeed(si);
+            double maxs = ShipBaseItemsMIXIN.GetMaxSpeed(si);
 
             var r = new Rect(bi.spriteInstance.move.Position.Middle, bi.spriteInstance.basesprite.FrameWidth,
                              bi.spriteInstance.basesprite.FrameHeight);

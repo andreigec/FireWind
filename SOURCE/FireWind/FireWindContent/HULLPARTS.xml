@@ -3,13 +3,13 @@
   <Asset Type="Generic:List[Project.ShipHullPart]">
     <Item>
       <name>Stock Hull</name>
-      <Cost>1000</Cost>
+      <Cost>100</Cost>
       <MaxArmourModifier>1</MaxArmourModifier>
     </Item>
     
     <Item>
       <name>V2 Hull</name>
-      <Cost>2000</Cost>
+      <Cost>1000</Cost>
       <MaxArmourModifier>2</MaxArmourModifier>
     </Item>
   </Asset>

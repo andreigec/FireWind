@@ -180,7 +180,7 @@ namespace FireWind
                     GameControlClient.synchMain.ServerUpdateBlock(gameTime);
                 }
             }
-
+            
             base.Update(gameTime);
         }
 
@@ -190,6 +190,7 @@ namespace FireWind
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
+            
             //clear screen
             GraphicsDevice.Clear(Color.YellowGreen);
 
@@ -209,7 +210,7 @@ namespace FireWind
                 Manager.FireLogEvent("crash in display thread", SynchMain.MessagePriority.High, true);
                 Logging.WriteExceptionToFile("display thread crash", e);
             }
-
+            
             base.Draw(gameTime);
         }
 

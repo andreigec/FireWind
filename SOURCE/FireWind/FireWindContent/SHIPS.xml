@@ -4,7 +4,7 @@
     <Item>
       <name>SHIP1</name>
       <Cost>1000</Cost>
-      <spriteName>SHIP1</spriteName>      
+      <spriteName>SHIP1</spriteName>
       <BaseAccelIncrement>0.05</BaseAccelIncrement>
       <BaseBrakeIncrement>0.005</BaseBrakeIncrement>
       <BaseEnergyRegenSpeed>1</BaseEnergyRegenSpeed>
@@ -16,7 +16,7 @@
       <BaseMaxShield>80</BaseMaxShield>
       <BaseMaxSpeed>30</BaseMaxSpeed>
       <BaseMaxSupportCraft>0</BaseMaxSupportCraft>
-      <BaseMaxTurnSpeed>3</BaseMaxTurnSpeed>      
+      <BaseMaxTurnSpeed>3</BaseMaxTurnSpeed>
 </Item>
 
     <Item>

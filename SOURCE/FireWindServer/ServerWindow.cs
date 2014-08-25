@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using Project;
 using Project.Model;
@@ -14,9 +10,10 @@ namespace FireWindServer
 {
     public partial class ServerWindow : UserControl
     {
-        public SynchMain sm;
-        public List<GameWindow> gamewindows = new List<GameWindow>();
         public Form1 baseform;
+        public List<GameWindow> gamewindows = new List<GameWindow>();
+        public SynchMain sm;
+
         public ServerWindow(Form1 baseform)
         {
             InitializeComponent();
@@ -35,17 +32,17 @@ namespace FireWindServer
         public GameWindow GetGameSectorWindow(long sectorID)
         {
             //get matching synchmain
-            var s1 = gamewindows.Where(s => s.sec.ID == sectorID);
+            IEnumerable<GameWindow> s1 = gamewindows.Where(s => s.sec.ID == sectorID);
             if (s1.Count() != 1)
                 return null;
 
-            var gw = s1.First();
+            GameWindow gw = s1.First();
             return gw;
         }
 
         public string GetAlias(FormMessageStore fms)
         {
-            var clientL = sm.connectedClients.Where(s => s.ID == fms.clientID);
+            IEnumerable<ConnectedClient> clientL = sm.connectedClients.Where(s => s.ID == fms.clientID);
             ConnectedClient clientI = null;
             if (clientL.Count() > 0)
                 clientI = clientL.FirstOrDefault();
@@ -69,14 +66,14 @@ namespace FireWindServer
             try
             {
                 //init logwindow
-                var gic = new GameInitConfig(true, servernametext.Text, mp, udp, tcp);
+                var gic = new GameInitConfig(true, servernametext.Text, mp,lanonlyCB.Checked, udp, tcp);
 
                 //init actual game
                 Manager.StartGame(out sm, gic);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error creating server:\n" + ex.ToString(), "error");
+                MessageBox.Show("Error creating server:\n" + ex, "error");
                 if (sm != null)
                     sm.StopServer();
                 return;
@@ -99,9 +96,9 @@ namespace FireWindServer
 
         public void StartGame(SectorConfig sc)
         {
-            var sec = sm.gcs.gameRegion.addSector(sc);
+            Sector sec = sm.gcs.gameRegion.addSector(sc);
 
-            var gw = CreateGameTabPage(sec);
+            GameWindow gw = CreateGameTabPage(sec);
             Dock = DockStyle.Fill;
 
             var lvi = new ListViewItem();
@@ -115,7 +112,7 @@ namespace FireWindServer
             UpdateServerButtons();
         }
 
-        private GameWindow CreateGameTabPage(sector s)
+        private GameWindow CreateGameTabPage(Sector s)
         {
             var gw = new GameWindow(s, this);
             var tp = new TabPage(sm.gcs.gameConfig.serverName + " " + s.ID.ToString());
@@ -132,7 +129,7 @@ namespace FireWindServer
 
         private void StopGame(GameWindow lw)
         {
-            var tc = baseform.tabControl1;
+            TabControl tc = baseform.tabControl1;
             for (int a = 0; a < tc.TabPages.Count; a++)
             {
                 if (tc.TabPages[a].Controls[0] is GameWindow)
@@ -147,13 +144,13 @@ namespace FireWindServer
                 a++;
             }
 
-            var k = GetSectorNameKey(lw.sec);
+            string k = GetSectorNameKey(lw.sec);
             baseform.tabControl1.TabPages.RemoveByKey(k);
             gamewindows.Remove(lw);
             gamewindowlist.Items.RemoveByKey(k);
         }
 
-        private String GetSectorNameKey(sector s)
+        private String GetSectorNameKey(Sector s)
         {
             return "s" + s.ID.ToString();
         }
@@ -162,7 +159,7 @@ namespace FireWindServer
         {
             while (gamewindows.Count > 0)
             {
-                var gw = gamewindows.First();
+                GameWindow gw = gamewindows.First();
                 StopGame(gw);
             }
 
@@ -188,13 +185,14 @@ namespace FireWindServer
             stopselectedgamesbutton.Enabled =
                 creategamebutton.Enabled =
                 (sm != null);
-            
+
             servernametext.Enabled =
-            maxplayer.Enabled =
-            Rconpwtext.Enabled =
-            tcpread.Enabled =
-            udpportText.Enabled =
-            (sm == null);
+                maxplayer.Enabled =
+                Rconpwtext.Enabled =
+                tcpread.Enabled =
+                udpportText.Enabled =
+                lanonlyCB.Enabled=
+                (sm == null);
         }
 
         private void stopselectedgamesbutton_Click(object sender, EventArgs e)
@@ -206,7 +204,7 @@ namespace FireWindServer
                     selsectors.Add(lvi.Tag as GameWindow);
             }
 
-            foreach (var s in selsectors)
+            foreach (GameWindow s in selsectors)
             {
                 StopGame(s);
             }
@@ -214,10 +212,8 @@ namespace FireWindServer
 
         private void creategamebutton_Click(object sender, EventArgs e)
         {
-
             var sc = new SectorConfigColosseum(SectorConfig.Size.medium);
             StartGame(sc);
-
         }
 
         private void gamewindowlist_SelectedIndexChanged(object sender, EventArgs e)

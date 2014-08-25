@@ -13,8 +13,9 @@ namespace Project.Networking
     {
         public static int UpdateTimeout = 20;
         public static int currentID = 1;
-        public int ID;
         public bool ForceDisconnect = false;
+        public int ID;
+        public IPEndPoint UDPSendHere = new IPEndPoint(IPAddress.Any, 0);
         public List<Message> messageReadQueue = new List<Message>();
         public string messageReadQueueRaw;
         public List<Message> messageWriteQueue = new List<Message>();
@@ -26,8 +27,6 @@ namespace Project.Networking
         public TcpClient tcpClient;
 
         //when receiving a udp from a client, save their UDP details here to send in the future
-        public IPEndPoint UDPSendHere=new IPEndPoint(IPAddress.Any, 0);
-        public SynchMain parentSynchMain { get; set; }
 
         public ConnectedIPs()
         {
@@ -46,14 +45,20 @@ namespace Project.Networking
             messageReadQueueRaw = "";
         }
 
+        #region SynchMainHolder Members
+
+        public SynchMain parentSynchMain { get; set; }
+
+        #endregion
+
         public bool OKMessageHandled(Message m)
         {
-            var foundref = false;
+            bool foundref = false;
             //may be required to flip a variable
             if (m.ResponseID != -1 && responseMsgBoolChange.Count() > 0)
             {
                 //get list of response messages that match the id
-                var m2 =
+                IEnumerable<KeyValuePair<long, List<VarToChangeOnOKReceipt>>> m2 =
                     responseMsgBoolChange.Where(s => s.Key == m.ResponseID);
                 if (m2.Count() == 0)
                 {
@@ -65,7 +70,7 @@ namespace Project.Networking
                     foreach (var m3 in m2)
                     {
                         //loop through all the items that need to be changed
-                        foreach (var m4 in m3.Value)
+                        foreach (VarToChangeOnOKReceipt m4 in m3.Value)
                         {
                             if (m4.wrapperref is Wrapper<bool>)
                             {
@@ -93,7 +98,7 @@ namespace Project.Networking
                             else
                             {
                                 Manager.FireLogEvent("error converting wrapper", SynchMain.MessagePriority.High, true,
-                                                 -1, null);
+                                                     -1, null);
                             }
                         }
                     }

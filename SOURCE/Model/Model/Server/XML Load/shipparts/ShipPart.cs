@@ -8,6 +8,8 @@ namespace Project
 {
     public class SlotLocation
     {
+        #region SlotLocationEnum enum
+
         public enum SlotLocationEnum
         {
             None,
@@ -22,18 +24,20 @@ namespace Project
             ShipModel
         }
 
+        #endregion
+
         public static List<Type> GetTypeList()
         {
-            var ee = Enum.GetValues(typeof(SlotLocationEnum)).Cast<SlotLocationEnum>();
-            var el= ee.Select(EnumToType).ToList();
+            IEnumerable<SlotLocationEnum> ee = Enum.GetValues(typeof (SlotLocationEnum)).Cast<SlotLocationEnum>();
+            List<Type> el = ee.Select(EnumToType).ToList();
             //no null entries
             el.RemoveAll(s => s == null);
             //remove duplicates
-            var e2=el.Distinct().ToList();
+            List<Type> e2 = el.Distinct().ToList();
             return e2;
         }
 
-        public static List<string> GetEnumStringList(bool useTypeNames=false)
+        public static List<string> GetEnumStringList(bool useTypeNames = false)
         {
             if (useTypeNames)
             {
@@ -41,8 +45,8 @@ namespace Project
             }
             else
             {
-                var e = Enum.GetValues(typeof(SlotLocationEnum)).Cast<SlotLocationEnum>();
-                return e.Select(s => s.ToString()).ToList();                
+                IEnumerable<SlotLocationEnum> e = Enum.GetValues(typeof (SlotLocationEnum)).Cast<SlotLocationEnum>();
+                return e.Select(s => s.ToString()).ToList();
             }
         }
 
@@ -54,31 +58,31 @@ namespace Project
                     return null;
 
                 case SlotLocationEnum.ShipHullPart:
-                    return typeof(ShipHullPart);
+                    return typeof (ShipHullPart);
 
                 case SlotLocationEnum.ShipWingsPart:
-                    return typeof(ShipWingsPart);
+                    return typeof (ShipWingsPart);
 
                 case SlotLocationEnum.ShipEnginePart:
-                    return typeof(ShipEnginePart);
+                    return typeof (ShipEnginePart);
 
                 case SlotLocationEnum.ShipBoosterPart:
-                    return typeof(ShipBoosterPart);
+                    return typeof (ShipBoosterPart);
 
                 case SlotLocationEnum.ShipGeneratorPart:
-                    return typeof(ShipGeneratorPart);
+                    return typeof (ShipGeneratorPart);
 
                 case SlotLocationEnum.ShipBatteryPart:
-                    return typeof(ShipBatteryPart);
+                    return typeof (ShipBatteryPart);
 
                 case SlotLocationEnum.LeftWeapon:
-                    return typeof(weapon);
+                    return typeof (weapon);
 
                 case SlotLocationEnum.RightWeapon:
-                    return typeof(weapon);
+                    return typeof (weapon);
 
                 case SlotLocationEnum.ShipModel:
-                    return typeof(shipBase);
+                    return typeof (shipBase);
 
                 default:
                     throw new ArgumentOutOfRangeException("sl");
@@ -86,7 +90,6 @@ namespace Project
         }
     }
 
-    
 
     [Serializable]
     [XmlInclude(typeof (ShipWingsPart))]
@@ -95,15 +98,11 @@ namespace Project
     [XmlInclude(typeof (ShipBoosterPart))]
     [XmlInclude(typeof (ShipGeneratorPart))]
     [XmlInclude(typeof (ShipBatteryPart))]
-    public class ShipPart :  IPurchasable
+    public class ShipPart : IPurchasable
     {
-        #region ILoadXMLBase Members
+        #region IPurchasable Members
 
         public String name { get; set; }
-
-        #endregion
-
-        #region IPurchasable Members
 
         [XmlIgnore]
         public int Cost { get; set; }
@@ -130,7 +129,7 @@ namespace Project
 
         public static ShipPart addPart(string partname)
         {
-            var sm = loadXML.loadedShipParts[partname];
+            ShipPart sm = loadXML.loadedShipParts[partname];
             if (sm is ShipHullPart)
                 return sm as ShipHullPart;
             if (sm is ShipWingsPart)

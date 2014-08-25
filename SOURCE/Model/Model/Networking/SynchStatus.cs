@@ -25,12 +25,12 @@ namespace Project.Networking.mapInfoSynch
         /// </summary>
         public Wrapper<bool> Created = new Wrapper<bool>(false);
 
-        public Wrapper<bool> HeartbeatSent = new Wrapper<bool>(false);
-
         /// <summary>
         /// delete the item remotely
         /// </summary>
         public Wrapper<bool> Deleted = new Wrapper<bool>(false);
+
+        public Wrapper<bool> HeartbeatSent = new Wrapper<bool>(false);
     }
 
     public class SynchStatusArea : SynchStatus
@@ -40,10 +40,10 @@ namespace Project.Networking.mapInfoSynch
     public class SynchStatusConnectedClient : SynchStatus
     {
         public Wrapper<bool> GivenID = new Wrapper<bool>(false);
-        
-        public Wrapper<bool> TryForPostACK = new Wrapper<bool>(false);
-        public map JoinMap = null;
+
+        public Map JoinMap = null;
         public PlayerShipClass JoinPSC = null;
+        public Wrapper<bool> TryForPostACK = new Wrapper<bool>(false);
     }
 
     public class SynchStatusMoveObjectInstance : SynchStatus

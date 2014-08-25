@@ -111,34 +111,34 @@ namespace Project
             if (GameControlClient.playerShipClass == null || GameControlClient.playerShipClass.PlayerShip == null)
                 return;
 
-            var ps = GameControlClient.playerShipClass.PlayerShip;
+            ShipInstance ps = GameControlClient.playerShipClass.PlayerShip;
 
             //ship centric controls only for the matching map, and can control ship
             if (ps.AIControllingPlane() == false && ps.disabled == false &&
                 GameControlClient.playerShipClass.PlayerShip.parentArea == drawThis)
             {
-                var camera = mc.CurrentPos;
+                Vector2 camera = mc.CurrentPos;
 
                 //point ship towards cursor
-                var localcam = thisCamera.ToLocalLocation(ps.spriteInstance.move.Position.Middle);
-                var dif = VectorMove.getAngleToOtherVector(localcam, camera);
-                var origAngle = ps.spriteInstance.LookAngle;
+                Vector2 localcam = thisCamera.ToLocalLocation(ps.spriteInstance.move.Position.Middle);
+                float dif = VectorMove.getAngleToOtherVector(localcam, camera);
+                float origAngle = ps.spriteInstance.LookAngle;
 
                 ps.spriteInstance.ChangeLook(dif, ps.getTurningSpeed());
 
                 //change speed depending on cursor dist from player ship
-                var dist = VectorMove.getDistanceBetweenVectors(localcam, camera);
-                var max = ShipBaseItemsMIXIN.GetMaxSpeed(ps);
-                var min = ShipBaseItemsMIXIN.GetMinSpeed(ps);
-                var changeto = min;
+                double dist = VectorMove.getDistanceBetweenVectors(localcam, camera);
+                double max = ShipBaseItemsMIXIN.GetMaxSpeed(ps);
+                double min = ShipBaseItemsMIXIN.GetMinSpeed(ps);
+                double changeto = min;
 
-                var screensq = (thisCamera.ViewportHeight + thisCamera.ViewportWidth)/4f;
+                float screensq = (thisCamera.ViewportHeight + thisCamera.ViewportWidth)/4f;
                 if (dist > screensq) dist = screensq;
-                var perc = ((float) (int) dist/(int) screensq);
-                var diff = max - min;
+                float perc = ((float) (int) dist/(int) screensq);
+                double diff = max - min;
                 changeto = min + perc*diff;
 
-                ps.ChangeToSpeed(changeto,origAngle);
+                ps.ChangeToSpeed(changeto, origAngle);
 
                 //left click
                 if (mc.LeftButtonAny() && ps.Slots.ContainsKey(SlotLocation.SlotLocationEnum.LeftWeapon))
@@ -150,8 +150,8 @@ namespace Project
             }
 
             //scroll wheels
-            var mwup = mc.ButtonsDown.ContainsKey(MouseClass.mouseButtons.mouseWheelUp);
-            var mwdown = mc.ButtonsDown.ContainsKey(MouseClass.mouseButtons.mouseWheelDown);
+            bool mwup = mc.ButtonsDown.ContainsKey(MouseClass.mouseButtons.mouseWheelUp);
+            bool mwdown = mc.ButtonsDown.ContainsKey(MouseClass.mouseButtons.mouseWheelDown);
             if (mwup || mwdown)
             {
                 thisCamera.adjustZoom(mwup, gt);
@@ -169,7 +169,7 @@ namespace Project
                     else
                         loc = mc.ButtonsDown[MouseClass.mouseButtons.mouseWheelDown];
 
-                    var zoomto = GetNearestShipBuilding(thisCamera, loc);
+                    IDrawableObject zoomto = GetNearestShipBuilding(thisCamera, loc);
 
                     if (zoomto != null)
                         loc = zoomto.spriteInstance.move.Position.Middle;

@@ -1,24 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
-using ANDREICSLIB;
-using Project;
-using Project.Model;
 using Project.Networking;
-using Message = Project.Networking.Message;
 
 namespace FireWindServer
 {
     public class FormMessageStore
     {
         public int clientID;
-        public string text;
+        public bool isError;
         public Message m;
         public SynchMain.MessagePriority priority;
-        public bool isError;
+        public string text;
 
         public FormMessageStore(int clientID, String text, Message m, SynchMain.MessagePriority priority, bool isError)
         {

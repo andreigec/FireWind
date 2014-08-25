@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Project.Model;
 using Project.Model.Instances;
 using Project.Model.Server.XML_Load;
@@ -52,22 +51,23 @@ namespace Project
             if (Directory.Exists(dir) == false)
                 Directory.CreateDirectory(dir);
 
-            var files = Directory.GetFiles(dir);
-            foreach (var file in files)
+            string[] files = Directory.GetFiles(dir);
+            foreach (string file in files)
             {
-                var name = Path.GetFileNameWithoutExtension(file);
-                var reg = file;
+                string name = Path.GetFileNameWithoutExtension(file);
+                string reg = file;
 
                 if (String.IsNullOrEmpty(name))
                 {
-                    Manager.FireLogEvent("Error parsing player ship:" + file, SynchMain.MessagePriority.Low, true, -1, null);
+                    Manager.FireLogEvent("Error parsing player ship:" + file, SynchMain.MessagePriority.Low, true, -1,
+                                         null);
                     continue;
                 }
-                var sec = PlayerShipClass.LoadPlayerShipClassFile(reg);
+                PlayerShipClass sec = PlayerShipClass.LoadPlayerShipClassFile(reg);
                 sec.PlayerShip.instanceOwner = new InstanceOwner();
                 sec.Name = name;
 
-                foreach (var s in sec.SupportCraft)
+                foreach (ShipInstance s in sec.SupportCraft)
                 {
                     s.instanceOwner = new InstanceOwner();
                 }
@@ -77,9 +77,9 @@ namespace Project
 
         private static void loadFastSprites(ref Dictionary<string, SpriteDraw> dict, String path)
         {
-            var ret = loadXMLOB<SpriteBaseFastLoad>(path);
-            var subcount = 0;
-            var imgcount = 0;
+            Dictionary<string, SpriteBaseFastLoad> ret = loadXMLOB<SpriteBaseFastLoad>(path);
+            int subcount = 0;
+            int imgcount = 0;
             foreach (var v in ret)
             {
                 var sb = new SpriteBase();
@@ -89,12 +89,12 @@ namespace Project
                 sb.path = v.Value.path;
                 sb.loadTexture2D(parentGame, sb.path);
 
-                var x = sb.image.Width/sb.FrameWidth;
-                var y = sb.image.Height/sb.FrameHeight;
-                var c = x*y;
+                int x = sb.image.Width/sb.FrameWidth;
+                int y = sb.image.Height/sb.FrameHeight;
+                int c = x*y;
                 c /= v.Value.framesPerImage;
                 sb.columnCount = x;
-                for (var a = 0; a < c; a++)
+                for (int a = 0; a < c; a++)
                 {
                     sb.sprites.Add(v.Value.frameName + imgcount,
                                    new SpriteAnimation
@@ -112,7 +112,7 @@ namespace Project
 
         public static void loadBaseSprite(ref Dictionary<string, SpriteDraw> dict, String path)
         {
-            var ret = loadXMLOB<SpriteBase>(path);
+            Dictionary<string, SpriteBase> ret = loadXMLOB<SpriteBase>(path);
 
             foreach (var v in ret)
                 loadBaseSprite(ref dict, v);
@@ -126,7 +126,7 @@ namespace Project
 
         public static Dictionary<string, building> loadBuildings(String path)
         {
-            var ret = loadXMLOB<building>(path);
+            Dictionary<string, building> ret = loadXMLOB<building>(path);
             foreach (var v in ret)
             {
                 v.Value.BaseSprite = loadedSprites[v.Value.SpriteName] as SpriteBase;
@@ -145,37 +145,37 @@ namespace Project
         {
             var ret = new Dictionary<string, ShipPart>();
 
-            var a = loadXMLOB<ShipBoosterPart>("BOOSTERPARTS");
+            Dictionary<string, ShipBoosterPart> a = loadXMLOB<ShipBoosterPart>("BOOSTERPARTS");
             foreach (var a2 in a)
             {
                 ret.Add(a2.Key, a2.Value);
             }
 
-            var b = loadXMLOB<ShipHullPart>("HULLPARTS");
+            Dictionary<string, ShipHullPart> b = loadXMLOB<ShipHullPart>("HULLPARTS");
             foreach (var b2 in b)
             {
                 ret.Add(b2.Key, b2.Value);
             }
 
-            var c = loadXMLOB<ShipWingsPart>("WINGPARTS");
+            Dictionary<string, ShipWingsPart> c = loadXMLOB<ShipWingsPart>("WINGPARTS");
             foreach (var c2 in c)
             {
                 ret.Add(c2.Key, c2.Value);
             }
 
-            var d = loadXMLOB<ShipEnginePart>("ENGINEPARTS");
+            Dictionary<string, ShipEnginePart> d = loadXMLOB<ShipEnginePart>("ENGINEPARTS");
             foreach (var d2 in d)
             {
                 ret.Add(d2.Key, d2.Value);
             }
 
-            var e = loadXMLOB<ShipGeneratorPart>("GENERATORPARTS");
+            Dictionary<string, ShipGeneratorPart> e = loadXMLOB<ShipGeneratorPart>("GENERATORPARTS");
             foreach (var e2 in e)
             {
                 ret.Add(e2.Key, e2.Value);
             }
 
-            var f = loadXMLOB<ShipBatteryPart>("BATTERYPARTS");
+            Dictionary<string, ShipBatteryPart> f = loadXMLOB<ShipBatteryPart>("BATTERYPARTS");
             foreach (var f2 in f)
             {
                 ret.Add(f2.Key, f2.Value);
@@ -186,7 +186,7 @@ namespace Project
 
         public static Dictionary<string, shipBase> loadShips(String path)
         {
-            var ret = loadXMLOB<shipBase>(path);
+            Dictionary<string, shipBase> ret = loadXMLOB<shipBase>(path);
             foreach (var v in ret)
             {
                 v.Value.basesprite = loadedSprites[v.Value.spriteName];
@@ -196,12 +196,12 @@ namespace Project
 
         public static Dictionary<string, weapon> loadWeapon(String path)
         {
-            var ret = loadXMLOB<weapon>(path);
+            Dictionary<string, weapon> ret = loadXMLOB<weapon>(path);
             foreach (var v in ret)
             {
                 if (string.IsNullOrEmpty(v.Value.ParticleName) == false)
                 {
-                    var bs = loadedSprites[v.Value.ParticleName];
+                    SpriteDraw bs = loadedSprites[v.Value.ParticleName];
                     var b2 = bs as SpriteParticle;
                     v.Value.BaseSprite = b2;
                     v.Value.ParticleName = null;
@@ -212,7 +212,7 @@ namespace Project
 
                 if (string.IsNullOrEmpty(v.Value.SlotPictureName) == false)
                 {
-                    var bs = loadedSprites[v.Value.SlotPictureName];
+                    SpriteDraw bs = loadedSprites[v.Value.SlotPictureName];
                     v.Value.SlotPictureTexture = bs;
                     v.Value.SlotPictureName = null;
                 }
@@ -222,10 +222,10 @@ namespace Project
 
         public static void loadPartSprite(ref Dictionary<string, SpriteDraw> dict, String path)
         {
-            var ret = loadXMLOB<SpriteParticle>(path);
+            Dictionary<string, SpriteParticle> ret = loadXMLOB<SpriteParticle>(path);
             foreach (var v in ret)
             {
-                var v2 = v.Value;
+                SpriteParticle v2 = v.Value;
                 v2.initImage(parentGame);
                 dict.Add(v.Key, v.Value);
             }

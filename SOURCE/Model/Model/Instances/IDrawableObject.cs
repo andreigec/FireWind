@@ -9,10 +9,11 @@ namespace Project.Model.Instances
     /// <summary>
     /// For map/sector/region
     /// </summary>
-    public interface IDrawableObject:GCSHolder
+    public interface IDrawableObject : GCSHolder
     {
         [XmlIgnore]
         IshipAreaSynch parentArea { get; set; }
+
         SpriteInstance spriteInstance { get; set; }
         void Draw(Camera2D cam, GameTime gameTime);
     }
@@ -23,7 +24,7 @@ namespace Project.Model.Instances
         GameControlServer parentGCS { get; set; }
     }
 
-    public interface  SynchMainHolder
+    public interface SynchMainHolder
     {
         [XmlIgnore]
         SynchMain parentSynchMain { get; set; }

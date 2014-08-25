@@ -28,10 +28,10 @@ namespace Project
         public void updateAIMap(GameTime gt)
         {
             //only works for map
-            if (!(parentArea is map))
+            if (!(parentArea is Map))
                 return;
 
-            var parentmap = parentArea as map;
+            var parentmap = parentArea as Map;
 
             //only perform AI if localhost, or on player ship
             //being controlled
@@ -54,7 +54,7 @@ namespace Project
             var targets = new List<ShipInstance>();
 
             foreach (
-                var si in
+                ShipInstance si in
                     parentmap.ships.Where(
                         s =>
                         this != s && instanceOwner.FactionOwner != s.instanceOwner.FactionOwner && s.disabled == false &&
@@ -75,10 +75,10 @@ namespace Project
 
         private void AILogicWander(GameTime gt)
         {
-            var m = parentArea as map;
+            var m = parentArea as Map;
             //get the slowest possible speed - the gravity kick in
-            var min = ShipBaseItemsMIXIN.GetMinSpeed(this);
-            var origAngle = spriteInstance.LookAngle;
+            double min = ShipBaseItemsMIXIN.GetMinSpeed(this);
+            float origAngle = spriteInstance.LookAngle;
 
             if (spriteInstance.move.Angle < 90 || spriteInstance.move.Angle > 270)
                 FixAndLookAngle(315);
@@ -90,20 +90,20 @@ namespace Project
 
         private void AILogicAttack(GameTime gt)
         {
-            var m = parentArea as map;
-            var parentmap = parentArea as map;
-            var dest = currentTarget.spriteInstance.move.Position.Middle;
+            var m = parentArea as Map;
+            var parentmap = parentArea as Map;
+            Vector2 dest = currentTarget.spriteInstance.move.Position.Middle;
 
-            var angleToTarget = spriteInstance.move.getAngleToOtherVector(dest);
-            var distance = Vector2.Distance(spriteInstance.move.Position.Middle, dest);
+            float angleToTarget = spriteInstance.move.getAngleToOtherVector(dest);
+            float distance = Vector2.Distance(spriteInstance.move.Position.Middle, dest);
 
             //change speed depending on distance from target
-            var ms = ShipBaseItemsMIXIN.GetMaxSpeed(this);
-            var s = Shared.mapRange(distance, 0f, 1000f, ShipBaseItemsMIXIN.GetMinSpeed(this), ms);
-            var origAngle = spriteInstance.LookAngle;
-            
+            double ms = ShipBaseItemsMIXIN.GetMaxSpeed(this);
+            double s = Shared.mapRange(distance, 0f, 1000f, ShipBaseItemsMIXIN.GetMinSpeed(this), ms);
+            float origAngle = spriteInstance.LookAngle;
+
             FixAndLookAngle(angleToTarget);
-            ChangeToSpeed(s,origAngle);
+            ChangeToSpeed(s, origAngle);
 
             //test distance
             weaponslot w = null;
@@ -119,7 +119,7 @@ namespace Project
 
         private Tuple<float, float> distanceAngleToValid(float startangle, double distance, float changeAmount)
         {
-            var workangle = startangle;
+            float workangle = startangle;
             float startdiff = 0;
             while (startdiff < 360 && invalidFuturePosition(workangle, distance))
             {
@@ -134,17 +134,17 @@ namespace Project
 
         private bool tooNearGround(VectorMove pos)
         {
-            var parentmap = parentArea as map;
+            var parentmap = parentArea as Map;
             //if the player is near the ground, always turn up
-            var highest = parentmap.terrain.getHighestTerrainPoint(pos.Position.GetLeftX(), pos.Position.GetRightX());
+            double highest = parentmap.terrain.getHighestTerrainPoint(pos.Position.GetLeftX(), pos.Position.GetRightX());
 
-            var difheight = -pos.Position.Middle.Y - highest;
+            double difheight = -pos.Position.Middle.Y - highest;
 
             const double minhpP = .1f;
-            var MA = ShipBaseItemsMIXIN.GetMaxArmour(this);
-            var minhpP2 = MA*minhpP;
+            double MA = ShipBaseItemsMIXIN.GetMaxArmour(this);
+            double minhpP2 = MA*minhpP;
 
-            var mindistance = Shared.mapRange(CurrentArmour, minhpP2, MA, minHoverLevel, maxHoverLevel);
+            double mindistance = Shared.mapRange(CurrentArmour, minhpP2, MA, minHoverLevel, maxHoverLevel);
 
             if (difheight < mindistance)
                 return true;
@@ -153,7 +153,7 @@ namespace Project
 
         private void FixAndLookAngle(float angleToTarget)
         {
-            var speed = getTurningSpeed();
+            float speed = getTurningSpeed();
             double distance = 70;
             if (invalidFuturePosition(angleToTarget, distance) == false)
             {
@@ -161,8 +161,8 @@ namespace Project
                 return;
             }
 
-            var facingright = spriteInstance.isFacingRight();
-            var rotleft = true;
+            bool facingright = spriteInstance.isFacingRight();
+            bool rotleft = true;
 
             if (tooNearGround(spriteInstance.move) == false)
             {
@@ -170,7 +170,7 @@ namespace Project
                 var sourceCW = new Tuple<float, float>(-1, -1);
                 var sourceCCW = new Tuple<float, float>(-1, -1);
 
-                for (var a = 0; a < 2; a++)
+                for (int a = 0; a < 2; a++)
                 {
                     //rotate CW from current angle
                     sourceCW = distanceAngleToValid(spriteInstance.move.Angle, distance, -speed);
@@ -184,8 +184,8 @@ namespace Project
                 //using the current angle, no change is required
                 if (sourceCW.Item1 == -1 && sourceCCW.Item1 == -1)
                 {
-                    var ang = VectorMove.getAngleToOtherVector(spriteInstance.move.Position.Middle, wantpos);
-                    var dif = VectorMove.angleInBetween(spriteInstance.move.Angle, ang);
+                    float ang = VectorMove.getAngleToOtherVector(spriteInstance.move.Position.Middle, wantpos);
+                    float dif = VectorMove.angleInBetween(spriteInstance.move.Angle, ang);
                     sourceCCW = new Tuple<float, float>(dif, ang);
                     ang = 360 - ang;
                     dif = VectorMove.angleInBetween(spriteInstance.move.Angle, ang);
@@ -198,7 +198,7 @@ namespace Project
                     return;
 
                 //if a small difference/none always go up to avoid deadlocks
-                var diff = VectorMove.angleInBetween(sourceCW.Item1, sourceCCW.Item1);
+                float diff = VectorMove.angleInBetween(sourceCW.Item1, sourceCCW.Item1);
                 if (diff <= 5)
                     rotleft = facingright;
                 else
@@ -241,17 +241,17 @@ namespace Project
             if (targetdest < targetchangedist && targetdest != -1)
                 return currentTarget;
 
-            var postarget = currentTarget;
+            ShipInstance postarget = currentTarget;
             //still going after the same target, dont change
             if (si.Count == 1 && si[0] == currentTarget)
                 return currentTarget;
 
             Tuple<ShipInstance, double> shipdist = null;
 
-            foreach (var s in si)
+            foreach (ShipInstance s in si)
             {
                 //sort by distance
-                var distance = Vector2.Distance(spriteInstance.move.Position.Middle,
+                float distance = Vector2.Distance(spriteInstance.move.Position.Middle,
                                                   s.spriteInstance.move.Position.Middle);
                 var newsd = new Tuple<ShipInstance, double>(s, distance);
 
@@ -267,7 +267,7 @@ namespace Project
 
         private weaponslot getAppropriateWeapon(GameTime gt, float distance, ShipInstance target)
         {
-            var shoot = (from s in EquipSlots
+            List<weaponslot> shoot = (from s in EquipSlots
                                       let w = s.Value.w
                                       //test1-cooldown time
                                       where Shared.TimeSinceElapsed(s.Value.LastShotTimeStamp, gt, w.CoolDown)
@@ -291,7 +291,7 @@ namespace Project
                 return shoot.Find(s => s.w == WeaponInstance.LastFireWeapon[ID].weapon);
 
             //use a random weapon
-            var r = 0;
+            int r = 0;
             if (shoot.Count > 1)
                 r = Manager.r.Next()%(shoot.Count - 1);
 
@@ -315,8 +315,8 @@ namespace Project
             var ex = new Vector2(fromsi.move.Position.Middle.X, fromsi.move.Position.Middle.Y);
             VectorMove.UpdatePosition(ref ex, fromsi.move.Angle, distance, null);
 
-            var variance = 20;
-            var d = getLargerFrameDimension(to.basesprite.FrameWidth, to.basesprite.FrameHeight) + variance;
+            int variance = 20;
+            int d = getLargerFrameDimension(to.basesprite.FrameWidth, to.basesprite.FrameHeight) + variance;
             if (ex.X > (to.move.Position.Middle.X - d) && ex.X < (to.move.Position.Middle.X + d))
                 return true;
             return false;
@@ -324,14 +324,14 @@ namespace Project
 
         private bool invalidFuturePosition(float angle, double distance = 5f)
         {
-            var parentmap = parentArea as map;
+            var parentmap = parentArea as Map;
             var vt = new Vector2(spriteInstance.move.Position.Middle.X, spriteInstance.move.Position.Middle.Y);
             //project the players movement given the current velocity
             VectorMove.UpdatePosition(ref vt, angle, spriteInstance.move.Velocity*distance, null);
             //get the lowest y value possible given any rotation
-            var y = getLowestY(vt, spriteInstance.basesprite.FrameWidth, spriteInstance.basesprite.FrameHeight);
-            var x1 = (int) vt.X - spriteInstance.basesprite.FrameWidth;
-            var x2 = (int) vt.X + spriteInstance.basesprite.FrameWidth;
+            float y = getLowestY(vt, spriteInstance.basesprite.FrameWidth, spriteInstance.basesprite.FrameHeight);
+            int x1 = (int) vt.X - spriteInstance.basesprite.FrameWidth;
+            int x2 = (int) vt.X + spriteInstance.basesprite.FrameWidth;
 
             if (parentmap.isValidMapBounds(vt) == false)
                 return true;
@@ -341,12 +341,12 @@ namespace Project
                 return true;
 
             //test the terrain against this
-            for (var x = x1; x < x2; x++)
+            for (int x = x1; x < x2; x++)
             {
                 if (parentmap.isValidMapBounds(true, x) == false)
                     continue;
 
-                var c = parentmap.terrain.heightmap.heights[x].Count;
+                int c = parentmap.terrain.heightmap.heights[x].Count;
                 if (parentmap.terrain.heightmap.heights[x][c - 1].Item2 > -y)
                 {
                     return true;
@@ -354,7 +354,7 @@ namespace Project
             }
 
             //test ships against this
-            foreach (var s in parentmap.ships.Where(s => s.spriteInstance.move != null && s != this))
+            foreach (ShipInstance s in parentmap.ships.Where(s => s.spriteInstance.move != null && s != this))
             {
                 if (Collisions.IsSpriteCollision(parentmap, vt, s.spriteInstance.move.Position.Middle))
                     return true;
@@ -365,7 +365,7 @@ namespace Project
 
         private static float getLowestY(Vector2 pos, int FW, int FH)
         {
-            var v = getLargerFrameDimension(FW, FH);
+            int v = getLargerFrameDimension(FW, FH);
             return pos.Y + v + 100;
         }
 

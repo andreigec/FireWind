@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Threading;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Project.Model;
 using Project.Model.Instances;
+using Project.Model.Networking;
 using Project.Model.Networking.Server;
-using Project.Model.Networking.Server.GameSynch;
 using Project.Model.mapInfo;
 using Project.Networking;
 using Project.View.Client;
@@ -24,10 +20,6 @@ namespace Project
 {
     public static class GameControlClient
     {
-        #region modes enum
-
-        #endregion
-
         public static Game ParentGame;
 
         private static Camera2D mainCamera;
@@ -42,6 +34,7 @@ namespace Project
         private static readonly MouseClass MC = new MouseClass();
 
         public static SynchMain synchMain { get; private set; }
+
         public static bool PlayerShipSet()
         {
             return (!(playerShipClass == null || playerShipClass.PlayerShip == null));
@@ -65,13 +58,13 @@ namespace Project
                 //show fps
                 mainCamera.spriteBatch.Begin();
                 var v = new Vector2(mainCamera.ViewportWidth - 100, 0);
-                var fpsstr = "FPS:" + myFPS.getFPS().ToString();
+                string fpsstr = "FPS:" + myFPS.getFPS().ToString();
 
                 mainCamera.DrawString(fpsstr, Color.Red, v);
                 mainCamera.spriteBatch.End();
             }
 
-            foreach (var c in cameras)
+            foreach (Camera2D c in cameras)
             {
                 c.Draw(gameTime);
             }
@@ -92,8 +85,8 @@ namespace Project
         {
             MC.UpdateButtons(Mouse.GetState(), gt, mainCamera);
 
-            var c1 = cameras;
-            var c = c1.Count();
+            List<Camera2D> c1 = cameras;
+            int c = c1.Count();
             if (c > 0)
             {
                 c1.First().drawThis.MouseUpdate(gt, MC);
@@ -112,8 +105,8 @@ namespace Project
                 if (KBC.CanUseKey(Keys.Q, 0))
                     ParentGame.Exit();
 
-                var subcamera = cameras.Count > 0;
-                for (var a = 0; a < cameras.Count; a++)
+                bool subcamera = cameras.Count > 0;
+                for (int a = 0; a < cameras.Count; a++)
                     cameras[a].drawThis.KeyboardUpdate(gt, KBC);
 
                 if (subcamera == false)
@@ -121,239 +114,6 @@ namespace Project
             }
             KBC.SwitchStates();
         }
-
-        #region screens
-
-        public static void ShowTitlesScreen()
-        {
-            var vp = ParentGame.GraphicsDevice.Viewport;
-            mainCamera = new CameraFlat(vp.Width, vp.Height, new Vector2(0, 0), new TitlesScreen());
-            //keys
-            mainCamera.drawThis.RegisterKeyboardKeys(KBC);
-        }
-
-        public static void ShowMainScreen()
-        {
-            var vp = ParentGame.GraphicsDevice.Viewport;
-            mainCamera = new CameraFlat(vp.Width, vp.Height, new Vector2(0, 0), new MainScreenWF(true));
-            //keys
-            mainCamera.drawThis.RegisterKeyboardKeys(KBC);
-        }
-
-        private static void ShowBaseScreen()
-        {
-            var vp = ParentGame.GraphicsDevice.Viewport;
-            mainCamera = new CameraFlat(vp.Width, vp.Height, new Vector2(0, 0), new BaseScreenWF());
-            //keys
-            mainCamera.drawThis.RegisterKeyboardKeys(KBC);
-        }
-
-        public static void ShowOptionsScreen()
-        {
-            var vp = ParentGame.GraphicsDevice.Viewport;
-            mainCamera = new CameraFlat(vp.Width, vp.Height, new Vector2(0, 0), new OptionsWF());
-            //keys
-            mainCamera.drawThis.RegisterKeyboardKeys(KBC);
-        }
-
-        public static void ShowChooseShipScreen(string existingPSCName = "")
-        {
-            var vp = ParentGame.GraphicsDevice.Viewport;
-            mainCamera = new CameraFlat(vp.Width, vp.Height, new Vector2(0, 0), new ChooseShipWF(existingPSCName));
-            //keys
-            mainCamera.drawThis.RegisterKeyboardKeys(KBC);
-        }
-
-        public static void ShowHangarScreen()
-        {
-            var vp = ParentGame.GraphicsDevice.Viewport;
-            mainCamera = new CameraFlat(vp.Width, vp.Height, new Vector2(0, 0), new HangarScreenWF());
-            //keys
-            mainCamera.drawThis.RegisterKeyboardKeys(KBC);
-        }
-
-        public static void ShowBaseShopScreen()
-        {
-            var vp = ParentGame.GraphicsDevice.Viewport;
-            mainCamera = new CameraFlat(vp.Width, vp.Height, new Vector2(0, 0), new ShopScreenWF());
-            //keys
-            mainCamera.drawThis.RegisterKeyboardKeys(KBC);
-        }
-
-        public static void ShowConnectScreen()
-        {
-            var vp = ParentGame.GraphicsDevice.Viewport;
-            mainCamera = new CameraFlat(vp.Width, vp.Height, new Vector2(0, 0), new ConnectWF());
-            //keys
-            mainCamera.drawThis.RegisterKeyboardKeys(KBC);
-        }
-
-        public static void ShowCreateMPGameScreen()
-        {
-            var vp = ParentGame.GraphicsDevice.Viewport;
-            mainCamera = new CameraFlat(vp.Width, vp.Height, new Vector2(0, 0), new CreateMPGameWF());
-            //keys
-            mainCamera.drawThis.RegisterKeyboardKeys(KBC);
-        }
-
-        public static void ShowCreateGambleGameScreen()
-        {
-            var vp = ParentGame.GraphicsDevice.Viewport;
-            mainCamera = new CameraFlat(vp.Width, vp.Height, new Vector2(0, 0), new CreateGambleGameWF());
-            //keys
-            mainCamera.drawThis.RegisterKeyboardKeys(KBC);
-        }
-
-        public static void ShowChooseGameModeScreen()
-        {
-            var vp = ParentGame.GraphicsDevice.Viewport;
-            mainCamera = new CameraFlat(vp.Width, vp.Height, new Vector2(0, 0), new ChooseGameModeWF());
-            //keys
-            mainCamera.drawThis.RegisterKeyboardKeys(KBC);
-        }
-
-        public static void ShowDestroyPopup()
-        {
-            var vp = ParentGame.GraphicsDevice.Viewport;
-            var newc = new CameraFlat(vp.Width, vp.Height, new Vector2(0, 0), new DestroyScreen());
-            cameras.Add(newc);
-            //keys
-            newc.drawThis.RegisterKeyboardKeys(KBC);
-        }
-
-        public static void ShowConnectIPPopup()
-        {
-            var vp = ParentGame.GraphicsDevice.Viewport;
-            var newc = new CameraFlat(vp.Width, vp.Height, new Vector2(0, 0), new ConnectIPWF());
-            cameras.Add(newc);
-            //keys
-            newc.drawThis.RegisterKeyboardKeys(KBC);
-        }
-
-        public static void ShowVictoryPopup()
-        {
-            var vp = ParentGame.GraphicsDevice.Viewport;
-            var newc = new CameraFlat(vp.Width, vp.Height, new Vector2(0, 0), new ShowVictoryScreen());
-            cameras.Add(newc);
-            //keys
-            newc.drawThis.RegisterKeyboardKeys(KBC);
-
-        }
-
-        public static void ShowGetInfoPopup(List<RequiredItem> RI, InputInformation.AcceptInputItemsDelegate retfunc)
-        {
-            var vp = ParentGame.GraphicsDevice.Viewport;
-            var newc = new CameraFlat(vp.Width, vp.Height, new Vector2(0, 0), new InputInformation(RI, retfunc));
-            cameras.Add(newc);
-            //keys
-            newc.drawThis.RegisterKeyboardKeys(KBC);
-        }
-
-        public static void ShowInGamePopup()
-        {
-            var vp = ParentGame.GraphicsDevice.Viewport;
-            var igm = new InGameMenuPopup();
-            var newc = new CameraFlat(vp.Width, vp.Height, new Vector2(0, 0), igm);
-            cameras.Add(newc);
-            //keys
-            newc.drawThis.RegisterKeyboardKeys(KBC);
-        }
-
-        public static void ShowConnectDialogPopup(SynchMain sm, ConnectDetails CD, ConnectWaitWF.CancelPressed cp)
-        {
-            var vp = ParentGame.GraphicsDevice.Viewport;
-            var igm = new ConnectWaitWF(sm, CD, cp);
-            var newc = new CameraFlat(vp.Width, vp.Height, new Vector2(0, 0), igm);
-            cameras.Add(newc);
-            //keys
-            newc.drawThis.RegisterKeyboardKeys(KBC);
-        }
-
-        public static void ExitPopupScreen<T>()
-        {
-            if (cameras.Count > 0)
-                cameras.RemoveAll(s => s.drawThis is T);
-
-            //reload keys for main camera if we have one
-            if (mainCamera != null)
-                mainCamera.drawThis.RegisterKeyboardKeys(KBC);
-        }
-
-        public static void ExitPopupScreens()
-        {
-            cameras.Clear();
-            mainCamera.drawThis.RegisterKeyboardKeys(KBC);
-        }
-
-        public static void ResetToBaseScreen(bool reloadPSC)
-        {
-            //offload PSC
-            if (PlayerShipSet() && reloadPSC)
-            {
-                var name = playerShipClass.Name;
-                PlayerShipClass.SavePlayerShipClassFile();
-                playerShipClass = null;
-
-                //reload PSC
-                loadXML.LoadPlayerShips();
-                var choose = loadXML.loadedPlayerShips[name];
-                SetPlayerShipClass(choose);
-            }
-
-            ExitPopupScreens();
-            ShowBaseScreen();
-        }
-
-        public static void ZoomToMap(map m)
-        {
-            var vp = ParentGame.GraphicsDevice.Viewport;
-            var ms = new MapScreen(m);
-            mainCamera = new CameraMap(vp.Width, vp.Height, new Vector2(0, 0), ms);
-            var cm = mainCamera as CameraMap;
-            ms.thisCamera = cm;
-
-            if (playerShipClass.PlayerShip != null)
-                playerShipClass.PlayerShip.forceAI = false;
-
-            cm.adjustZoom(true);
-            ms.thisCamera.FocusOnPoint(new Vector2(2414, -857));
-            //keys
-            mainCamera.drawThis.RegisterKeyboardKeys(KBC);
-        }
-
-        public static void ZoomToSector(sector s)
-        {
-            var vp = ParentGame.GraphicsDevice.Viewport;
-            var ss = new SectorScreen(s);
-            mainCamera = new CameraSector(vp.Width, vp.Height, new Vector2(0, 0), ss);
-            ss.thisCamera = (CameraSector)mainCamera;
-
-            if (playerShipClass.PlayerShip != null)
-                playerShipClass.PlayerShip.forceAI = true;
-
-            //keys
-            mainCamera.drawThis.RegisterKeyboardKeys(KBC);
-        }
-        /*
-        public static void ZoomToRegion(region r, bool maxZoom, PlayerShipClass psc)
-        {
-            var vp = ParentGame.GraphicsDevice.Viewport;
-            var rs = new JoinSectorScreen(r, psc);
-            mainCamera = new CameraRegion(vp.Width, vp.Height, new Vector2(0, 0), rs);
-            rs.thisCamera = ((CameraRegion)mainCamera);
-
-
-            if (playerShipClass != null && playerShipClass.PlayerShip != null)
-                playerShipClass.PlayerShip.forceAI = true;
-
-            if (maxZoom)
-                ((CameraRegion)mainCamera).ChangeScroll(((CameraRegion)mainCamera).maxScrollTimes);
-
-            //keys
-            mainCamera.drawThis.RegisterKeyboardKeys(KBC);
-        }
-        */
-        #endregion screens
 
         public static bool chooseShip(ShipInstance sh)
         {
@@ -364,7 +124,7 @@ namespace Project
             if (sh.instanceOwner.PlayerCanControl(synchMain.myID, synchMain.myFaction) == false)
                 return false;
 
-            var old = playerShipClass.PlayerShip;
+            ShipInstance old = playerShipClass.PlayerShip;
             playerShipClass.PlayerShip = sh;
             playerShipClass.PlayerShip.instanceOwner.ChangeControl(synchMain.myID, synchMain.myFaction);
             if (synchMain.gcs.gameConfig.isServer() == false)
@@ -375,7 +135,7 @@ namespace Project
             return true;
         }
 
-        public static bool fireShot(map m, ShipInstance si, weapon w)
+        public static bool fireShot(Map m, ShipInstance si, weapon w)
         {
             if (m.parentGCS.gameConfig.isServer() == false)
             {
@@ -388,10 +148,10 @@ namespace Project
             return true;
         }
 
-        public static void RemoveAllPlayerShipsFromArea(ShipInstance si, IshipAreaSynch isa, region r)
+        public static void RemoveAllPlayerShipsFromArea(ShipInstance si, IshipAreaSynch isa, Region r)
         {
-            var ships = r.GetShipByOwner(si.instanceOwner.PlayerOwnerID);
-            for (var a = 0; a < ships.Count(); a++)
+            List<ShipInstance> ships = r.GetShipByOwner(si.instanceOwner.PlayerOwnerID);
+            for (int a = 0; a < ships.Count(); a++)
             {
                 IShipAreaMIXIN.RemoveShipMixIn(isa, ships[a]);
             }
@@ -402,12 +162,12 @@ namespace Project
         /// </summary>
         /// <param name="si"></param>
         /// <param name="r"></param>
-        public static void ResetShip(ShipInstance si, region r, bool payToReturn)
+        public static void ResetShip(ShipInstance si, Region r, bool payToReturn)
         {
-            var gcs = si.parentGCS;
-            var sm = gcs.parentSynch;
+            GameControlServer gcs = si.parentGCS;
+            SynchMain sm = gcs.parentSynch;
 
-            var isa = si.parentArea;
+            IshipAreaSynch isa = si.parentArea;
 
             bool controlled = si.instanceOwner.BeingControlled();
             bool mycontrol = PlayerShipSet() && playerShipClass.PlayerShip == si;
@@ -439,7 +199,7 @@ namespace Project
 
                 Manager.FireLogEvent("Removed Ship:", SynchMain.MessagePriority.High, false);
             }
-            //client
+                //client
             else
             {
                 IShipAreaMIXIN.RemoveShipMixIn(isa, si);
@@ -484,7 +244,24 @@ namespace Project
         }
         */
 
+        private static bool chooseShip(Map m)
+        {
+            //ship that can be controlled, is not owned by another player, and is not currently being controlled
+            ShipInstance sh = null;
+            IEnumerable<ShipInstance> shs =
+                m.ships.Where(
+                    s => s.instanceOwner.PlayerCanControl(synchMain.myID, synchMain.myFaction));
+            if (shs.Count() == 0)
+                return false;
+
+            if (shs.Count() > 0)
+                sh = shs.FirstOrDefault();
+
+            return chooseShip(sh);
+        }
+
         #region start and end games
+
         /// <summary>
         /// create and join game
         /// </summary>
@@ -496,7 +273,7 @@ namespace Project
             StartGame(gic, 1);
 
             //2: create level
-            var sec = CreateGameSector(sc);
+            Sector sec = CreateGameSector(sc);
 
             if (sec == null)
             {
@@ -512,18 +289,18 @@ namespace Project
         /// either create or request a sector(game) to be created
         /// </summary>
         /// <param name="cfg"></param>
-        private static sector CreateGameSector(SectorConfig cfg)
+        private static Sector CreateGameSector(SectorConfig cfg)
         {
             if (cfg == null)
                 return null;
 
-            var gcs = synchMain.gcs;
+            GameControlServer gcs = synchMain.gcs;
 
             //if a gamble map, take away the money
             if (cfg is SectorConfigGambleMatch)
             {
                 var gm = cfg as SectorConfigGambleMatch;
-                var cost = gm.shipcost * gm.shipcount;
+                int cost = gm.shipcost*gm.shipcount;
 
                 if (playerShipClass.Credits < cost)
                     return null;
@@ -568,7 +345,7 @@ namespace Project
                 Manager.FireLogEvent("End Game triggered with close window", SynchMain.MessagePriority.High, false);
                 ParentGame.Exit();
             }
-            //otherwise close all children windows
+                //otherwise close all children windows
             else
                 cameras.Clear();
         }
@@ -579,7 +356,7 @@ namespace Project
         /// <param name="sectorID"></param>
         private static void JoinGameSector(long sectorID)
         {
-            var s = synchMain.gcs.gameRegion.getArea(sectorID) as sector;
+            var s = synchMain.gcs.gameRegion.getArea(sectorID) as Sector;
             if (s != null)
             {
                 //if the sector exists-
@@ -587,7 +364,7 @@ namespace Project
                 // set the map the player and their support craft want to join
                 playerShipClass.PlayerShip.parentArea = s.thismap;
                 playerShipClass.PlayerShip.parentGCS = synchMain.gcs;
-                foreach (var s2 in playerShipClass.SupportCraft)
+                foreach (ShipInstance s2 in playerShipClass.SupportCraft)
                 {
                     s2.parentArea = s.thismap;
                     s2.parentGCS = synchMain.gcs;
@@ -598,7 +375,7 @@ namespace Project
                 playerShipClass.PlayerShip.instanceOwner = new InstanceOwner(synchMain.myID, synchMain.myFaction,
                                                                              InstanceOwner.ControlType.JustOwner,
                                                                              synchMain.myID);
-                foreach (var sh in playerShipClass.SupportCraft)
+                foreach (ShipInstance sh in playerShipClass.SupportCraft)
                 {
                     sh.setID(SetID.CreateSetNew());
                     sh.instanceOwner = new InstanceOwner(synchMain.myID, synchMain.myFaction,
@@ -634,7 +411,7 @@ namespace Project
         /// </summary>
         public static void PostRequestJoinGameSector()
         {
-            var m = playerShipClass.PlayerShip.parentArea as map;
+            var m = playerShipClass.PlayerShip.parentArea as Map;
 
             //choose a ship
             chooseShip(m);
@@ -647,20 +424,187 @@ namespace Project
 
         #endregion start and end games
 
-        private static bool chooseShip(map m)
+        #region screens
+
+        public static void ShowTitlesScreen()
         {
-            //ship that can be controlled, is not owned by another player, and is not currently being controlled
-            ShipInstance sh = null;
-            var shs =
-                m.ships.Where(
-                    s => s.instanceOwner.PlayerCanControl(synchMain.myID, synchMain.myFaction));
-            if (shs.Count() == 0)
-                return false;
-
-            if (shs.Count() > 0)
-                sh = shs.FirstOrDefault();
-
-            return chooseShip(sh);
+            ShowIScreen(new TitlesScreen());
         }
+
+        public static void ShowMainScreen()
+        {
+            ShowIScreen(new MainScreenWF(true));
+        }
+
+        private static void ShowBaseScreen()
+        {
+            ShowIScreen(new BaseScreenWF());
+        }
+
+        public static void ShowOptionsScreen()
+        {
+            ShowIScreen(new OptionsWF());
+        }
+
+        public static void ShowChooseShipScreen(string existingPscName = "")
+        {
+            ShowIScreen(new ChooseShipWF(existingPscName));
+        }
+
+        public static void ShowHangarScreen()
+        {
+            ShowIScreen(new HangarScreenWF());
+        }
+
+        public static void ShowBaseShopScreen()
+        {
+            ShowIScreen(new ShopScreenWF());
+        }
+
+        public static void ShowConnectScreen()
+        {
+            ShowIScreen(new ConnectWF());
+        }
+
+        public static void ShowCreateMPGameScreen()
+        {
+            ShowIScreen(new CreateMPGameWF());
+        }
+
+        public static void ShowCreateGambleGameScreen()
+        {
+            ShowIScreen(new CreateGambleGameWF());
+        }
+
+        public static void ShowChooseGameModeScreen()
+        {
+            ShowIScreen(new ChooseGameModeWF());
+        }
+
+        public static void ShowDestroyPopup()
+        {
+            ShowIScreen(new DestroyScreen(),true);
+        }
+
+        public static void ShowVictoryPopup()
+        {
+            ShowIScreen(new ShowVictoryScreen(), true);
+        }
+
+        public static void ShowGetInfoPopup(List<RequiredItem> RI, InputInformation.AcceptInputItemsDelegate retfunc)
+        {
+            ShowIScreen(new InputInformation(RI, retfunc), true);
+        }
+
+        public static void ShowInGamePopup()
+        {
+            ShowIScreen(new InGameMenuPopup(),true);
+        }
+
+        public static void ShowConnectDialogPopup(SynchMain sm, ConnectDetails CD, ConnectWaitWF.CancelPressed cp)
+        {
+            ShowIScreen(new ConnectWaitWF(sm, CD, cp),true);
+        }
+
+        public static void ShowIScreen(IScreenControls screen, bool popup = false)
+        {
+            Viewport vp = ParentGame.GraphicsDevice.Viewport;
+            var newc = new CameraFlat(vp.Width, vp.Height, new Vector2(0, 0), screen);
+            if (popup)
+                cameras.Add(newc);
+            else
+                mainCamera = newc;
+
+            //keys
+            newc.drawThis.RegisterKeyboardKeys(KBC);
+        }
+
+        public static void ExitPopupScreen<T>()
+        {
+            if (cameras.Count > 0)
+                cameras.RemoveAll(s => s.drawThis is T);
+
+            //reload keys for main camera if we have one
+            if (mainCamera != null)
+                mainCamera.drawThis.RegisterKeyboardKeys(KBC);
+        }
+
+        public static void ExitPopupScreens()
+        {
+            cameras.Clear();
+            mainCamera.drawThis.RegisterKeyboardKeys(KBC);
+        }
+
+        public static void ResetToBaseScreen(bool reloadPSC)
+        {
+            //offload PSC
+            if (PlayerShipSet() && reloadPSC)
+            {
+                string name = playerShipClass.Name;
+                PlayerShipClass.SavePlayerShipClassFile();
+                playerShipClass = null;
+
+                //reload PSC
+                loadXML.LoadPlayerShips();
+                PlayerShipClass choose = loadXML.loadedPlayerShips[name];
+                SetPlayerShipClass(choose);
+            }
+
+            ExitPopupScreens();
+            ShowBaseScreen();
+        }
+
+        public static void ZoomToMap(Map m)
+        {
+            Viewport vp = ParentGame.GraphicsDevice.Viewport;
+            var ms = new MapScreen(m);
+            mainCamera = new CameraMap(vp.Width, vp.Height, new Vector2(0, 0), ms);
+            var cm = mainCamera as CameraMap;
+            ms.thisCamera = cm;
+
+            if (playerShipClass.PlayerShip != null)
+                playerShipClass.PlayerShip.forceAI = false;
+
+            cm.adjustZoom(true);
+            ms.thisCamera.FocusOnPoint(new Vector2(2414, -857));
+            //keys
+            mainCamera.drawThis.RegisterKeyboardKeys(KBC);
+        }
+
+        public static void ZoomToSector(Sector s)
+        {
+            Viewport vp = ParentGame.GraphicsDevice.Viewport;
+            var ss = new SectorScreen(s);
+            mainCamera = new CameraSector(vp.Width, vp.Height, new Vector2(0, 0), ss);
+            ss.thisCamera = (CameraSector) mainCamera;
+
+            if (playerShipClass.PlayerShip != null)
+                playerShipClass.PlayerShip.forceAI = true;
+
+            //keys
+            mainCamera.drawThis.RegisterKeyboardKeys(KBC);
+        }
+
+        /*
+        public static void ZoomToRegion(region r, bool maxZoom, PlayerShipClass psc)
+        {
+            var vp = ParentGame.GraphicsDevice.Viewport;
+            var rs = new JoinSectorScreen(r, psc);
+            mainCamera = new CameraRegion(vp.Width, vp.Height, new Vector2(0, 0), rs);
+            rs.thisCamera = ((CameraRegion)mainCamera);
+
+
+            if (playerShipClass != null && playerShipClass.PlayerShip != null)
+                playerShipClass.PlayerShip.forceAI = true;
+
+            if (maxZoom)
+                ((CameraRegion)mainCamera).ChangeScroll(((CameraRegion)mainCamera).maxScrollTimes);
+
+            //keys
+            mainCamera.drawThis.RegisterKeyboardKeys(KBC);
+        }
+        */
+
+        #endregion screens
     }
 }

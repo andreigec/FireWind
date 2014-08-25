@@ -48,11 +48,11 @@ namespace Project
         public bool Synchronise(ConnectedIPs client)
         {
             Init(client);
-            var SynchInfo = this.SynchInfo[client.ID];
+            SynchStatusShip SynchInfo = this.SynchInfo[client.ID];
             if (SynchInfo == null)
                 return false;
 
-            var LastServerPlayerUpdate = this.LastServerPlayerUpdate[client.ID];
+            ShipDirty LastServerPlayerUpdate = this.LastServerPlayerUpdate[client.ID];
             if (LastServerPlayerUpdate == null)
                 return false;
 
@@ -73,23 +73,23 @@ namespace Project
             if (spriteInstance == null || spriteInstance.move == null)
                 return false;
 
-            var sd = LastServerPlayerUpdate[client.ID];
+            ShipDirty sd = LastServerPlayerUpdate[client.ID];
             if (sd == null)
                 return true;
 
             const float poff = 50;
             const float aoff = 5;
 
-            var posdirty =
+            bool posdirty =
                 (
                     (spriteInstance.move.Position.Middle.X > (sd.LastVM.Position.Middle.X + poff)) ||
                     (spriteInstance.move.Position.Middle.X < (sd.LastVM.Position.Middle.X - poff))
                 );
 
-            var angledirty = VectorMove.angleInBetween(spriteInstance.move.Angle, sd.LastVM.Angle) > aoff;
+            bool angledirty = VectorMove.angleInBetween(spriteInstance.move.Angle, sd.LastVM.Angle) > aoff;
 
             double timenow = DateTime.Now.Second;
-            var timedirty = sd.lastTimeUpdate != timenow;
+            bool timedirty = sd.lastTimeUpdate != timenow;
 
             if (posdirty || angledirty || timedirty)
             {
@@ -125,7 +125,7 @@ namespace Project
             //destroyed?
             o.Add((CurrentArmour <= 0).ToString());
 
-            var m = Message.CreateMessage(Message.Messages.SendingVars, o);
+            Message m = Message.CreateMessage(Message.Messages.SendingVars, o);
             parentGCS.parentSynch.AddMessageToWriteBuffer(m, connection);
             connection.AddResponseRequirement(m.ID, SynchInfo, SynchInfo.Deleted, false);
         }
@@ -133,7 +133,7 @@ namespace Project
         public bool RemoteUpdate(ConnectedIPs client, SynchStatusShip SynchInfo)
         {
             //send ship pop/push message from hangar
-            if (SynchInfo.ParentArea.Value != ((SharedID)parentArea).ID && SynchInfoMain.SendCreateDelete)
+            if (SynchInfo.ParentArea.Value != ((SharedID) parentArea).ID && SynchInfoMain.SendCreateDelete)
             {
                 addSendShipAreaToQueue(client, SynchInfo);
             }
@@ -160,15 +160,15 @@ namespace Project
 
         public bool IsDirtyStats(ConnectedIPs client)
         {
-            var sd = LastServerPlayerUpdate[client.ID];
+            ShipDirty sd = LastServerPlayerUpdate[client.ID];
             if (sd == null)
                 return true;
 
-            var armourdirty = sd.LastArmour != CurrentArmour;
+            bool armourdirty = sd.LastArmour != CurrentArmour;
             //only send shield show on update
-            var shieldtimedirty = sd.LastShieldTime < ShowShieldTill;
+            bool shieldtimedirty = sd.LastShieldTime < ShowShieldTill;
 
-            var disableddirty = sd.LastDisabled != disabled;
+            bool disableddirty = sd.LastDisabled != disabled;
 
             if (armourdirty || shieldtimedirty || disableddirty)
             {
@@ -190,7 +190,7 @@ namespace Project
             o.Add(Message.sendVars.UpdateShipStats.ToString("d"));
             o.AddRange(SerialiseUpdateStats());
 
-            var m = Message.CreateMessage(Message.Messages.SendingVars, o);
+            Message m = Message.CreateMessage(Message.Messages.SendingVars, o);
             parentGCS.parentSynch.AddMessageToWriteBuffer(m, cc);
         }
 
@@ -200,7 +200,7 @@ namespace Project
             o.Add(Message.sendVars.UpdateShipPosition.ToString("d"));
             o.AddRange(SerialiseUpdatePosition());
 
-            var m = Message.CreateMessage(Message.Messages.SendingVars, o);
+            Message m = Message.CreateMessage(Message.Messages.SendingVars, o);
             parentGCS.parentSynch.AddMessageToWriteBuffer(m, cc);
         }
 
@@ -213,9 +213,9 @@ namespace Project
             o.Add(Message.sendVars.ShipAreaUpdate.ToString("d"));
             o.AddRange(SerialiseSendShipArea());
 
-            var m = Message.CreateMessage(Message.Messages.SendingVars, o);
+            Message m = Message.CreateMessage(Message.Messages.SendingVars, o);
             parentGCS.parentSynch.AddMessageToWriteBuffer(m, cc);
-            cc.AddResponseRequirement(m.ID, SynchInfo, SynchInfo.ParentArea, ((SharedID)parentArea).ID);
+            cc.AddResponseRequirement(m.ID, SynchInfo, SynchInfo.ParentArea, ((SharedID) parentArea).ID);
         }
 
         private void addCreateShipToQueue(ConnectedIPs cc, SynchStatusShip SynchInfo)
@@ -227,7 +227,7 @@ namespace Project
             o.Add(Message.sendVars.CreateShip.ToString("d"));
             o.AddRange(SerialiseCreate(false));
 
-            var m = Message.CreateMessage(Message.Messages.SendingVars, o);
+            Message m = Message.CreateMessage(Message.Messages.SendingVars, o);
             parentGCS.parentSynch.AddMessageToWriteBuffer(m, cc);
             cc.AddResponseRequirement(m.ID, SynchInfo, SynchInfo.Created, true);
         }
@@ -236,20 +236,20 @@ namespace Project
         {
             var o = new List<string>();
             o.Add(ID.ToString());
-            o.Add(((SharedID)parentArea).ID.ToString());
+            o.Add(((SharedID) parentArea).ID.ToString());
             o.AddRange(spriteInstance.SerialisePosition());
             return o;
         }
 
-        public static bool DeserialiseSendShipArea(List<string> args, region r)
+        public static bool DeserialiseSendShipArea(List<string> args, Region r)
         {
-            var id = int.Parse(Shared.PopFirstListItem(args));
-            var areaid = int.Parse(Shared.PopFirstListItem(args));
+            int id = int.Parse(Shared.PopFirstListItem(args));
+            int areaid = int.Parse(Shared.PopFirstListItem(args));
 
-            var area = r.getArea(areaid);
-            var sh = r.getShipInstance(id);
+            IshipAreaSynch area = r.getArea(areaid);
+            ShipInstance sh = r.getShipInstance(id);
 
-            var errorb = true;
+            bool errorb = true;
             if (sh != null && area != null)
                 errorb = !sh.ChangeArea(area);
 
@@ -260,7 +260,7 @@ namespace Project
             else
             {
                 Manager.FireLogEvent("error deserialising send ship area", SynchMain.MessagePriority.High,
-                                 true);
+                                     true);
                 return false;
             }
             return true;
@@ -280,7 +280,7 @@ namespace Project
             o.AddRange(instanceOwner.SerialiseCreate());
             //4
             if (initial == false)
-                o.Add(((SharedID)parentArea).ID.ToString());
+                o.Add(((SharedID) parentArea).ID.ToString());
             //5
             o.Add(ID.ToString());
             //6
@@ -302,13 +302,13 @@ namespace Project
         /// <param name="args">list of variables serialised previously</param>
         /// <param name="r">region to use to find the parent area/map referenced in the serialised variables</param>
         /// <returns></returns>
-        public static ShipInstance DeserialiseCreate(List<string> args, region r, IshipAreaSynch overload = null)
+        public static ShipInstance DeserialiseCreate(List<string> args, Region r, IshipAreaSynch overload = null)
         {
             //1
-            var name = Shared.PopFirstListItem(args);
+            string name = Shared.PopFirstListItem(args);
 
             //1.5
-            var initial = bool.Parse(Shared.PopFirstListItem(args));
+            bool initial = bool.Parse(Shared.PopFirstListItem(args));
 
             //2
             VectorMove pos = null;
@@ -316,18 +316,18 @@ namespace Project
             float currentgravity = 0;
             if (initial == false)
             {
-                var sprite = SpriteInstance.DeserialisePosition(args);
+                Tuple<VectorMove, float, float> sprite = SpriteInstance.DeserialisePosition(args);
                 pos = sprite.Item1;
                 look = sprite.Item2;
                 currentgravity = sprite.Item3;
             }
             //3
-            var instance = InstanceOwner.DeserialiseCreate(args);
+            InstanceOwner instance = InstanceOwner.DeserialiseCreate(args);
             long pid = -1;
             if (initial == false)
                 pid = long.Parse(Shared.PopFirstListItem(args));
 
-            var id = long.Parse(Shared.PopFirstListItem(args));
+            long id = long.Parse(Shared.PopFirstListItem(args));
 
             if (initial)
                 id = -1;
@@ -353,15 +353,15 @@ namespace Project
 
             //add weapons
             //7
-            var slotcount = int.Parse(Shared.PopFirstListItem(args));
+            int slotcount = int.Parse(Shared.PopFirstListItem(args));
             si.EquipSlots = new SerializableDictionary<SlotLocation.SlotLocationEnum, weaponslot>();
             si.Slots = new SerializableDictionary<SlotLocation.SlotLocationEnum, weapon>();
 
-            for (var a = 0; a < slotcount; a++)
+            for (int a = 0; a < slotcount; a++)
             {
                 //8
-                var wfp = (SlotLocation.SlotLocationEnum)int.Parse(Shared.PopFirstListItem(args));
-                var names = Shared.PopFirstListItem(args);
+                var wfp = (SlotLocation.SlotLocationEnum) int.Parse(Shared.PopFirstListItem(args));
+                string names = Shared.PopFirstListItem(args);
                 si.AssignWeapon(wfp, loadXML.loadedWeapons[names]);
             }
 
@@ -382,12 +382,12 @@ namespace Project
             return o;
         }
 
-        public static SynchMain.returncodes DeserialiseUpdatePosition(List<string> args, region r, int testowner,
+        public static SynchMain.returncodes DeserialiseUpdatePosition(List<string> args, Region r, int testowner,
                                                                       int testfaction)
         {
             //1
-            var id = int.Parse(Shared.PopFirstListItem(args));
-            var si_up = r.getShipInstance(id);
+            int id = int.Parse(Shared.PopFirstListItem(args));
+            ShipInstance si_up = r.getShipInstance(id);
             if (si_up == null)
                 return SynchMain.returncodes.E_NOT_FOUND;
 
@@ -420,11 +420,11 @@ namespace Project
             return o;
         }
 
-        public static void DeserialiseUpdateStats(List<string> args, region r)
+        public static void DeserialiseUpdateStats(List<string> args, Region r)
         {
             //1
-            var id = int.Parse(Shared.PopFirstListItem(args));
-            var si_up = r.getShipInstance(id);
+            int id = int.Parse(Shared.PopFirstListItem(args));
+            ShipInstance si_up = r.getShipInstance(id);
             if (si_up == null)
             {
                 Manager.FireLogEvent("ship not found:" + id.ToString(), SynchMain.MessagePriority.Low, true);
@@ -434,7 +434,7 @@ namespace Project
             DeserialiseUpdateStats(args, r, si_up);
         }
 
-        public static void DeserialiseUpdateStats(List<string> args, region r, ShipInstance si)
+        public static void DeserialiseUpdateStats(List<string> args, Region r, ShipInstance si)
         {
             //2
             si.CurrentArmour = double.Parse(Shared.PopFirstListItem(args));

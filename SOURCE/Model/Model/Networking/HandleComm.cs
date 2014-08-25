@@ -5,6 +5,7 @@ using Project.Model.Instances;
 using Project.Model.Networking.Server;
 using Project.Model.Networking.Server.GameSynch;
 using Project.Model.mapInfo;
+using Project.Networking.mapInfoSynch;
 using Project.View.Client.DrawableScreens.WPF_Screens;
 
 namespace Project.Networking
@@ -25,18 +26,18 @@ namespace Project.Networking
         public bool handleComm(Message m, bool ReceiverIsClient, ConnectedIPs cip)
         {
             returncodes RC;
-            var faction = -1;
+            int faction = -1;
             if (cip is ConnectedClient)
-                faction = ((ConnectedClient)cip).faction;
+                faction = ((ConnectedClient) cip).faction;
             int Vint1;
             int Vint2;
             ShipInstance sh;
 
-            var error = false;
-            var errormsg = "";
+            bool error = false;
+            string errormsg = "";
             const string inappropriateMessage = "inappropriate Message";
             //save the message to a string now, because we will remove args from the message as we are working through them
-            var mps = m.getMessageParamString();
+            string mps = m.getMessageParamString();
             const int maxlen = 95;
             if (mps.Length > maxlen)
             {
@@ -64,7 +65,7 @@ namespace Project.Networking
                     }
 
                     //construct string to send back
-                    ((ConnectedClient)cip).SendJoinableSectors();
+                    ((ConnectedClient) cip).SendJoinableSectors();
                     Manager.FireLogEvent("Sending sectors to client", MessagePriority.Low, false, cip.ID, m);
 
                     //remove client
@@ -80,7 +81,7 @@ namespace Project.Networking
                     }
 
                     //get the list of sectors the player can join
-                    var sectorlightlist = Heartbeat.DeserialiseCreate(m.messageParams);
+                    List<Heartbeat> sectorlightlist = Heartbeat.DeserialiseCreate(m.messageParams);
 
                     //add them to the display list
                     ConnectWF.AddAvailSectors(sectorlightlist);
@@ -98,7 +99,7 @@ namespace Project.Networking
                     }
 
                     Manager.FireLogEvent("Added new client:", MessagePriority.High, false, cip.ID, m);
-                    ((ConnectedClient)cip).alias = Shared.PopFirstListItem(m.messageParams);
+                    ((ConnectedClient) cip).alias = Shared.PopFirstListItem(m.messageParams);
                     //TEMP
                     //gcs.addPlayer(cip.ID);
                     AddMessageToWriteBuffer(Message.CreateOKMessage(m), cip);
@@ -114,9 +115,9 @@ namespace Project.Networking
                     var cipc = cip as ConnectedClient;
 
                     //get the sector the player wants to join
-                    var secid = Int64.Parse(Shared.PopFirstListItem(m.messageParams));
+                    long secid = Int64.Parse(Shared.PopFirstListItem(m.messageParams));
 
-                    var sec = gcs.gameRegion.getArea(secid) as sector;
+                    var sec = gcs.gameRegion.getArea(secid) as Sector;
                     if (sec == null)
                     {
                         error = true;
@@ -125,18 +126,18 @@ namespace Project.Networking
                     }
 
                     //get all the planes the player is joining with, give them all ids and instance owners
-                    var psc = PlayerShipClass.DeserialiseCreate(m.messageParams, gcs.gameRegion,
+                    PlayerShipClass psc = PlayerShipClass.DeserialiseCreate(m.messageParams, gcs.gameRegion,
                                                                             cip.ID, faction, sec.thismap);
                     //give them all positions
                     ActionList.AddJoinGameToAction(psc);
 
-                    var mapv = psc.PlayerShip.parentArea as map;
+                    var mapv = psc.PlayerShip.parentArea as Map;
 
                     //send sector to client
                     sec.Init(cipc);
                     //gcs.gameRegion.SynchInfo[cipc.ID].CanSee.Value = true;
 
-                    var sy = ConnectedClient.SynchInfo[cipc.ID];
+                    SynchStatusConnectedClient sy = ConnectedClient.SynchInfo[cipc.ID];
                     sy.TryForPostACK.Value = true;
                     sy.JoinPSC = psc;
                     sy.JoinMap = mapv;
@@ -154,7 +155,8 @@ namespace Project.Networking
                         break;
                     }
 
-                    PlayerShipClass.DeserialiseCreateLight(m.messageParams, GameControlClient.playerShipClass, gcs.gameRegion, cip);
+                    PlayerShipClass.DeserialiseCreateLight(m.messageParams, GameControlClient.playerShipClass,
+                                                           gcs.gameRegion, cip);
 
                     GameControlClient.PostRequestJoinGameSector();
 
@@ -165,11 +167,11 @@ namespace Project.Networking
                     //first arg is the type of send var
                     var svc =
                         (Message.sendVars)
-                        Enum.Parse(typeof(Message.sendVars), Shared.PopFirstListItem(m.messageParams));
+                        Enum.Parse(typeof (Message.sendVars), Shared.PopFirstListItem(m.messageParams));
 
                     switch (svc)
                     {
-                        //remove ship
+                            //remove ship
                         case Message.sendVars.ShipRemove:
                             if (ReceiverIsClient == false)
                             {
@@ -178,7 +180,7 @@ namespace Project.Networking
                                 break;
                             }
                             Vint1 = Int32.Parse(Shared.PopFirstListItem(m.messageParams));
-                            var sh1 = gcs.gameRegion.getShipInstance(Vint1);
+                            ShipInstance sh1 = gcs.gameRegion.getShipInstance(Vint1);
                             if (sh1 == null)
                             {
                                 error = true;
@@ -199,7 +201,7 @@ namespace Project.Networking
                             }
 
                             Vint1 = Int32.Parse(Shared.PopFirstListItem(m.messageParams));
-                            var sh2 = gcs.gameRegion.getShotInstance(Vint1);
+                            WeaponInstance sh2 = gcs.gameRegion.getShotInstance(Vint1);
                             if (sh2 == null)
                             {
                                 error = true;
@@ -207,7 +209,7 @@ namespace Project.Networking
                                 break;
                             }
 
-                            var mm = sh2.parentArea as map;
+                            var mm = sh2.parentArea as Map;
                             if (mm == null)
                             {
                                 error = true;
@@ -228,7 +230,7 @@ namespace Project.Networking
                                 break;
                             }
                             Vint1 = Int32.Parse(Shared.PopFirstListItem(m.messageParams));
-                            var sh3 = gcs.gameRegion.getBuildingInstance(Vint1);
+                            BuildingInstance sh3 = gcs.gameRegion.getBuildingInstance(Vint1);
                             if (sh3 == null)
                             {
                                 error = true;
@@ -256,8 +258,8 @@ namespace Project.Networking
 
                         case Message.sendVars.UpdateShipPosition:
 
-                            var testowner = -1;
-                            var testfaction = -1;
+                            int testowner = -1;
+                            int testfaction = -1;
                             if (ReceiverIsClient == false)
                             {
                                 testowner = cip.ID;
@@ -267,7 +269,7 @@ namespace Project.Networking
                             RC = ShipInstance.DeserialiseUpdatePosition(m.messageParams, gcs.gameRegion, testowner,
                                                                         testfaction);
                             Manager.FireLogEvent("ship update return:" + RC.ToString() + mps, MessagePriority.Low,
-                                   RC != returncodes.S_OK, cip.ID, null);
+                                                 RC != returncodes.S_OK, cip.ID, null);
                             break;
 
                         case Message.sendVars.UpdateShipStats:
@@ -285,7 +287,8 @@ namespace Project.Networking
                             }
 
                             WeaponInstance.DeserialiseUpdate(m.messageParams, gcs.gameRegion);
-                            Manager.FireLogEvent("Updated shot position:" + mps, MessagePriority.Low, false, cip.ID, null);
+                            Manager.FireLogEvent("Updated shot position:" + mps, MessagePriority.Low, false, cip.ID,
+                                                 null);
                             break;
 
                         case Message.sendVars.UpdateBuilding:
@@ -307,7 +310,7 @@ namespace Project.Networking
                                 break;
                             }
 
-                            if (region.DeserialiseCreate(m.messageParams, gcs) == false)
+                            if (Region.DeserialiseCreate(m.messageParams, gcs) == false)
                                 break;
 
                             Manager.FireLogEvent("Created Region:" + mps, MessagePriority.High, false, cip.ID, null);
@@ -356,7 +359,8 @@ namespace Project.Networking
                             if (RC == returncodes.S_OK)
                                 Manager.FireLogEvent("Created Shot:" + mps, MessagePriority.Low, false, cip.ID, null);
                             else
-                                Manager.FireLogEvent("weapon create failed:" + mps, MessagePriority.Low, true, cip.ID, null);
+                                Manager.FireLogEvent("weapon create failed:" + mps, MessagePriority.Low, true, cip.ID,
+                                                     null);
 
                             break;
 
@@ -370,7 +374,8 @@ namespace Project.Networking
 
                             if (WeaponInstance.DeserialiseCreate(m.messageParams, gcs.gameRegion) == false)
                             {
-                                Manager.FireLogEvent("weapon create failed:" + mps, MessagePriority.Low, true, cip.ID, null);
+                                Manager.FireLogEvent("weapon create failed:" + mps, MessagePriority.Low, true, cip.ID,
+                                                     null);
                                 break;
                             }
 
@@ -386,10 +391,10 @@ namespace Project.Networking
                                 break;
                             }
 
-                            RC = map.DeserialiseUpdateTerrain(m.messageParams, gcs.gameRegion);
+                            RC = Map.DeserialiseUpdateTerrain(m.messageParams, gcs.gameRegion);
 
                             Manager.FireLogEvent("update terrain:" + RC.ToString() + mps, MessagePriority.Low,
-                                   RC != returncodes.S_OK, cip.ID, null);
+                                                 RC != returncodes.S_OK, cip.ID, null);
                             break;
 
                         case Message.sendVars.ShipAreaUpdate:
@@ -416,11 +421,12 @@ namespace Project.Networking
                                 break;
                             }
 
-                            var s1 = sector.DeserialiseCreate(m.messageParams, gcs, cip, false);
+                            Sector s1 = Sector.DeserialiseCreate(m.messageParams, gcs, cip, false);
                             if (s1 == null)
                                 break;
 
-                            Manager.FireLogEvent("client:" + cip.ID + " sent create map", MessagePriority.High, false, cip.ID, null);
+                            Manager.FireLogEvent("client:" + cip.ID + " sent create map", MessagePriority.High, false,
+                                                 cip.ID, null);
                             AddMessageToWriteBuffer(Message.CreateOKMessage(m), cip);
                             break;
 
@@ -433,9 +439,10 @@ namespace Project.Networking
                             }
 
                             //temp - just authorise all game sector creation for now
-                            var cfg = SectorConfig.DeserialiseCreate(m.messageParams);
+                            SectorConfig cfg = SectorConfig.DeserialiseCreate(m.messageParams);
                             gcs.gameRegion.addSector(cfg);
-                            Manager.FireLogEvent("Created requested game mode" + mps, MessagePriority.High, false, cip.ID, null);
+                            Manager.FireLogEvent("Created requested game mode" + mps, MessagePriority.High, false,
+                                                 cip.ID, null);
                             break;
 
                         case Message.sendVars.GiveCredits:
@@ -452,19 +459,21 @@ namespace Project.Networking
 
                             if (sh1 == null)
                             {
-                                Manager.FireLogEvent("Error getting planes to give credit to", MessagePriority.Low, true, myID);
+                                Manager.FireLogEvent("Error getting planes to give credit to", MessagePriority.Low, true,
+                                                     myID);
                             }
                             else
                             {
                                 gcs.GiveCreditForShipDestruction(Vint1, sh1);
                             }
 
-                            Manager.FireLogEvent("Got credit for ship destruction:" + mps, MessagePriority.High, false, cip.ID);
+                            Manager.FireLogEvent("Got credit for ship destruction:" + mps, MessagePriority.High, false,
+                                                 cip.ID);
                             break;
 
 
                         case Message.sendVars.ClientControlShip:
-                            var ok = false;
+                            bool ok = false;
 
                             Vint1 = Int32.Parse(Shared.PopFirstListItem(m.messageParams));
                             sh = gcs.gameRegion.getShipInstance(Vint1);
@@ -484,18 +493,20 @@ namespace Project.Networking
 
                                 if (sh == null || ok == false)
                                 {
-                                    Manager.FireLogEvent("error changing ship:" + mps, MessagePriority.High, true, cip.ID);
+                                    Manager.FireLogEvent("error changing ship:" + mps, MessagePriority.High, true,
+                                                         cip.ID);
                                 }
                                 else
                                 {
-                                    Manager.FireLogEvent("player changed ship:" + mps, MessagePriority.High, false, cip.ID);
+                                    Manager.FireLogEvent("player changed ship:" + mps, MessagePriority.High, false,
+                                                         cip.ID);
                                 }
                             }
 
                             //AddMessageToWriteBuffer(Message.CreateOKMessage(m), cip);
                             break;
 
-                        /*
+                            /*
                     case Message.sendVars.EjectShipFromHangarPost:
                         Vint1 = int.Parse(Shared.PopFirstListItem(m.messageParams));
                         sh = gcs.gameRegion.getShipInstance(Vint1);
@@ -527,8 +538,9 @@ namespace Project.Networking
             }
             if (error)
             {
-                Manager.FireLogEvent("Error:" + errormsg + ":IsClient:" + ReceiverIsClient.ToString(), MessagePriority.High, true,
-                       -1, m);
+                Manager.FireLogEvent("Error:" + errormsg + ":IsClient:" + ReceiverIsClient.ToString(),
+                                     MessagePriority.High, true,
+                                     -1, m);
                 return false;
             }
             return true;

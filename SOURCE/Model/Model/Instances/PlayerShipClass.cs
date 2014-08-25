@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Serialization;
 using Project.Model;
 using Project.Model.Instances;
 using Project.Model.Server.XML_Load;
@@ -14,13 +13,13 @@ namespace Project
     {
         public const int StartCredits = 10000;
         public int Credits;
+        public bool DefaultLoad = false;
         public string Name;
         public List<ShipPart> OwnedParts = new List<ShipPart>();
-        public List<weapon> OwnedWeapons = new List<weapon>();
         public List<shipBase> OwnedShipBases = new List<shipBase>();
+        public List<weapon> OwnedWeapons = new List<weapon>();
 
         public ShipInstance PlayerShip;
-        public bool DefaultLoad = false;
 
         public List<ShipInstance> SupportCraft = new List<ShipInstance>();
 
@@ -35,7 +34,7 @@ namespace Project
         public void ResetPSC()
         {
             PlayerShip.Reset();
-            foreach (var s in SupportCraft)
+            foreach (ShipInstance s in SupportCraft)
             {
                 s.Reset();
             }
@@ -79,7 +78,7 @@ namespace Project
 
         private void ChargeForReset()
         {
-            var rebuildval = ShipBaseItemsMIXIN.GetRebuildCost(PlayerShip);
+            int rebuildval = ShipBaseItemsMIXIN.GetRebuildCost(PlayerShip);
             int cost;
             if (Credits < rebuildval)
                 cost = Credits;
@@ -95,7 +94,7 @@ namespace Project
         {
             var psc = new PlayerShipClass();
             psc.Name = name;
-            psc.PlayerShip = ShipInstance.addShip(null,"SHIP1", SetID.CreateNoID());
+            psc.PlayerShip = ShipInstance.addShip(null, "SHIP1", SetID.CreateNoID());
             //give default amount of credits
             psc.Credits = StartCredits;
 
@@ -109,7 +108,7 @@ namespace Project
             //add all the parts we have assigned to ships to the owned list
             AssignPurchasedToOwned(psc, psc.PlayerShip);
 
-            foreach (var s in psc.SupportCraft)
+            foreach (ShipInstance s in psc.SupportCraft)
             {
                 AssignPurchasedToOwned(psc, s);
             }
@@ -150,7 +149,7 @@ namespace Project
 
         private static ShipPart ReInitialisePart(ShipPart sp)
         {
-            var newsp = loadXML.loadedShipParts[sp.name];
+            ShipPart newsp = loadXML.loadedShipParts[sp.name];
             return newsp;
         }
 
@@ -158,7 +157,7 @@ namespace Project
         {
             if (SetFrom == null)
                 return null;
-            var wname = SetFrom.w.name;
+            string wname = SetFrom.w.name;
             var ws = new weaponslot(loadXML.loadedWeapons[wname]);
             return ws;
         }
@@ -167,13 +166,14 @@ namespace Project
         {
             if (SetFrom == null)
                 return null;
-            var wname = SetFrom.name;
+            string wname = SetFrom.name;
             return loadXML.loadedWeapons[wname];
         }
 
         private static ShipInstance ReInitialiseShip(ShipInstance oldSi)
         {
-            var newps = ShipInstance.addShip(null, ShipBaseItemsMIXIN.GetShipModelName(oldSi), SetID.CreateNoID());
+            ShipInstance newps = ShipInstance.addShip(null, ShipBaseItemsMIXIN.GetShipModelName(oldSi),
+                                                      SetID.CreateNoID());
             var partlist = new SerializableDictionary<SlotLocation.SlotLocationEnum, ShipPart>();
             foreach (var kvp in oldSi.Parts)
             {
@@ -199,7 +199,7 @@ namespace Project
         {
             psc.PlayerShip = ReInitialiseShip(psc.PlayerShip);
             var supportlist = new List<ShipInstance>();
-            foreach (var s in psc.SupportCraft)
+            foreach (ShipInstance s in psc.SupportCraft)
             {
                 supportlist.Add(ReInitialiseShip(s));
             }
@@ -228,7 +228,7 @@ namespace Project
         /// <returns></returns>
         public static PlayerShipClass LoadPlayerShipClassFile(String shipFileName)
         {
-            var sectext = Shared.GetFileText(shipFileName);
+            string sectext = Shared.GetFileText(shipFileName);
 
             var s2 = Shared.DeserialiseFile<PlayerShipClass>(sectext);
             ReInitialisePSC(ref s2);
@@ -248,7 +248,7 @@ namespace Project
             else
                 psc = GameControlClient.playerShipClass;
 
-            var main = loadXML.userships + "\\" + psc.Name + ".xml";
+            string main = loadXML.userships + "\\" + psc.Name + ".xml";
             //save to file
             SerialiseCreate(main, psc);
             Manager.FireLogEvent("Saved PSC:" + main, SynchMain.MessagePriority.Low, false);
@@ -269,14 +269,14 @@ namespace Project
             ret.AddRange(PlayerShip.SerialiseCreate(true));
 
             ret.Add(SupportCraft.Count.ToString());
-            foreach (var sp in SupportCraft)
+            foreach (ShipInstance sp in SupportCraft)
             {
                 ret.AddRange(sp.SerialiseCreate(true));
             }
             return ret;
         }
 
-        public static PlayerShipClass DeserialiseCreate(List<string> args, region r, int playerid, int faction,
+        public static PlayerShipClass DeserialiseCreate(List<string> args, Region r, int playerid, int faction,
                                                         IshipAreaSynch overload)
         {
             var ret = new PlayerShipClass();
@@ -284,9 +284,9 @@ namespace Project
             ret.Name = Shared.PopFirstListItem(args);
             ret.PlayerShip = ShipInstance.DeserialiseCreate(args, r, overload);
 
-            var supportcount = Int32.Parse(Shared.PopFirstListItem(args));
+            int supportcount = Int32.Parse(Shared.PopFirstListItem(args));
             ret.SupportCraft = new List<ShipInstance>();
-            for (var a = 0; a < supportcount; a++)
+            for (int a = 0; a < supportcount; a++)
             {
                 ret.SupportCraft.Add(ShipInstance.DeserialiseCreate(args, r, overload));
             }
@@ -317,7 +317,7 @@ namespace Project
 
             //4
             ret.Add(SupportCraft.Count.ToString());
-            foreach (var sp in SupportCraft)
+            foreach (ShipInstance sp in SupportCraft)
             {
                 //5,6+
                 ret.AddRange(SerialiseShipLight(sp));
@@ -332,10 +332,10 @@ namespace Project
         /// <param name="current"></param>
         /// <param name="r"></param>
         /// <param name="from"></param>
-        public static void DeserialiseCreateLight(List<string> args, PlayerShipClass current, region r,
+        public static void DeserialiseCreateLight(List<string> args, PlayerShipClass current, Region r,
                                                   ConnectedIPs from)
         {
-            var psid = Int32.Parse(Shared.PopFirstListItem(args));
+            int psid = Int32.Parse(Shared.PopFirstListItem(args));
             current.PlayerShip = r.getShipInstance(psid);
             //3
             current.PlayerShip.instanceOwner = InstanceOwner.DeserialiseCreate(args);
@@ -344,13 +344,13 @@ namespace Project
             current.PlayerShip.SynchInfoMain.SendCreateDelete = false;
 
             //4
-            var supportcount = Int32.Parse(Shared.PopFirstListItem(args));
+            int supportcount = Int32.Parse(Shared.PopFirstListItem(args));
             current.SupportCraft = new List<ShipInstance>();
-            for (var a = 0; a < supportcount; a++)
+            for (int a = 0; a < supportcount; a++)
             {
                 //5
-                var sid = Int32.Parse(Shared.PopFirstListItem(args));
-                var newship = r.getShipInstance(sid);
+                int sid = Int32.Parse(Shared.PopFirstListItem(args));
+                ShipInstance newship = r.getShipInstance(sid);
                 //6+
                 newship.instanceOwner = InstanceOwner.DeserialiseCreate(args);
                 //dont send back to the owner
@@ -369,7 +369,7 @@ namespace Project
 
             //no one can control support craft
             ow = new InstanceOwner(playerid, faction, InstanceOwner.ControlType.NoPlayer);
-            foreach (var sp in SupportCraft)
+            foreach (ShipInstance sp in SupportCraft)
             {
                 sp.instanceOwner = ow;
             }

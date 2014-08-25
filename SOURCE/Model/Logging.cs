@@ -1,8 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Threading;
-using Project.Model;
-using Project.Networking;
 
 namespace Project
 {
@@ -35,7 +32,7 @@ namespace Project
 
         public static string GetSanitisedTimeString()
         {
-            var t = DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToLongTimeString();
+            string t = DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToLongTimeString();
             t = t.Replace(':', '.');
             t = t.Replace('/', '.');
             return t;
@@ -43,7 +40,7 @@ namespace Project
 
         private static string GetLogFileName(String logdir, String prefix)
         {
-            var t = GetSanitisedTimeString();
+            string t = GetSanitisedTimeString();
             return logdir + "/" + prefix + t + ".txt";
         }
 
@@ -64,7 +61,7 @@ namespace Project
         {
             if (CrashLoggingEnabled == false)
                 return;
-            
+
             lock (crashlogfilename)
             {
                 var sw = new StreamWriter(crashlogfilename, true);

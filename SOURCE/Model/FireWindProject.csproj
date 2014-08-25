@@ -125,104 +125,98 @@
     <Compile Include="View\Client\DrawableScreens\ConsoleCL.cs" />
     <Compile Include="View\Client\Control\MapControls.cs" />
     <Compile Include="View\Client\Control\SectorControls.cs" />
-    <Compile Include="View\Client\DrawableScreens\WPF Screens\BaseScreenWF.cs">
+    <Compile Include="View\Client\DrawableScreens\winform Screens\BaseScreenWF.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="View\Client\DrawableScreens\WPF Screens\BaseScreenWF.Designer.cs">
+    <Compile Include="View\Client\DrawableScreens\winform Screens\BaseScreenWF.Designer.cs">
       <DependentUpon>BaseScreenWF.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\Client\DrawableScreens\WPF Screens\ChooseGameModeWF.cs">
+    <Compile Include="View\Client\DrawableScreens\winform Screens\ChooseGameModeWF.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="View\Client\DrawableScreens\WPF Screens\ChooseGameModeWF.Designer.cs">
+    <Compile Include="View\Client\DrawableScreens\winform Screens\ChooseGameModeWF.Designer.cs">
       <DependentUpon>ChooseGameModeWF.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\Client\DrawableScreens\WPF Screens\ChooseShipWF.cs">
+    <Compile Include="View\Client\DrawableScreens\winform Screens\ChooseShipWF.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="View\Client\DrawableScreens\WPF Screens\ChooseShipWF.Designer.cs">
+    <Compile Include="View\Client\DrawableScreens\winform Screens\ChooseShipWF.Designer.cs">
       <DependentUpon>ChooseShipWF.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\Client\DrawableScreens\WPF Screens\ConnectIPWF.cs">
+    <Compile Include="View\Client\DrawableScreens\winform Screens\ConnectWaitWF.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="View\Client\DrawableScreens\WPF Screens\ConnectIPWF.Designer.cs">
-      <DependentUpon>ConnectIPWF.cs</DependentUpon>
-    </Compile>
-    <Compile Include="View\Client\DrawableScreens\WPF Screens\ConnectWaitWF.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="View\Client\DrawableScreens\WPF Screens\ConnectWaitWF.Designer.cs">
+    <Compile Include="View\Client\DrawableScreens\winform Screens\ConnectWaitWF.Designer.cs">
       <DependentUpon>ConnectWaitWF.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\Client\DrawableScreens\WPF Screens\ConnectWF.cs">
+    <Compile Include="View\Client\DrawableScreens\winform Screens\ConnectWF.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="View\Client\DrawableScreens\WPF Screens\ConnectWF.Designer.cs">
+    <Compile Include="View\Client\DrawableScreens\winform Screens\ConnectWF.Designer.cs">
       <DependentUpon>ConnectWF.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\Client\DrawableScreens\WPF Screens\CreateGambleGameWF.cs">
+    <Compile Include="View\Client\DrawableScreens\winform Screens\CreateGambleGameWF.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="View\Client\DrawableScreens\WPF Screens\CreateGambleGameWF.Designer.cs">
+    <Compile Include="View\Client\DrawableScreens\winform Screens\CreateGambleGameWF.Designer.cs">
       <DependentUpon>CreateGambleGameWF.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\Client\DrawableScreens\WPF Screens\CreateMPGameWF.cs">
+    <Compile Include="View\Client\DrawableScreens\winform Screens\CreateMPGameWF.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="View\Client\DrawableScreens\WPF Screens\CreateMPGameWF.Designer.cs">
+    <Compile Include="View\Client\DrawableScreens\winform Screens\CreateMPGameWF.Designer.cs">
       <DependentUpon>CreateMPGameWF.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\Client\DrawableScreens\WPF Screens\HangarScreenWF.cs">
+    <Compile Include="View\Client\DrawableScreens\winform Screens\HangarScreenWF.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="View\Client\DrawableScreens\WPF Screens\HangarScreenWF.Designer.cs">
+    <Compile Include="View\Client\DrawableScreens\winform Screens\HangarScreenWF.Designer.cs">
       <DependentUpon>HangarScreenWF.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\Client\DrawableScreens\WPF Screens\MainScreenWF.cs">
+    <Compile Include="View\Client\DrawableScreens\winform Screens\MainScreenWF.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="View\Client\DrawableScreens\WPF Screens\MainScreenWF.Designer.cs">
+    <Compile Include="View\Client\DrawableScreens\winform Screens\MainScreenWF.Designer.cs">
       <DependentUpon>MainScreenWF.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\Client\DrawableScreens\WPF Screens\OptionsWF.cs">
+    <Compile Include="View\Client\DrawableScreens\winform Screens\OptionsWF.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="View\Client\DrawableScreens\WPF Screens\OptionsWF.Designer.cs">
+    <Compile Include="View\Client\DrawableScreens\winform Screens\OptionsWF.Designer.cs">
       <DependentUpon>OptionsWF.cs</DependentUpon>
     </Compile>
     <Compile Include="View\Client\DrawableScreens\Full Screens\ShowVictoryScreen.cs" />
     <Compile Include="View\Client\DrawableScreens\Full Screens\DestroyScreen.cs" />
-    <Compile Include="View\Client\DrawableScreens\WPF Screens\InputFieldWFControl.cs">
+    <Compile Include="View\Client\DrawableScreens\winform Screens\InputFieldWFControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="View\Client\DrawableScreens\WPF Screens\InputFieldWFControl.Designer.cs">
+    <Compile Include="View\Client\DrawableScreens\winform Screens\InputFieldWFControl.Designer.cs">
       <DependentUpon>InputFieldWFControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\Client\DrawableScreens\WPF Screens\InputInformation.cs">
+    <Compile Include="View\Client\DrawableScreens\winform Screens\InputInformation.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="View\Client\DrawableScreens\WPF Screens\InputInformation.Designer.cs">
+    <Compile Include="View\Client\DrawableScreens\winform Screens\InputInformation.Designer.cs">
       <DependentUpon>InputInformation.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\Client\DrawableScreens\WPF Screens\PurchasableItemWFControl.cs">
+    <Compile Include="View\Client\DrawableScreens\winform Screens\PurchasableItemWFControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="View\Client\DrawableScreens\WPF Screens\PurchasableItemWFControl.Designer.cs">
+    <Compile Include="View\Client\DrawableScreens\winform Screens\PurchasableItemWFControl.Designer.cs">
       <DependentUpon>PurchasableItemWFControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\Client\DrawableScreens\WPF Screens\PurchasableItemWFControlItem.cs">
+    <Compile Include="View\Client\DrawableScreens\winform Screens\PurchasableItemWFControlItem.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="View\Client\DrawableScreens\WPF Screens\PurchasableItemWFControlItem.Designer.cs">
+    <Compile Include="View\Client\DrawableScreens\winform Screens\PurchasableItemWFControlItem.Designer.cs">
       <DependentUpon>PurchasableItemWFControlItem.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\Client\DrawableScreens\WPF Screens\RequiredItem.cs" />
-    <Compile Include="View\Client\DrawableScreens\WPF Screens\ShopScreens.cs" />
-    <Compile Include="View\Client\DrawableScreens\WPF Screens\ShopScreenWF.cs">
+    <Compile Include="View\Client\DrawableScreens\winform Screens\RequiredItem.cs" />
+    <Compile Include="View\Client\DrawableScreens\winform Screens\ShopScreens.cs" />
+    <Compile Include="View\Client\DrawableScreens\winform Screens\ShopScreenWF.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="View\Client\DrawableScreens\WPF Screens\ShopScreenWF.Designer.cs">
+    <Compile Include="View\Client\DrawableScreens\winform Screens\ShopScreenWF.Designer.cs">
       <DependentUpon>ShopScreenWF.cs</DependentUpon>
     </Compile>
     <Compile Include="View\Client\DrawableScreens\XNARoutines.cs" />
@@ -243,8 +237,8 @@
     <Compile Include="Model\Instances\ShipInstanceAIMap.cs" />
     <Compile Include="Model\Instances\WeaponInstance.cs" />
     <Compile Include="Model\cMap\mapTerrain.cs" />
-    <Compile Include="Model\aRegion\region.cs" />
-    <Compile Include="Model\bSector\sector.cs" />
+    <Compile Include="Model\aRegion\Region.cs" />
+    <Compile Include="Model\bSector\Sector.cs" />
     <Compile Include="Controller\GameControlServer.cs" />
     <Compile Include="Model\Networking\GameInitConfig.cs" />
     <Compile Include="Model\Networking\HandleComm.cs" />
@@ -259,7 +253,7 @@
     <Compile Include="Model\weaponSlot.cs" />
     <Compile Include="Model\Server\XML Load\building.cs" />
     <Compile Include="Model\Server\XML Load\loadXML.cs" />
-    <Compile Include="Model\cMap\map.cs" />
+    <Compile Include="Model\cMap\Map.cs" />
     <Compile Include="Model\Instances\ShipInstance.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Model\Shared.cs" />
@@ -297,53 +291,50 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Localisation.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="View\Client\DrawableScreens\WPF Screens\BaseScreenWF.resx">
+    <EmbeddedResource Include="View\Client\DrawableScreens\winform Screens\BaseScreenWF.resx">
       <DependentUpon>BaseScreenWF.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="View\Client\DrawableScreens\WPF Screens\ChooseGameModeWF.resx">
+    <EmbeddedResource Include="View\Client\DrawableScreens\winform Screens\ChooseGameModeWF.resx">
       <DependentUpon>ChooseGameModeWF.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="View\Client\DrawableScreens\WPF Screens\ChooseShipWF.resx">
+    <EmbeddedResource Include="View\Client\DrawableScreens\winform Screens\ChooseShipWF.resx">
       <DependentUpon>ChooseShipWF.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="View\Client\DrawableScreens\WPF Screens\ConnectIPWF.resx">
-      <DependentUpon>ConnectIPWF.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="View\Client\DrawableScreens\WPF Screens\ConnectWaitWF.resx">
+    <EmbeddedResource Include="View\Client\DrawableScreens\winform Screens\ConnectWaitWF.resx">
       <DependentUpon>ConnectWaitWF.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="View\Client\DrawableScreens\WPF Screens\ConnectWF.resx">
+    <EmbeddedResource Include="View\Client\DrawableScreens\winform Screens\ConnectWF.resx">
       <DependentUpon>ConnectWF.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="View\Client\DrawableScreens\WPF Screens\CreateGambleGameWF.resx">
+    <EmbeddedResource Include="View\Client\DrawableScreens\winform Screens\CreateGambleGameWF.resx">
       <DependentUpon>CreateGambleGameWF.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="View\Client\DrawableScreens\WPF Screens\CreateMPGameWF.resx">
+    <EmbeddedResource Include="View\Client\DrawableScreens\winform Screens\CreateMPGameWF.resx">
       <DependentUpon>CreateMPGameWF.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="View\Client\DrawableScreens\WPF Screens\HangarScreenWF.resx">
+    <EmbeddedResource Include="View\Client\DrawableScreens\winform Screens\HangarScreenWF.resx">
       <DependentUpon>HangarScreenWF.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="View\Client\DrawableScreens\WPF Screens\MainScreenWF.resx">
+    <EmbeddedResource Include="View\Client\DrawableScreens\winform Screens\MainScreenWF.resx">
       <DependentUpon>MainScreenWF.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="View\Client\DrawableScreens\WPF Screens\OptionsWF.resx">
+    <EmbeddedResource Include="View\Client\DrawableScreens\winform Screens\OptionsWF.resx">
       <DependentUpon>OptionsWF.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="View\Client\DrawableScreens\WPF Screens\InputFieldWFControl.resx">
+    <EmbeddedResource Include="View\Client\DrawableScreens\winform Screens\InputFieldWFControl.resx">
       <DependentUpon>InputFieldWFControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="View\Client\DrawableScreens\WPF Screens\InputInformation.resx">
+    <EmbeddedResource Include="View\Client\DrawableScreens\winform Screens\InputInformation.resx">
       <DependentUpon>InputInformation.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="View\Client\DrawableScreens\WPF Screens\PurchasableItemWFControl.resx">
+    <EmbeddedResource Include="View\Client\DrawableScreens\winform Screens\PurchasableItemWFControl.resx">
       <DependentUpon>PurchasableItemWFControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="View\Client\DrawableScreens\WPF Screens\PurchasableItemWFControlItem.resx">
+    <EmbeddedResource Include="View\Client\DrawableScreens\winform Screens\PurchasableItemWFControlItem.resx">
       <DependentUpon>PurchasableItemWFControlItem.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="View\Client\DrawableScreens\WPF Screens\ShopScreenWF.resx">
+    <EmbeddedResource Include="View\Client\DrawableScreens\winform Screens\ShopScreenWF.resx">
       <DependentUpon>ShopScreenWF.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
@@ -351,6 +342,10 @@
     <ProjectReference Include="..\..\..\ANDREICSLIB\SOURCE\ANDREICSLIB\ANDREICSLIB.csproj">
       <Project>{469B8120-B6D8-48BD-97C4-AFAB63AEE304}</Project>
       <Name>ANDREICSLIB</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\ANDREIXNALIB\SOURCE\ANDREIXNALIB\ANDREIXNALIB.csproj">
+      <Project>{14f9f109-a1a3-4a9f-a9ad-3cb16250f699}</Project>
+      <Name>ANDREIXNALIB</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\XNA-Winforms-Wrapper\SOURCE\XNA_Winforms_Wrapper\XNA_Winforms_Wrapper.csproj">
       <Project>{D4F049E8-626D-4D6D-8ADE-400C6B6D701C}</Project>

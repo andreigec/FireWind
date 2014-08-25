@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Xml.Serialization;
 using Project.Model;
 using Project.Model.Instances;
@@ -10,10 +9,9 @@ using Project.Networking.mapInfoSynch;
 
 namespace Project
 {
-    public partial class map : ISynchroniseInterfaceShipArea<ConnectedClient, SynchStatus, SynchStatusMain>
+    public partial class Map : ISynchroniseInterfaceShipArea<ConnectedClient, SynchStatus, SynchStatusMain>
     {
-        [XmlIgnore]
-        public List<int> SynchTerrain = new List<int>();
+        [XmlIgnore] public List<int> SynchTerrain = new List<int>();
 
         #region IshipAreaSynch Members
 
@@ -59,7 +57,7 @@ namespace Project
         public bool Synchronise(ConnectedClient client)
         {
             Init(client);
-            var SynchInfoL = SynchInfo[client.ID];
+            SynchStatus SynchInfoL = SynchInfo[client.ID];
             if (SynchInfoL == null)
                 return false;
 
@@ -80,17 +78,17 @@ namespace Project
         {
             bool somecreate = false;
 
-            foreach (var sh in ships)
+            foreach (ShipInstance sh in ships)
             {
                 somecreate = somecreate | sh.Synchronise(client);
             }
 
-            foreach (var s in shots)
+            foreach (WeaponInstance s in shots)
             {
                 somecreate = somecreate | s.Synchronise(client);
             }
 
-            foreach (var b in buildings)
+            foreach (BuildingInstance b in buildings)
             {
                 somecreate = somecreate | b.Synchronise(client);
             }
@@ -102,7 +100,7 @@ namespace Project
 
         public void RemoteUpdateTerrain(List<ConnectedClient> conns, List<int> mapindex)
         {
-            foreach (var conn in conns)
+            foreach (ConnectedClient conn in conns)
             {
                 if (SynchInfo.ContainsKey(conn.ID) == false || SynchInfo[conn.ID].Created == false)
                     continue;
@@ -111,7 +109,7 @@ namespace Project
                 o.Add(Message.sendVars.UpdateTerrain.ToString("d"));
                 o.AddRange(SerialiseUpdateTerrain(mapindex, this));
 
-                var mess = Message.CreateMessage(Message.Messages.SendingVars, o);
+                Message mess = Message.CreateMessage(Message.Messages.SendingVars, o);
                 parentGCS.parentSynch.AddMessageToWriteBuffer(mess, conn);
             }
             mapindex.Clear();
@@ -133,7 +131,7 @@ namespace Project
         }
         */
 
-        public List<string> SerialiseUpdateTerrain(List<int> mapindex, map m)
+        public List<string> SerialiseUpdateTerrain(List<int> mapindex, Map m)
         {
             lock (m)
             {
@@ -143,9 +141,9 @@ namespace Project
                 o.Add(m.ID.ToString());
                 //2
                 o.Add(mapindex.Count.ToString());
-                foreach (var m1 in mapindex)
+                foreach (int m1 in mapindex)
                 {
-                    var t1 = m.terrain.heightmap.heights[m1];
+                    List<Tuple<int, int>> t1 = m.terrain.heightmap.heights[m1];
                     //3
                     o.Add(m1.ToString());
                     //4
@@ -161,31 +159,31 @@ namespace Project
             }
         }
 
-        public static SynchMain.returncodes DeserialiseUpdateTerrain(List<string> args, region r)
+        public static SynchMain.returncodes DeserialiseUpdateTerrain(List<string> args, Region r)
         {
             //1
-            var m = r.getArea(long.Parse(Shared.PopFirstListItem(args))) as map;
+            var m = r.getArea(long.Parse(Shared.PopFirstListItem(args))) as Map;
             if (m == null)
                 return SynchMain.returncodes.E_NOT_FOUND;
 
             //2
-            var indexcount = int.Parse(Shared.PopFirstListItem(args));
+            int indexcount = int.Parse(Shared.PopFirstListItem(args));
 
-            for (var a = 0; a < indexcount; a++)
+            for (int a = 0; a < indexcount; a++)
             {
                 //3
-                var index = int.Parse(Shared.PopFirstListItem(args));
+                int index = int.Parse(Shared.PopFirstListItem(args));
                 //add to dirty list for post updates
                 m.terrain.dirty.Add(index);
 
-                var t1 = m.terrain.heightmap.heights[index];
+                List<Tuple<int, int>> t1 = m.terrain.heightmap.heights[index];
                 t1.Clear();
                 //4
-                var count = int.Parse(Shared.PopFirstListItem(args));
-                for (var b = 0; b < count; b++)
+                int count = int.Parse(Shared.PopFirstListItem(args));
+                for (int b = 0; b < count; b++)
                 {
-                    var i1 = int.Parse(Shared.PopFirstListItem(args));
-                    var i2 = int.Parse(Shared.PopFirstListItem(args));
+                    int i1 = int.Parse(Shared.PopFirstListItem(args));
+                    int i2 = int.Parse(Shared.PopFirstListItem(args));
                     t1.Add(new Tuple<int, int>(i1, i2));
                 }
             }

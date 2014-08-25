@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Xml.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -13,7 +11,9 @@ namespace Project
         #region xml
 
         public String path;
-        public SerializableDictionary<string, SpriteAnimation> sprites = new SerializableDictionary<string, SpriteAnimation>();
+
+        public SerializableDictionary<string, SpriteAnimation> sprites =
+            new SerializableDictionary<string, SpriteAnimation>();
 
         #endregion xml
 
@@ -29,8 +29,8 @@ namespace Project
         public void loadTexture2D(Game parent, String name)
         {
             image = parent.Content.Load<Texture2D>(name);
-            var imagesX = image.Width/FrameWidth;
-            var imagesY = image.Height/FrameHeight;
+            int imagesX = image.Width/FrameWidth;
+            int imagesY = image.Height/FrameHeight;
             imageCount = imagesX*imagesY;
             columnCount = imagesX;
         }

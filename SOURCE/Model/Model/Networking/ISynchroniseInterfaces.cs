@@ -109,7 +109,7 @@ namespace Project.Networking
         {
             if (client != null && isi.SynchInfo.ContainsKey(client.ID) == false)
             {
-                var ok = false;
+                bool ok = false;
                 while (ok == false)
                 {
                     try
@@ -145,7 +145,7 @@ namespace Project.Networking
 
             if (client != null && isi.LastServerPlayerUpdate.ContainsKey(client.ID) == false)
             {
-                var ok = false;
+                bool ok = false;
                 while (ok == false)
                 {
                     try

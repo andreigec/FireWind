@@ -1,2 +1,3 @@
--pass shipareas on request when about to fly into area, not on join
--client to tell server they are returning to base, and dispose of everything except psc
+
+-change ship model in hanger on model change
+-crash in updating terrain when die in col and esc.

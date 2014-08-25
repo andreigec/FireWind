@@ -3,14 +3,14 @@
   <Asset Type="Generic:List[Project.ShipWingsPart]">
     <Item>
       <name>Stock Wings</name>
-      <Cost>1000</Cost>
-      <MaxTurnModifier>1</MaxTurnModifier>
+      <Cost>100</Cost>
+      <MaxTurnModifier>.7</MaxTurnModifier>
     </Item>
     
     <Item>
       <name>V2 Wings</name>
-      <Cost>2000</Cost>
-      <MaxTurnModifier>2</MaxTurnModifier>    
+      <Cost>200</Cost>
+      <MaxTurnModifier>.8</MaxTurnModifier>    
   </Item>
   </Asset>
 </XnaContent>

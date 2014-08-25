@@ -3,14 +3,14 @@
   <Asset Type="Generic:List[Project.ShipGeneratorPart]">
     <Item>
       <name>Stock Generator</name>
-      <Cost>1000</Cost>
-      <EnergyRegenSpeedModifier>1</EnergyRegenSpeedModifier>
+      <Cost>100</Cost>
+      <EnergyRegenSpeedModifier>3</EnergyRegenSpeedModifier>
     </Item>
     
     <Item>
       <name>V2 Generator</name>
-      <Cost>2000</Cost>
-      <EnergyRegenSpeedModifier>2</EnergyRegenSpeedModifier>
+      <Cost>200</Cost>
+      <EnergyRegenSpeedModifier>5</EnergyRegenSpeedModifier>
     </Item>
   </Asset>
 </XnaContent>

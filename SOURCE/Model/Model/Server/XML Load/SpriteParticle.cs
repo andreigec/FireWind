@@ -12,9 +12,9 @@ namespace Project
         {
             image = new Texture2D(g.GraphicsDevice, FrameWidth, FrameHeight);
 
-            var count = 0;
-            for (var a = 0; a < FrameHeight; a++)
-                for (var b = 0; b < FrameWidth; b++)
+            int count = 0;
+            for (int a = 0; a < FrameHeight; a++)
+                for (int b = 0; b < FrameWidth; b++)
                 {
                     Color[] c = null;
                     if (rawPixelData[count] == 'X')

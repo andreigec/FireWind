@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Net.Sockets;
-using System.Text;
 using System.Threading;
 using Project.Model;
 using Project.View.Client.DrawableScreens.WPF_Screens;
@@ -42,7 +40,7 @@ namespace Project.Networking
             Manager.EndGame(ref gcs.parentSynch, false);
         }
 
-        public void ClientSendUpdateThread(bool send, bool update)//THREADED
+        public void ClientSendUpdateThread(bool send, bool update) //THREADED
         {
             while (enabled)
             {
@@ -50,7 +48,7 @@ namespace Project.Networking
                 //update client with values from server
                 if (update)
                 {
-                    ok=ClientUpdateBlock();
+                    ok = ClientUpdateBlock();
                     if (ok == false)
                     {
                         enabled = false;
@@ -112,7 +110,8 @@ namespace Project.Networking
             }
             catch (AbandonedMutexException e)
             {
-                Manager.FireLogEvent("crash in client update. enabled=" + enabled, MessagePriority.High, true, myID, null);
+                Manager.FireLogEvent("crash in client update. enabled=" + enabled, MessagePriority.High, true, myID,
+                                     null);
                 Logging.WriteExceptionToFile("client update crash", e);
             }
             return true;
@@ -124,8 +123,8 @@ namespace Project.Networking
             {
                 var serverEndPoint = new IPEndPoint(IPAddress.Parse(gic.ip), gic.TCPport);
                 var server = new ConnectedServer(this);
-                var endtime = Manager.GetMillisecondsNow() + ConnectWF.HeartbeatTimeoutMS;
-                var success = false;
+                double endtime = Manager.GetMillisecondsNow() + ConnectWF.HeartbeatTimeoutMS;
+                bool success = false;
 
                 double timenow = 0;
                 //just setup the connection - TCP

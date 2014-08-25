@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using Project.View.Client.ClientScreens;
 
 namespace Project.View.Client.ClientScreens
 {
@@ -100,7 +99,7 @@ namespace Project.View.Client.ClientScreens
                 toadd.Add(Keys.Space);
             }
 
-            foreach (var k in toadd)
+            foreach (Keys k in toadd)
             {
                 InitKey(k);
                 InitialiseKeyPress(k);
@@ -148,7 +147,7 @@ namespace Project.View.Client.ClientScreens
                 InitKey(k, overloadTimeout);
             }
 
-            var k2 = KeyCoolDown[k];
+            keyboardPress k2 = KeyCoolDown[k];
 
             if (overloadTimeout == -1)
                 overloadTimeout = k2.Timeout;
@@ -174,7 +173,7 @@ namespace Project.View.Client.ClientScreens
             KeysHold = new List<Keys>();
             KeysDown = new List<Keys>();
 
-            foreach (var k in CurrentState.GetPressedKeys())
+            foreach (Keys k in CurrentState.GetPressedKeys())
             {
                 InitKey(k);
 

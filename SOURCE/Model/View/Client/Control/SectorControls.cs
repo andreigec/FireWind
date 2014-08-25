@@ -21,7 +21,7 @@ namespace Project
 
         public void KeyboardUpdate(GameTime gt, KeyboardClass kbc)
         {
-            var handled = menucreate.HandleKey(kbc);
+            bool handled = menucreate.HandleKey(kbc);
             if (handled)
                 return;
 
@@ -33,8 +33,8 @@ namespace Project
 
         public void MouseUpdate(GameTime gt, MouseClass mc)
         {
-            var mwup = mc.ButtonsDown.ContainsKey(MouseClass.mouseButtons.mouseWheelUp);
-            var mwdown = mc.ButtonsDown.ContainsKey(MouseClass.mouseButtons.mouseWheelDown);
+            bool mwup = mc.ButtonsDown.ContainsKey(MouseClass.mouseButtons.mouseWheelUp);
+            bool mwdown = mc.ButtonsDown.ContainsKey(MouseClass.mouseButtons.mouseWheelDown);
             if (mwdown)
             {
                 //GameControlClient.ZoomToRegion(DrawThis.parentRegion,true);

@@ -42,12 +42,12 @@ namespace FireWindServer
             this.servernametext = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.gamewindowlist = new System.Windows.Forms.ListView();
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.creategamebutton = new System.Windows.Forms.Button();
             this.stopselectedgamesbutton = new System.Windows.Forms.Button();
-            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.consolelog = new ListView();
+            this.consolelog = new System.Windows.Forms.ListView();
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -55,6 +55,7 @@ namespace FireWindServer
             this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader9 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader10 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.lanonlyCB = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // toggleserverbutton
@@ -86,7 +87,7 @@ namespace FireWindServer
             // 
             // udpportText
             // 
-            this.udpportText.Location = new System.Drawing.Point(141, 160);
+            this.udpportText.Location = new System.Drawing.Point(105, 141);
             this.udpportText.Name = "udpportText";
             this.udpportText.Size = new System.Drawing.Size(100, 20);
             this.udpportText.TabIndex = 20;
@@ -95,7 +96,7 @@ namespace FireWindServer
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(20, 163);
+            this.label4.Location = new System.Drawing.Point(0, 141);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(104, 13);
             this.label4.TabIndex = 19;
@@ -103,7 +104,7 @@ namespace FireWindServer
             // 
             // tcpread
             // 
-            this.tcpread.Location = new System.Drawing.Point(141, 119);
+            this.tcpread.Location = new System.Drawing.Point(105, 115);
             this.tcpread.Name = "tcpread";
             this.tcpread.Size = new System.Drawing.Size(100, 20);
             this.tcpread.TabIndex = 18;
@@ -112,7 +113,7 @@ namespace FireWindServer
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(20, 122);
+            this.label3.Location = new System.Drawing.Point(42, 118);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(57, 13);
             this.label3.TabIndex = 17;
@@ -169,6 +170,10 @@ namespace FireWindServer
             this.gamewindowlist.View = System.Windows.Forms.View.Details;
             this.gamewindowlist.SelectedIndexChanged += new System.EventHandler(this.gamewindowlist_SelectedIndexChanged);
             // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Text = "GameID";
+            // 
             // columnHeader1
             // 
             this.columnHeader1.Text = "Game Type";
@@ -202,10 +207,6 @@ namespace FireWindServer
             this.stopselectedgamesbutton.Text = "Stop Selected Games";
             this.stopselectedgamesbutton.UseVisualStyleBackColor = true;
             this.stopselectedgamesbutton.Click += new System.EventHandler(this.stopselectedgamesbutton_Click);
-            // 
-            // columnHeader3
-            // 
-            this.columnHeader3.Text = "GameID";
             // 
             // consolelog
             // 
@@ -262,10 +263,23 @@ namespace FireWindServer
             this.columnHeader10.Text = "Params";
             this.columnHeader10.Width = 125;
             // 
+            // lanonlyCB
+            // 
+            this.lanonlyCB.AutoSize = true;
+            this.lanonlyCB.Checked = true;
+            this.lanonlyCB.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.lanonlyCB.Location = new System.Drawing.Point(105, 179);
+            this.lanonlyCB.Name = "lanonlyCB";
+            this.lanonlyCB.Size = new System.Drawing.Size(71, 17);
+            this.lanonlyCB.TabIndex = 28;
+            this.lanonlyCB.Text = "LAN Only";
+            this.lanonlyCB.UseVisualStyleBackColor = true;
+            // 
             // ServerWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.lanonlyCB);
             this.Controls.Add(this.consolelog);
             this.Controls.Add(this.stopselectedgamesbutton);
             this.Controls.Add(this.creategamebutton);
@@ -315,5 +329,6 @@ namespace FireWindServer
         private System.Windows.Forms.ColumnHeader columnHeader8;
         private System.Windows.Forms.ColumnHeader columnHeader9;
         private System.Windows.Forms.ColumnHeader columnHeader10;
+        private CheckBox lanonlyCB;
     }
 }

@@ -16,14 +16,23 @@ namespace Project
     public class shipBase : IPurchasable
     {
         [XmlIgnore] [ContentSerializerIgnore] public SpriteDraw basesprite;
-        
-        public String name { get; set; }
+
         [XmlIgnore] public string spriteName;
 
-        [XmlIgnore] public int Cost { get; set; }
+        #region IPurchasable Members
+
+        public String name { get; set; }
+
+        [XmlIgnore]
+        public int Cost { get; set; }
+
+        #endregion
 
         #region stats
-
+        //size overload
+        [XmlIgnore] private double width;
+		[XmlIgnore]
+		private double height;
         //armour
         [XmlIgnore] public double BaseAccelIncrement;
         [XmlIgnore] public double BaseBrakeIncrement;
@@ -81,13 +90,6 @@ namespace Project
             return cost;
         }
 
-        public static int GetShipFrameSize(ShipBaseItems sbi)
-        {
-            return sbi.shipModel.basesprite.FrameHeight > sbi.shipModel.basesprite.FrameWidth
-                       ? sbi.shipModel.basesprite.FrameHeight
-                       : sbi.shipModel.basesprite.FrameWidth;
-        }
-
         public static string GetShipModelName(ShipBaseItems sbi)
         {
             return sbi.shipModel.name;
@@ -95,42 +97,42 @@ namespace Project
 
         public static double GetBrakeIncr(ShipBaseItems sbi)
         {
-            var s = sbi.shipModel.BaseBrakeIncrement;
+            double s = sbi.shipModel.BaseBrakeIncrement;
             double m = 1;
             if (sbi.Parts.ContainsKey(SlotLocation.SlotLocationEnum.ShipEnginePart))
-                m = ((ShipEnginePart)sbi.Parts[SlotLocation.SlotLocationEnum.ShipEnginePart]).BrakeModifier;
+                m = ((ShipEnginePart) sbi.Parts[SlotLocation.SlotLocationEnum.ShipEnginePart]).BrakeModifier;
 
-            return s * m;
+            return s*m;
         }
 
         public static double GetAccelIncr(ShipBaseItems sbi)
         {
-            var s = sbi.shipModel.BaseAccelIncrement;
+            double s = sbi.shipModel.BaseAccelIncrement;
             double m = 1;
             if (sbi.Parts.ContainsKey(SlotLocation.SlotLocationEnum.ShipEnginePart))
-                m = ((ShipEnginePart)sbi.Parts[SlotLocation.SlotLocationEnum.ShipEnginePart]).AccelModifier;
+                m = ((ShipEnginePart) sbi.Parts[SlotLocation.SlotLocationEnum.ShipEnginePart]).AccelModifier;
 
-            return s * m;
+            return s*m;
         }
 
         public static double GetMaxAccel(ShipBaseItems sbi)
         {
-            var s = sbi.shipModel.BaseMaxAccel;
+            double s = sbi.shipModel.BaseMaxAccel;
             double m = 1;
             if (sbi.Parts.ContainsKey(SlotLocation.SlotLocationEnum.ShipEnginePart))
-                m = ((ShipEnginePart)sbi.Parts[SlotLocation.SlotLocationEnum.ShipEnginePart]).MaxAccelModifier;
+                m = ((ShipEnginePart) sbi.Parts[SlotLocation.SlotLocationEnum.ShipEnginePart]).MaxAccelModifier;
 
-            return s * m;
+            return s*m;
         }
 
         public static double GetMaxSpeed(ShipBaseItems sbi)
         {
-            var s = sbi.shipModel.BaseMaxSpeed;
+            double s = sbi.shipModel.BaseMaxSpeed;
             double m = 1;
             if (sbi.Parts.ContainsKey(SlotLocation.SlotLocationEnum.ShipEnginePart))
-                m = ((ShipEnginePart)sbi.Parts[SlotLocation.SlotLocationEnum.ShipEnginePart]).MaxSpeedModifier;
+                m = ((ShipEnginePart) sbi.Parts[SlotLocation.SlotLocationEnum.ShipEnginePart]).MaxSpeedModifier;
 
-            return s * m;
+            return s*m;
         }
 
         public static double GetMinSpeed(ShipBaseItems sbi)
@@ -140,55 +142,56 @@ namespace Project
 
         public static double GetMaxArmour(ShipBaseItems sbi)
         {
-            var s = sbi.shipModel.BaseMaxArmour;
+            double s = sbi.shipModel.BaseMaxArmour;
             double m = 1;
             if (sbi.Parts.ContainsKey(SlotLocation.SlotLocationEnum.ShipHullPart))
-                m = ((ShipHullPart)sbi.Parts[SlotLocation.SlotLocationEnum.ShipHullPart]).MaxArmourModifier;
+                m = ((ShipHullPart) sbi.Parts[SlotLocation.SlotLocationEnum.ShipHullPart]).MaxArmourModifier;
 
-            return s * m;
+            return s*m;
         }
 
         public static double GetMaxEnergy(ShipBaseItems sbi)
         {
-            var s = sbi.shipModel.BaseMaxEnergy;
+            double s = sbi.shipModel.BaseMaxEnergy;
             double m = 1;
             if (sbi.Parts.ContainsKey(SlotLocation.SlotLocationEnum.ShipBatteryPart))
-                m = ((ShipBatteryPart)sbi.Parts[SlotLocation.SlotLocationEnum.ShipBatteryPart]).MaxEnergyModifier;
+                m = ((ShipBatteryPart) sbi.Parts[SlotLocation.SlotLocationEnum.ShipBatteryPart]).MaxEnergyModifier;
 
-            return (s * m);
+            return (s*m);
         }
 
         public static double GetMaxShield(ShipBaseItems sbi)
         {
-            var s = sbi.shipModel.BaseMaxShield;
+            double s = sbi.shipModel.BaseMaxShield;
             double m = 1;
             if (sbi.Parts.ContainsKey(SlotLocation.SlotLocationEnum.ShipBatteryPart))
-                m = ((ShipBatteryPart)sbi.Parts[SlotLocation.SlotLocationEnum.ShipBatteryPart]).MaxShieldModifier;
+                m = ((ShipBatteryPart) sbi.Parts[SlotLocation.SlotLocationEnum.ShipBatteryPart]).MaxShieldModifier;
 
-            return (s * m);
+            return (s*m);
         }
 
         public static double GetEnergyRegen(ShipBaseItems sbi)
         {
-            var s = sbi.shipModel.BaseEnergyRegenSpeed;
+            double s = sbi.shipModel.BaseEnergyRegenSpeed;
             double m = 1;
             if (sbi.Parts.ContainsKey(SlotLocation.SlotLocationEnum.ShipGeneratorPart))
-                m = ((ShipGeneratorPart)sbi.Parts[SlotLocation.SlotLocationEnum.ShipGeneratorPart]).EnergyRegenSpeedModifier;
+                m =
+                    ((ShipGeneratorPart) sbi.Parts[SlotLocation.SlotLocationEnum.ShipGeneratorPart]).
+                        EnergyRegenSpeedModifier;
 
-            return (s * m);
+            return (s*m);
         }
 
         public static double GetMaxTurnSpeed(ShipBaseItems sbi)
         {
-            var s = sbi.shipModel.BaseMaxTurnSpeed;
+            float s = sbi.shipModel.BaseMaxTurnSpeed;
             double m = 1;
             if (sbi.Parts.ContainsKey(SlotLocation.SlotLocationEnum.ShipWingsPart))
-                m = ((ShipWingsPart)sbi.Parts[SlotLocation.SlotLocationEnum.ShipWingsPart]).MaxTurnModifier;
+                m = ((ShipWingsPart) sbi.Parts[SlotLocation.SlotLocationEnum.ShipWingsPart]).MaxTurnModifier;
 
-            return s * m;
+            return s*m;
         }
 
         #endregion dynamic
     }
-
 }

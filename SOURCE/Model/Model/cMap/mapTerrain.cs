@@ -25,34 +25,24 @@ namespace Project.Model.mapInfo
 
         #endregion
 
-        [XmlIgnore]
-        public const int SeaLevel = 100;
+        [XmlIgnore] public const int SeaLevel = 100;
 
-        [XmlIgnore]
-        private const int FieldLevelMin = 250;
-        [XmlIgnore]
-        public const int FieldLevelMax = 350;
+        [XmlIgnore] private const int FieldLevelMin = 250;
+        [XmlIgnore] public const int FieldLevelMax = 350;
 
-        [XmlIgnore]
-        private const int MountainLevelMin = 500;
-        [XmlIgnore]
-        public const int MountainLevelMax = 1000;
-        [XmlIgnore]
-        public List<int> changed = new List<int>();
-        [XmlIgnore]
-        public List<int> dirty = new List<int>();
+        [XmlIgnore] private const int MountainLevelMin = 500;
+        [XmlIgnore] public const int MountainLevelMax = 1000;
+        [XmlIgnore] public List<int> changed = new List<int>();
+        [XmlIgnore] public List<int> dirty = new List<int>();
 
-        [XmlIgnore]
-        public heightmapClass heightmap;
+        [XmlIgnore] public heightmapClass heightmap;
 
-        [XmlIgnore]
-        private map parentmap;
+        [XmlIgnore] private Map parentmap;
 
         //set to be a copy of GameControlServer.R
-        [XmlIgnore]
-        private Random r;
+        [XmlIgnore] private Random r;
 
-        public void init(map parent, bool createBuildings, int seed)
+        public void init(Map parent, bool createBuildings, int seed)
         {
             dirty = new List<int>();
             changed = new List<int>();
@@ -72,10 +62,10 @@ namespace Project.Model.mapInfo
         tf.Add(terrainFeatures.Mountain);
         tf.Add(terrainFeatures.Mountain);
                                      * */
-            for (var a = 0; a < 6; a++)
+            for (int a = 0; a < 6; a++)
             {
-                var type = r.Next() % 3;
-                tf.Add((terrainFeatures)type);
+                int type = r.Next()%3;
+                tf.Add((terrainFeatures) type);
             }
 
             applyDAC(tf);
@@ -86,24 +76,24 @@ namespace Project.Model.mapInfo
 
         private void applyBuildings()
         {
-            var potBuild =
+            List<KeyValuePair<string, building>> potBuild =
                 loadXML.loadedBuildings.Where(s => s.Key.Contains(loadXML.buildingI)).ToList();
-            for (var x = 0; x < parentmap.width; x++)
+            for (int x = 0; x < parentmap.width; x++)
             {
                 //get rand building
-                var b = getRandBuilding(potBuild);
-                var fh = b.BaseSprite.FrameHeight / 2f;
+                building b = getRandBuilding(potBuild);
+                float fh = b.BaseSprite.FrameHeight/2f;
 
                 //get inital terrain height for this x
-                var startheight = heightmap.heights[x][heightmap.heights[x].Count - 1].Item2;
+                int startheight = heightmap.heights[x][heightmap.heights[x].Count - 1].Item2;
 
                 if (startheight > FieldLevelMin)
                 {
                     //check that there is a free area for the build
-                    var success = true;
-                    for (var x2 = x; x2 < b.BaseSprite.FrameWidth; x2 += 5)
+                    bool success = true;
+                    for (int x2 = x; x2 < b.BaseSprite.FrameWidth; x2 += 5)
                     {
-                        var height = heightmap.heights[x2][heightmap.heights[x2].Count - 1].Item2;
+                        int height = heightmap.heights[x2][heightmap.heights[x2].Count - 1].Item2;
 
                         if ((height + 3) < startheight || ((height - 3) > startheight))
                         {
@@ -127,7 +117,7 @@ namespace Project.Model.mapInfo
 
         private building getRandBuilding(List<KeyValuePair<string, building>> possible)
         {
-            var rz = r.Next() % possible.Count;
+            int rz = r.Next()%possible.Count;
             return possible[rz].Value;
         }
 
@@ -144,21 +134,21 @@ namespace Project.Model.mapInfo
 
             lock (parentmap)
             {
-                for (var a = 0; a < dirty.Count; a++)
+                for (int a = 0; a < dirty.Count; a++)
                 {
-                    var x = dirty[a];
+                    int x = dirty[a];
                     //lower all segments by one 
-                    var c = heightmap.heights[x].Count;
-                    var miny = heightmap.heights[x][0].Item2;
-                    for (var yseg = c - 1; yseg >= 1; yseg--)
+                    int c = heightmap.heights[x].Count;
+                    int miny = heightmap.heights[x][0].Item2;
+                    for (int yseg = c - 1; yseg >= 1; yseg--)
                     {
                         if (heightmap.heights[x][yseg].Item1 > miny)
                         {
-                            var dif1 = heightmap.heights[x][yseg].Item1 - heightdrop;
+                            int dif1 = heightmap.heights[x][yseg].Item1 - heightdrop;
                             if (dif1 < miny)
                                 dif1 = miny;
 
-                            var dif2 = heightmap.heights[x][yseg].Item2 - heightdrop;
+                            int dif2 = heightmap.heights[x][yseg].Item2 - heightdrop;
                             if (dif2 < miny)
                                 dif2 = miny;
 
@@ -178,18 +168,18 @@ namespace Project.Model.mapInfo
 
         private void mergeSegments(int x)
         {
-        redo:
-            var c = heightmap.heights[x].Count;
+            redo:
+            int c = heightmap.heights[x].Count;
             if (c == 1)
                 return;
 
-            for (var a = 0; a < c - 1; a++)
+            for (int a = 0; a < c - 1; a++)
             {
-                var min1 = heightmap.heights[x][a].Item1;
-                var max1 = heightmap.heights[x][a].Item2;
+                int min1 = heightmap.heights[x][a].Item1;
+                int max1 = heightmap.heights[x][a].Item2;
 
-                var min2 = heightmap.heights[x][a + 1].Item1;
-                var max2 = heightmap.heights[x][a + 1].Item2;
+                int min2 = heightmap.heights[x][a + 1].Item1;
+                int max2 = heightmap.heights[x][a + 1].Item2;
 
                 if (max1 != min2)
                     continue;
@@ -198,7 +188,6 @@ namespace Project.Model.mapInfo
                 heightmap.heights[x][a] = new Tuple<int, int>(min1, max2);
                 goto redo;
             }
-
         }
 
         public void removeTerrain(Vector2 pos, double radius)
@@ -208,14 +197,14 @@ namespace Project.Model.mapInfo
                 if (radius == 0)
                     return;
 
-                var lastX = -1;
-                for (var a = 180; a > 0; a--)
+                int lastX = -1;
+                for (int a = 180; a > 0; a--)
                 {
                     var v1 = new Vector2(pos.X, pos.Y);
                     VectorMove.UpdatePosition(ref v1, a, radius, null);
                     var v2 = new Vector2(pos.X, pos.Y);
                     VectorMove.UpdatePosition(ref v2, 360 - a, radius, null);
-                    var vx = (int)v1.X;
+                    var vx = (int) v1.X;
 
                     //make sure the terrain does go above 0 - below the map
                     double v1y = v1.Y;
@@ -229,7 +218,7 @@ namespace Project.Model.mapInfo
                     removeTerrain(vx, v1y, v2y);
                     if (lastX != -1)
                     {
-                        for (var b = lastX; b < vx; b++)
+                        for (int b = lastX; b < vx; b++)
                         {
                             removeTerrain(b, v1y, v2y);
                         }
@@ -242,11 +231,11 @@ namespace Project.Model.mapInfo
         public double getHighestTerrainPoint(double startX, double endX)
         {
             double highest = -1;
-            for (var a = (int)startX; a < (int)endX; a++)
+            for (var a = (int) startX; a < (int) endX; a++)
             {
                 if (parentmap.isValidMapBounds(true, a, true) == false)
                     continue;
-                var h = heightmap.heights[a][heightmap.heights[a].Count - 1];
+                Tuple<int, int> h = heightmap.heights[a][heightmap.heights[a].Count - 1];
                 if (highest == -1 || h.Item2 > highest)
                     highest = h.Item2;
             }
@@ -258,23 +247,23 @@ namespace Project.Model.mapInfo
         {
             if (parentmap.isValidMapBounds(true, x, true) == false)
                 return;
-            var h = heightmap.heights[x];
-            for (var a = 0; a < h.Count; a++)
+            List<Tuple<int, int>> h = heightmap.heights[x];
+            for (int a = 0; a < h.Count; a++)
             {
-                var h1 = h[a].Item1;
-                var h2 = h[a].Item2;
+                int h1 = h[a].Item1;
+                int h2 = h[a].Item2;
                 //3 cases
                 //1: explosion occurs above
                 if (h1 > y1 && y1 < -h2 && y2 >= -h2)
                 {
-                    h[a] = new Tuple<int, int>(h1, -(int)y2);
+                    h[a] = new Tuple<int, int>(h1, -(int) y2);
                 }
 
                     //2:in the block
                 else if (h1 > y1 && y1 >= -h2 && y2 >= -h2)
                 {
-                    h[a] = new Tuple<int, int>(-h1, -(int)y2);
-                    h.Insert(a + 1, new Tuple<int, int>(-(int)y1, h2));
+                    h[a] = new Tuple<int, int>(-h1, -(int) y2);
+                    h.Insert(a + 1, new Tuple<int, int>(-(int) y1, h2));
                     if (dirty.Contains(x) == false)
                     {
                         dirty.Add(x);
@@ -304,15 +293,15 @@ namespace Project.Model.mapInfo
             cam.spriteBatch.Draw(XNA.PixelTexture, r, Color.Blue);
 
             //land
-            for (var a = 0; a < parentmap.width; a++)
+            for (int a = 0; a < parentmap.width; a++)
             {
-                var c = heightmap.heights[a].Count();
-                for (var b = 0; b < c; b++)
+                int c = heightmap.heights[a].Count();
+                for (int b = 0; b < c; b++)
                 {
-                    var y1 = -heightmap.heights[a][b].Item1;
-                    var y2 = -heightmap.heights[a][b].Item2;
+                    int y1 = -heightmap.heights[a][b].Item1;
+                    int y2 = -heightmap.heights[a][b].Item2;
 
-                    var diff = -(y2 - y1);
+                    int diff = -(y2 - y1);
 
                     r = new Rectangle(a, y2, 1, diff);
                     cam.spriteBatch.Draw(XNA.PixelTexture, r, Color.Green);
@@ -325,10 +314,10 @@ namespace Project.Model.mapInfo
             if ((max - min) == 0)
                 return max;
 
-            var min2 = min < max ? min : max;
-            var max2 = min > max ? min : max;
-            var dif = max2 - min2;
-            return min2 + r.Next() % (dif);
+            int min2 = min < max ? min : max;
+            int max2 = min > max ? min : max;
+            int dif = max2 - min2;
+            return min2 + r.Next()%(dif);
         }
 
         private int getRandom(terrainFeatures tf)
@@ -362,20 +351,20 @@ namespace Project.Model.mapInfo
             0 1/4 1/4 1/4 1
             */
             //general overview
-            var countm = tf.Count - 1;
-            var amount = parentmap.width / countm;
+            int countm = tf.Count - 1;
+            int amount = parentmap.width/countm;
 
-            var count = 0;
-            for (var a = 0; a <= countm; a++)
+            int count = 0;
+            for (int a = 0; a <= countm; a++)
             {
                 heightmap.set(count, getRandom(tf[a]));
                 count += amount;
             }
 
             count = 0;
-            for (var a = 0; a <= countm; a++)
+            for (int a = 0; a <= countm; a++)
             {
-                var max = count + amount;
+                int max = count + amount;
                 if (max > parentmap.width)
                     max = parentmap.width;
                 applyDAC(count, max);
@@ -397,7 +386,7 @@ namespace Project.Model.mapInfo
                 return;
             }
             //get the middle, set this as a random between the two ends
-            var mid = (x1 + x2) / 2;
+            int mid = (x1 + x2)/2;
             heightmap.set(mid, getRandom(heightmap.get(x1), heightmap.get(x2)));
             //divide and conquer
             applyDAC(x1, mid);

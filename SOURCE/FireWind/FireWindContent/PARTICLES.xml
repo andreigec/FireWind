@@ -5,7 +5,9 @@
       <name>PARTICLE_GAUSS</name>
       <FrameHeight>3</FrameHeight>
       <FrameWidth>6</FrameWidth>
-      <rawPixelData>OXXXXXOXXXXXXOXXXXXO</rawPixelData>
+			<ScaledWidth>6</ScaledWidth>
+			<ScaledHeight>3</ScaledHeight>
+			<rawPixelData>OXXXXXOXXXXXXOXXXXXO</rawPixelData>
       <scale>1</scale>
     </Item>
 
@@ -13,6 +15,8 @@
       <name>PARTICLE_BOMB</name>
       <FrameHeight>4</FrameHeight>
       <FrameWidth>4</FrameWidth>
+			<ScaledWidth>4</ScaledWidth>
+			<ScaledHeight>4</ScaledHeight>
       <rawPixelData>XOOXOXXOXXXXOXXO</rawPixelData>
       <scale>3</scale>
     </Item>

@@ -50,12 +50,12 @@ namespace Project.Networking
             /// <summary>
             /// client-> server asking for sectors they can join.
             /// </summary>
-            RequestSectors=105,
+            RequestSectors = 105,
 
             /// <summary>
             /// server->client with sectors
             /// </summary>
-            SendSectors=106,
+            SendSectors = 106,
 
             /// <summary>
             /// CASE:[client] telling server it wants to join a game mode 
@@ -109,8 +109,7 @@ namespace Project.Networking
             /// <summary>
             /// CASE:server giving credits to player for ship destruction
             /// </summary>
-            GiveCredits=59,
-
+            GiveCredits = 59,
 
             #endregion other
 
@@ -191,9 +190,9 @@ namespace Project.Networking
             #endregion remove
         }
 
-        public static List<sendVars> UDPMessages;
-
         #endregion
+
+        public static List<sendVars> UDPMessages;
 
         private static long lastID;
         public long ID = -1;
@@ -212,6 +211,12 @@ namespace Project.Networking
             UDPMessages.Add(sendVars.UpdateTerrain);
         }
 
+        public Message(bool assignID = true)
+        {
+            if (assignID)
+                ID = lastID++;
+        }
+
         public bool IsUDPBoundMessage()
         {
             if (messageType != Messages.SendingVars)
@@ -219,8 +224,8 @@ namespace Project.Networking
             try
             {
                 var svc =
-                        (sendVars)
-                        Enum.Parse(typeof(sendVars), messageParams[0]);
+                    (sendVars)
+                    Enum.Parse(typeof (sendVars), messageParams[0]);
 
                 return (UDPMessages.Contains(svc));
             }
@@ -230,20 +235,14 @@ namespace Project.Networking
             }
         }
 
-        public Message(bool assignID = true)
-        {
-            if (assignID)
-                ID = lastID++;
-        }
-
         public string getMessageTypeString()
         {
-            var ret = messageType.ToString();
+            string ret = messageType.ToString();
             if (messageType != Messages.SendingVars ||
                 (messageType == Messages.SendingVars && messageParams.Count() < 1))
                 return ret;
 
-            var p = int.Parse(messageParams[0]);
+            int p = int.Parse(messageParams[0]);
             ret += ((sendVars) p).ToString();
             return ret;
         }
@@ -264,13 +263,13 @@ namespace Project.Networking
         {
             if (messageParams.Count == 0)
                 return "";
-            var concat = messageParams.Aggregate((a, b) => a + SynchMain.separator + b);
+            string concat = messageParams.Aggregate((a, b) => a + SynchMain.separator + b);
             return concat;
         }
 
         public override string ToString()
         {
-            var msg = SynchMain.startMessage +
+            string msg = SynchMain.startMessage +
                          ID + SynchMain.separator +
                          ResponseID + SynchMain.separator +
                          messageType.ToString("d") + SynchMain.separator +
@@ -283,15 +282,15 @@ namespace Project.Networking
             try
             {
                 //split by separators
-                var msgpart = joined.Split(SynchMain.separator);
+                string[] msgpart = joined.Split(SynchMain.separator);
                 var msgpartList = new List<string>();
 
                 //message ID
-                var gotID = Int64.Parse(msgpart[0]);
+                long gotID = Int64.Parse(msgpart[0]);
                 //responding to message ID
-                var respID = Int64.Parse(msgpart[1]);
+                long respID = Int64.Parse(msgpart[1]);
                 //type
-                var type = Int64.Parse(msgpart[2]);
+                long type = Int64.Parse(msgpart[2]);
 
                 //remove the first three elements
                 Shared.removeStringFromArray(ref msgpart, 0, 3);

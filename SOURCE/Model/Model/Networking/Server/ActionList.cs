@@ -19,16 +19,16 @@ namespace Project.Model.Networking.Server
 
         private static void SynchActionList()
         {
-            for (var a2 = 0; a2 < actionList.Count; a2++)
+            for (int a2 = 0; a2 < actionList.Count; a2++)
             {
-                var a = actionList[a2];
+                Tuple<actionListEnum, object[]> a = actionList[a2];
 
                 switch (a.Item1)
                 {
                     case actionListEnum.ReleaseShipFromBuilding:
                         var si = a.Item2[0] as ShipInstance;
                         var bi = a.Item2[1] as BuildingInstance;
-                        var m = si.parentArea as map;
+                        var m = si.parentArea as Map;
 
                         if (bi == null)
                         {
@@ -39,27 +39,27 @@ namespace Project.Model.Networking.Server
                         if (bi == null)
                         {
                             Manager.FireLogEvent("Error getting building for action building ship release",
-                                             SynchMain.MessagePriority.Low, true);
+                                                 SynchMain.MessagePriority.Low, true);
                             return;
                         }
 
-                        var ok = si.ChangeArea(m);
+                        bool ok = si.ChangeArea(m);
 
                         if (ok == false)
                             Manager.FireLogEvent("error releasing ship from hangar",
-                                             SynchMain.MessagePriority.High, true);
+                                                 SynchMain.MessagePriority.High, true);
                         else
                         {
                             ShipInstance.CreateBuildingExitVector(bi, si);
                             actionList.RemoveAt(a2);
                             Manager.FireLogEvent("ejected ship from hangar", SynchMain.MessagePriority.Low,
-                                             false);
+                                                 false);
                         }
                         continue;
 
                     case actionListEnum.AddJoinPSC:
                         //get ship
-                        var ok2 = true;
+                        bool ok2 = true;
                         var psc = a.Item2[0] as PlayerShipClass;
 
                         if (psc == null)
@@ -72,14 +72,14 @@ namespace Project.Model.Networking.Server
 
                         if (ok2)
                         {
-                            foreach (var sc in psc.SupportCraft)
+                            foreach (ShipInstance sc in psc.SupportCraft)
                                 ShipJoinMap(sc);
                         }
 
                         if (ok2 == false)
                         {
                             Manager.FireLogEvent("error joining game with player ship",
-                                             SynchMain.MessagePriority.High, true);
+                                                 SynchMain.MessagePriority.High, true);
                         }
                         else
                             actionList.RemoveAt(a2);
@@ -88,7 +88,7 @@ namespace Project.Model.Networking.Server
                     case actionListEnum.AddJoinPS:
 
                         //get ship
-                        var ok3 = true;
+                        bool ok3 = true;
                         si = a.Item2[0] as ShipInstance;
 
                         if (si == null)
@@ -102,7 +102,7 @@ namespace Project.Model.Networking.Server
                         if (ok3 == false)
                         {
                             Manager.FireLogEvent("error joining game with player ship",
-                                             SynchMain.MessagePriority.High, true);
+                                                 SynchMain.MessagePriority.High, true);
                         }
                         else
                             actionList.RemoveAt(a2);
@@ -118,14 +118,14 @@ namespace Project.Model.Networking.Server
 
         private static bool ShipJoinMap(ShipInstance si)
         {
-            var m = si.parentArea as map;
+            var m = si.parentArea as Map;
             if (m == null)
                 return false;
             //get good entrance vector
-            var vm = m.getSuitableJoinGameVector(si);
+            VectorMove vm = m.getSuitableJoinGameVector(si);
             if (vm != null)
             {
-                var ok = si.ChangeArea(m);
+                bool ok = si.ChangeArea(m);
 
                 if (ok == false)
                 {

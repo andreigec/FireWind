@@ -15,7 +15,8 @@ namespace Project.View.Client.ClientScreens
         public string currentValueEdit;
         public MenuOptions rootOptions;
 
-        public static void RegisterKeyboardValueEntry(KeyboardClass kbc, bool letters, bool numbers, bool dot, bool space)
+        public static void RegisterKeyboardValueEntry(KeyboardClass kbc, bool letters, bool numbers, bool dot,
+                                                      bool space)
         {
             kbc.ClearKeyTimeout();
             kbc.InitialiseKeyPress(Keys.Left);
@@ -34,16 +35,16 @@ namespace Project.View.Client.ClientScreens
                 return;
 
             cam.spriteBatch.Begin();
-            var ypos = 0;
-            var l = currentOption.createDisplayList();
-            foreach (var s in l)
+            int ypos = 0;
+            List<string> l = currentOption.createDisplayList();
+            foreach (string s in l)
             {
                 //draw current
-                var c = Color.Green;
+                Color c = Color.Green;
                 if (currentOption.Text.Equals(s))
                     c = Color.Yellow;
-                var s2 = s;
-                var nl = currentOption.getNodeValueText(s);
+                string s2 = s;
+                string nl = currentOption.getNodeValueText(s);
 
                 if (nl != null)
                 {
@@ -59,10 +60,10 @@ namespace Project.View.Client.ClientScreens
                         s2 += nl;
                     }
 
-                    cam.DrawString(s2, c, new Vector2 { X = 0, Y = ypos });
+                    cam.DrawString(s2, c, new Vector2 {X = 0, Y = ypos});
                 }
                 else
-                    cam.DrawString(s2, c, new Vector2 { X = 0, Y = ypos });
+                    cam.DrawString(s2, c, new Vector2 {X = 0, Y = ypos});
 
                 ypos += 20;
             }
@@ -94,7 +95,7 @@ namespace Project.View.Client.ClientScreens
                     currentOption.valueText = currentValueEdit;
                     EditingCurrent = false;
                 }
-                //move
+                    //move
                 else if (kbc.CanUseKey(Keys.Left))
                 {
                     EditCaret--;
@@ -107,7 +108,7 @@ namespace Project.View.Client.ClientScreens
                     if (EditCaret > currentValueEdit.Length)
                         EditCaret = currentValueEdit.Length;
                 }
-                //delete
+                    //delete
                 else if (kbc.CanUseKey(Keys.Back))
                 {
                     if (EditCaret != 0)
@@ -121,23 +122,23 @@ namespace Project.View.Client.ClientScreens
                     if (EditCaret != currentValueEdit.Length)
                         currentValueEdit = currentValueEdit.Remove(EditCaret, 1);
                 }
-                //valueText
+                    //valueText
                 else if (kbc.KeysDown.Count != 0)
                 {
-                    var kbp = kbc.KeysDown[0];
+                    Keys kbp = kbc.KeysDown[0];
                     if (kbc.CanUseKey(kbp))
                     {
-                        var kbp2 = Shared.GetCharFromKeys(kbp);
+                        char kbp2 = Shared.GetCharFromKeys(kbp);
                         currentValueEdit = currentValueEdit.Insert(EditCaret, kbp2.ToString());
                         EditCaret++;
                     }
                 }
             }
-            //choose an option
+                //choose an option
             else if (currentOption.isLeaf() && currentOption.Parent.hasValueText &&
                      currentOption.Parent.options)
             {
-                var str = currentOption.Text;
+                string str = currentOption.Text;
                 traverse(ref currentOption, false, -1);
                 currentOption.valueText = str;
             }
@@ -150,7 +151,7 @@ namespace Project.View.Client.ClientScreens
             {
                 traverse(ref currentOption, false, 0);
             }
-            //only handle escape if the menu can go to the parent when its not root
+                //only handle escape if the menu can go to the parent when its not root
             else if (kbc.CanUseKey(Keys.Escape) && currentOption != null && currentOption.Parent != rootOptions)
             {
                 traverse(ref currentOption, false, -1);
@@ -168,13 +169,13 @@ namespace Project.View.Client.ClientScreens
         /// <param name="levelChange">0 to stay on same level, 1 to go into an option, -1 to come out of an option</param>
         public void traverse(ref MenuOptions mo, bool down, int levelChange)
         {
-            var p = mo.Parent;
+            MenuOptions p = mo.Parent;
             if (p == null)
                 return;
 
             //get index of this menuoption
-            var index = 0;
-            var found = false;
+            int index = 0;
+            bool found = false;
             for (; index < p.children.Count; index++)
             {
                 if (p.children[index].Text == mo.Text)
@@ -262,7 +263,7 @@ namespace Project.View.Client.ClientScreens
 
         public MenuOptions getNode(String nodeText)
         {
-            var l = getNodeTextAux(nodeText);
+            MenuOptions l = getNodeTextAux(nodeText);
             if (l != null)
                 return l;
             return null;
@@ -270,7 +271,7 @@ namespace Project.View.Client.ClientScreens
 
         public String getNodeText(String nodeText)
         {
-            var l = Parent.getNodeTextAux(nodeText);
+            MenuOptions l = Parent.getNodeTextAux(nodeText);
             if (l != null)
                 return l.Text;
             return null;
@@ -278,7 +279,7 @@ namespace Project.View.Client.ClientScreens
 
         public String getNodeValueText(String nodeText)
         {
-            var l = Parent.getNodeTextAux(nodeText);
+            MenuOptions l = Parent.getNodeTextAux(nodeText);
             if (l != null && l.hasValueText)
                 return l.valueText;
             return null;
@@ -289,9 +290,9 @@ namespace Project.View.Client.ClientScreens
             if (Text != null && Text.Equals(nodeText))
                 return this;
 
-            foreach (var c in children)
+            foreach (MenuOptions c in children)
             {
-                var n = c.getNodeTextAux(nodeText);
+                MenuOptions n = c.getNodeTextAux(nodeText);
                 if (n != null)
                     return n;
             }
@@ -307,7 +308,7 @@ namespace Project.View.Client.ClientScreens
         {
             if (Parent.cachedirty)
             {
-                var l = Parent.createDisplayListAux(1);
+                List<string> l = Parent.createDisplayListAux(1);
                 Parent.cached = l;
                 Parent.cachedirty = false;
             }
@@ -325,7 +326,7 @@ namespace Project.View.Client.ClientScreens
 
             if (levels > 0)
             {
-                foreach (var c in children)
+                foreach (MenuOptions c in children)
                     o.AddRange(c.createDisplayListAux(levels - 1));
             }
 
@@ -354,7 +355,7 @@ namespace Project.View.Client.ClientScreens
 
         public bool hasParentNode(MenuOptions m)
         {
-            var t = Parent;
+            MenuOptions t = Parent;
             while (t != null)
             {
                 if (t == m)

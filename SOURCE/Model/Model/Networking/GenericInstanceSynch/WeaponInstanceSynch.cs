@@ -38,7 +38,7 @@ namespace Project.Model.Instances
         public bool Synchronise(ConnectedIPs client)
         {
             Init(client);
-            var SynchInfo = this.SynchInfo[client.ID];
+            SynchStatusMoveObjectInstance SynchInfo = this.SynchInfo[client.ID];
             if (SynchInfo == null)
                 return false;
 
@@ -47,9 +47,9 @@ namespace Project.Model.Instances
                 RemoteCreate(client, SynchInfo);
                 return true;
             }
-            
+
             RemoteUpdate(client, SynchInfo);
-            
+
             return false;
         }
 
@@ -73,7 +73,7 @@ namespace Project.Model.Instances
             o.Add(Message.sendVars.ShotRemove.ToString("d"));
             o.Add(ID.ToString());
 
-            var m = Message.CreateMessage(Message.Messages.SendingVars, o);
+            Message m = Message.CreateMessage(Message.Messages.SendingVars, o);
             parentGCS.parentSynch.AddMessageToWriteBuffer(m, connection);
             connection.AddResponseRequirement(m.ID, SynchInfo, SynchInfo.Deleted, false);
         }
@@ -106,8 +106,8 @@ namespace Project.Model.Instances
             var o = new List<string>();
             o.Add(Message.sendVars.CreateShot.ToString("d"));
             o.AddRange(SerialiseCreate());
-            
-            var m = Message.CreateMessage(Message.Messages.SendingVars, o);
+
+            Message m = Message.CreateMessage(Message.Messages.SendingVars, o);
             parentGCS.parentSynch.AddMessageToWriteBuffer(m, cc);
             SynchInfo.Created.Value = true;
             //cc.AddResponseRequirement(m.ID, SynchInfo, SynchInfo.Created, true);
@@ -122,7 +122,7 @@ namespace Project.Model.Instances
             o.Add(Message.sendVars.UpdateShotPosition.ToString("d"));
             o.AddRange(SerialiseUpdate());
 
-            var m = Message.CreateMessage(Message.Messages.SendingVars, o);
+            Message m = Message.CreateMessage(Message.Messages.SendingVars, o);
             parentGCS.parentSynch.AddMessageToWriteBuffer(m, cc);
         }
 
@@ -137,7 +137,7 @@ namespace Project.Model.Instances
         */
 
 
-        public static List<string> SerialiseShotCreationRequest(map m, ShipInstance si, weapon w)
+        public static List<string> SerialiseShotCreationRequest(Map m, ShipInstance si, weapon w)
         {
             var o = new List<string>();
 
@@ -147,21 +147,21 @@ namespace Project.Model.Instances
             return o;
         }
 
-        public static SynchMain.returncodes DeserialiseShotCreationRequest(List<string> args, region r)
+        public static SynchMain.returncodes DeserialiseShotCreationRequest(List<string> args, Region r)
         {
-            var m = r.getArea(int.Parse(Shared.PopFirstListItem(args))) as map;
+            var m = r.getArea(int.Parse(Shared.PopFirstListItem(args))) as Map;
             if (m == null)
                 return SynchMain.returncodes.E_NOT_FOUND;
 
-            var ship = r.getShipInstance(int.Parse(Shared.PopFirstListItem(args)));
+            ShipInstance ship = r.getShipInstance(int.Parse(Shared.PopFirstListItem(args)));
             if (ship == null)
                 return SynchMain.returncodes.E_NOT_FOUND;
 
-            var weaponname = Shared.PopFirstListItem(args);
+            string weaponname = Shared.PopFirstListItem(args);
             if (loadXML.loadedWeapons.ContainsKey(weaponname) == false)
                 return SynchMain.returncodes.E_NOT_FOUND;
 
-            var w = loadXML.loadedWeapons[weaponname];
+            weapon w = loadXML.loadedWeapons[weaponname];
 
             addShot(m, ship, w);
             return SynchMain.returncodes.S_OK;
@@ -180,19 +180,20 @@ namespace Project.Model.Instances
             return o;
         }
 
-        public static bool DeserialiseCreate(List<string> args, region r)
+        public static bool DeserialiseCreate(List<string> args, Region r)
         {
-            var id = int.Parse(Shared.PopFirstListItem(args));
-            var vm = SpriteInstance.DeserialisePosition(args);
-            var name = Shared.PopFirstListItem(args);
-            var mid = int.Parse(Shared.PopFirstListItem(args));
-            var parentID = long.Parse(Shared.PopFirstListItem(args));
+            int id = int.Parse(Shared.PopFirstListItem(args));
+            Tuple<VectorMove, float, float> vm = SpriteInstance.DeserialisePosition(args);
+            string name = Shared.PopFirstListItem(args);
+            int mid = int.Parse(Shared.PopFirstListItem(args));
+            long parentID = long.Parse(Shared.PopFirstListItem(args));
 
-            var nextid = long.Parse(Shared.PopFirstListItem(args));
-            var previd = long.Parse(Shared.PopFirstListItem(args));
+            long nextid = long.Parse(Shared.PopFirstListItem(args));
+            long previd = long.Parse(Shared.PopFirstListItem(args));
 
-            var m = r.getArea(mid) as map;
-            var wi = new WeaponInstance(r.parentGCS, loadXML.loadedWeapons[name], m, vm.Item1, parentID, SetID.CreateSetForce(id));
+            var m = r.getArea(mid) as Map;
+            var wi = new WeaponInstance(r.parentGCS, loadXML.loadedWeapons[name], m, vm.Item1, parentID,
+                                        SetID.CreateSetForce(id));
 
             wi.spriteInstance.LookAngle = vm.Item2;
             wi.spriteInstance.currentGravity = vm.Item3;
@@ -217,14 +218,14 @@ namespace Project.Model.Instances
             return o;
         }
 
-        public static void DeserialiseUpdate(List<string> args, region r)
+        public static void DeserialiseUpdate(List<string> args, Region r)
         {
             //1
-            var id = int.Parse(Shared.PopFirstListItem(args));
-            var wi_up = r.getShotInstance(id);
-            if (wi_up==null)
+            int id = int.Parse(Shared.PopFirstListItem(args));
+            WeaponInstance wi_up = r.getShotInstance(id);
+            if (wi_up == null)
             {
-                Manager.FireLogEvent("shot not found:"+id.ToString(),SynchMain.MessagePriority.Low,true);
+                Manager.FireLogEvent("shot not found:" + id.ToString(), SynchMain.MessagePriority.Low, true);
                 return;
             }
             SpriteInstance.DeserialisePosition(args, wi_up.spriteInstance);

@@ -5,14 +5,18 @@
       <name>BATTERY</name>
       <FrameHeight>128</FrameHeight>
       <FrameWidth>128</FrameWidth>
-      <path>Sprites/Other/BATTERY</path>
-      <sprites/>
+			<ScaledWidth>128</ScaledWidth>
+			<ScaledHeight>128</ScaledHeight>
+			<path>Sprites/Other/BATTERY</path>
+			<sprites></sprites>
     </Item>
 
     <Item>
       <name>LMB</name>
       <FrameHeight>64</FrameHeight>
       <FrameWidth>64</FrameWidth>
+      <ScaledWidth>64</ScaledWidth>
+      <ScaledHeight>64</ScaledHeight>
       <path>Sprites/Other/LMB</path>
       <sprites/>
     </Item>
@@ -21,6 +25,8 @@
       <name>SHIELD</name>
       <FrameHeight>128</FrameHeight>
       <FrameWidth>128</FrameWidth>
+      <ScaledWidth>128</ScaledWidth>
+      <ScaledHeight>128</ScaledHeight>
       <path>Sprites/Other/SHIELD</path>
       <sprites/>
     </Item>
@@ -29,6 +35,8 @@
       <name>ARMOUR</name>
       <FrameHeight>128</FrameHeight>
       <FrameWidth>128</FrameWidth>
+      <ScaledWidth>128</ScaledWidth>
+      <ScaledHeight>128</ScaledHeight>
       <path>Sprites/Other/ARMOUR</path>
       <sprites/>
     </Item>
@@ -37,6 +45,8 @@
       <name>RMB</name>
       <FrameHeight>64</FrameHeight>
       <FrameWidth>64</FrameWidth>
+      <ScaledWidth>64</ScaledWidth>
+      <ScaledHeight>64</ScaledHeight>
       <path>Sprites/Other/RMB</path>
       <sprites/>
     </Item>
@@ -45,6 +55,8 @@
       <name>WEAPONPIC_BOMB</name>
       <FrameHeight>64</FrameHeight>
       <FrameWidth>64</FrameWidth>
+      <ScaledWidth>64</ScaledWidth>
+      <ScaledHeight>64</ScaledHeight>
       <path>Sprites/Weapons/WEAPONPIC_BOMB</path>
       <sprites/>
     </Item>
@@ -53,6 +65,8 @@
       <name>WEAPONPIC_LASER</name>
       <FrameHeight>64</FrameHeight>
       <FrameWidth>64</FrameWidth>
+      <ScaledWidth>64</ScaledWidth>
+      <ScaledHeight>64</ScaledHeight>
       <path>Sprites/Weapons/WEAPONPIC_LASER</path>
       <sprites/>
     </Item>
@@ -61,6 +75,8 @@
       <name>WEAPONPIC_GAUSS</name>
       <FrameHeight>64</FrameHeight>
       <FrameWidth>64</FrameWidth>
+      <ScaledWidth>64</ScaledWidth>
+      <ScaledHeight>64</ScaledHeight>
       <path>Sprites/Weapons/WEAPONPIC_GAUSS</path>
       <sprites/>
     </Item>
@@ -69,6 +85,8 @@
       <name>SHIP2</name>
       <FrameHeight>64</FrameHeight>
       <FrameWidth>128</FrameWidth>
+      <ScaledWidth>128</ScaledWidth>
+      <ScaledHeight>64</ScaledHeight>
       <path>Sprites/Ships/Ship2/mig</path>
       <sprites>
         <Item>
@@ -92,6 +110,8 @@
       <name>SHIP1</name>
       <FrameHeight>64</FrameHeight>
       <FrameWidth>64</FrameWidth>
+      <ScaledWidth>64</ScaledWidth>
+      <ScaledHeight>64</ScaledHeight>
       <path>Sprites/Ships/Ship3/AlliedFighters</path>
       <sprites>
         <Item>

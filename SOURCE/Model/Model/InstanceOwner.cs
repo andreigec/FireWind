@@ -51,9 +51,9 @@ namespace Project.Model.Instances
 
         public static InstanceOwner DeserialiseCreate(List<String> args)
         {
-            var ccid = long.Parse(Shared.PopFirstListItem(args));
-            var owid = long.Parse(Shared.PopFirstListItem(args));
-            var fact = long.Parse(Shared.PopFirstListItem(args));
+            long ccid = long.Parse(Shared.PopFirstListItem(args));
+            long owid = long.Parse(Shared.PopFirstListItem(args));
+            long fact = long.Parse(Shared.PopFirstListItem(args));
             var ct = (ControlType) int.Parse(Shared.PopFirstListItem(args));
 
             var ret = new InstanceOwner(owid, fact, ct, ccid);

@@ -13,14 +13,14 @@ namespace Project.Model
         public heightmapClass(int width)
         {
             heights = new List<Tuple<int, int>>[width];
-            for (var a = 0; a < width; a++)
+            for (int a = 0; a < width; a++)
                 heights[a] = new List<Tuple<int, int>>();
             //this.width = width;
         }
 
         public String Serialise()
         {
-            var r = "";
+            string r = "";
             foreach (var k in heights)
             {
                 if (k == null)
@@ -39,30 +39,30 @@ namespace Project.Model
         public static heightmapClass Deserialise(String r)
         {
             //split into columns
-            var col = r.Split('\n');
-            var w = col.Length - 1;
+            string[] col = r.Split('\n');
+            int w = col.Length - 1;
 
             var v = new List<Tuple<int, int>>[w];
 
-            var count = 0;
-            foreach (var c in col)
+            int count = 0;
+            foreach (string c in col)
             {
                 if (string.IsNullOrEmpty(c))
                     continue;
 
                 v[count] = new List<Tuple<int, int>>();
                 //split into tuples
-                var tup = c.Split('\t');
+                string[] tup = c.Split('\t');
 
-                foreach (var t in tup)
+                foreach (string t in tup)
                 {
                     if (string.IsNullOrEmpty(t))
                         continue;
 
 
-                    var i = t.Split(',');
-                    var i1 = int.Parse(i[0]);
-                    var i2 = int.Parse(i[1]);
+                    string[] i = t.Split(',');
+                    int i1 = int.Parse(i[0]);
+                    int i2 = int.Parse(i[1]);
                     v[count].Add(new Tuple<int, int>(i1, i2));
                 }
                 //split into item 1/2

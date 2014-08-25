@@ -3,14 +3,14 @@
   <Asset Type="Generic:List[Project.ShipBoosterPart]">
     <Item>
       <name>Stock Booster</name>
-      <Cost>1000</Cost>
+      <Cost>100</Cost>
       <MaxBoosterMultiplierModifier>1</MaxBoosterMultiplierModifier>
       <maxBoosterTimeModifier>1</maxBoosterTimeModifier>
     </Item>
     
     <Item>
       <name>V2 Booster</name>
-      <Cost>2000</Cost>
+      <Cost>200</Cost>
       <MaxBoosterMultiplierModifier>2</MaxBoosterMultiplierModifier>
       <maxBoosterTimeModifier>2</maxBoosterTimeModifier>
     </Item>

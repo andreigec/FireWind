@@ -82,14 +82,14 @@ namespace Project.Model.mapInfo
         {
             while (remlist.Count > 0)
             {
-                var s = remlist[0];
+                ISynchroniseInterfaceDrawObject<TCL, TSynchStatus, TSynchStatusMain, TDCL> s = remlist[0];
 
-                foreach (var client in clients)
+                foreach (TCL client in clients)
                 {
                     //if the client id doesnt exist any more, it was already cleaned up
                     if (s.SynchInfo == null || s.SynchInfo.ContainsKey(client.ID) == false)
                         s.Init(client);
-                    var SynchInfo = s.SynchInfo[client.ID];
+                    TSynchStatus SynchInfo = s.SynchInfo[client.ID];
 
                     //make sure the region has been sent to the ship before removing an object
                     if (shipAreaSynchInfo == null || shipAreaSynchInfo.ContainsKey(client.ID) == false ||
@@ -145,7 +145,7 @@ namespace Project.Model.mapInfo
 
         public static void Cleanup(IshipAreaSynch isa, ConnectedIPs client)
         {
-            foreach (var s in isa.ships)
+            foreach (ShipInstance s in isa.ships)
             {
                 if (s == null)
                     continue;
@@ -153,7 +153,7 @@ namespace Project.Model.mapInfo
                 s.Cleanup(client);
             }
 
-            foreach (var b in isa.buildings)
+            foreach (BuildingInstance b in isa.buildings)
             {
                 if (b == null)
                     continue;
@@ -161,7 +161,7 @@ namespace Project.Model.mapInfo
                 b.Cleanup(client);
             }
 
-            foreach (var w in isa.shots)
+            foreach (WeaponInstance w in isa.shots)
             {
                 if (w == null)
                     continue;

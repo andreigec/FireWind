@@ -10,14 +10,14 @@ using Project.Networking;
 
 namespace Project
 {
-    public partial class sector : SharedID, IshipAreaSynch
+    public partial class Sector : SharedID, IshipAreaSynch
     {
         public SectorConfig Config;
         [XmlIgnore] public long parentID = -1;
-        [XmlIgnore] public region parentRegion;
-        public map thismap;
+        [XmlIgnore] public Region parentRegion;
+        public Map thismap;
 
-        private sector()
+        private Sector()
         {
         }
 
@@ -37,10 +37,11 @@ namespace Project
 
         #endregion
 
-        private static sector CreateSector(GameControlServer gcs, int mapWidth, int mapHeight, SectorConfig config, int mapSeed,
-                                           SetID secIDcfg, SetID mapIDcfg, region parent = null)
+        private static Sector CreateSector(GameControlServer gcs, int mapWidth, int mapHeight, SectorConfig config,
+                                           int mapSeed,
+                                           SetID secIDcfg, SetID mapIDcfg, Region parent = null)
         {
-            var s = new sector();
+            var s = new Sector();
             IShipAreaMIXIN.InitClass(s);
             ISynchInterfaceMIXIN.InitClass(s);
 
@@ -48,7 +49,7 @@ namespace Project
 
             s.Config = config;
             s.parentRegion = parent;
-            s.thismap = map.CreateMap(s, mapWidth, mapHeight, config, mapSeed, mapIDcfg);
+            s.thismap = Map.CreateMap(s, mapWidth, mapHeight, config, mapSeed, mapIDcfg);
             s.setID(secIDcfg);
 
             return s;
@@ -60,13 +61,13 @@ namespace Project
             parentID = ID;
 
             //ships
-            foreach (var s in ships)
+            foreach (ShipInstance s in ships)
             {
                 s.instanceOwner = new InstanceOwner(id, faction, InstanceOwner.ControlType.JustOwner);
             }
 
             //buildings
-            foreach (var b in thismap.buildings)
+            foreach (BuildingInstance b in thismap.buildings)
             {
                 b.instanceOwner = new InstanceOwner(id, faction, InstanceOwner.ControlType.JustOwner);
             }
@@ -77,11 +78,11 @@ namespace Project
         /// </summary>
         /// <param name="mapWidth"></param>
         /// <param name="mapHeight"></param>
-        public static sector addSector(SectorConfig config, region r)
+        public static Sector addSector(SectorConfig config, Region r)
         {
-            var width = config.GetWidth();
-            var height = config.GetHeight();
-            var s = CreateSector(r.parentGCS,width, height, config, DateTime.Now.Millisecond, SetID.CreateSetNew(),
+            int width = config.GetWidth();
+            int height = config.GetHeight();
+            Sector s = CreateSector(r.parentGCS, width, height, config, DateTime.Now.Millisecond, SetID.CreateSetNew(),
                                     SetID.CreateSetNew(), r);
             return s;
         }

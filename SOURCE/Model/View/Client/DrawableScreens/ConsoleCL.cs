@@ -99,25 +99,25 @@ namespace Project.View.Client.ClientScreens
         public static void console_LogAdd(int clientID, String text, Message m, SynchMain.MessagePriority priority,
                                           bool isError)
         {
-            var id = " ID:";
+            string id = " ID:";
             if (m == null)
                 id = "\t";
             else
                 id += m.ID.ToString() + "\t";
 
-            var rid = " RF:";
+            string rid = " RF:";
             if (m == null)
                 rid = "\t";
             else
                 rid += m.ResponseID.ToString() + "\t";
 
-            var type = "";
+            string type = "";
             if (m == null)
                 type = "\t";
             else
                 type = m.getMessageTypeString() + "\t";
 
-            var mt = "";
+            string mt = "";
             if (m != null)
             {
                 mt = m.ToString();
@@ -129,7 +129,7 @@ namespace Project.View.Client.ClientScreens
 
             changeColour(priority, isError);
 
-            var s = DateTime.Now.ToLongTimeString() + id + rid + text + type
+            string s = DateTime.Now.ToLongTimeString() + id + rid + text + type
                        + mt + "\tpri:" + priority + "\tiserror?:" + isError.ToString();
 
             if (ConsoleEnabled)

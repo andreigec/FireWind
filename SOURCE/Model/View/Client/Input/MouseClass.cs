@@ -40,21 +40,21 @@ namespace Project.View.Client
         {
             gt = gtIN;
             CurrentState = ms;
-            var x = ms.X;
-            var y = ms.Y;
+            int x = ms.X;
+            int y = ms.Y;
 
             if (x < 0)
                 x = 0;
             if (y < 0)
                 y = 0;
 
-            if (cam!=null)
+            if (cam != null)
             {
                 if (x > cam.ViewportWidth)
                     x = cam.ViewportWidth;
 
                 if (y > cam.ViewportHeight)
-                    y = cam.ViewportHeight;    
+                    y = cam.ViewportHeight;
             }
 
             CurrentPos = new Vector2(x, y);
@@ -122,7 +122,7 @@ namespace Project.View.Client
                     ButtonsDown.Add(mouseButtons.right, v);
             }
 
-            var dif = CurrentState.ScrollWheelValue - OldState.ScrollWheelValue;
+            int dif = CurrentState.ScrollWheelValue - OldState.ScrollWheelValue;
             if (dif > 0)
                 ButtonsDown.Add(mouseButtons.mouseWheelUp, v);
             else if (dif < 0)

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Xml.Serialization;
 using Microsoft.Xna.Framework;
 using Project.Model.mapInfo;
@@ -39,10 +38,8 @@ namespace Project.Model.Instances
 
         public long parentID;
         public long previousBeamInstanceID = -1;
-        [XmlIgnore]
-        public GameControlServer parentGCS { get; set; }
 
-        private WeaponInstance(GameControlServer gcs, weapon w, map m, VectorMove vm, long parentShipID, SetID cfg)
+        private WeaponInstance(GameControlServer gcs, weapon w, Map m, VectorMove vm, long parentShipID, SetID cfg)
         {
             parentGCS = gcs;
             ISynchInterfaceMIXIN.InitClass(this);
@@ -51,7 +48,7 @@ namespace Project.Model.Instances
             spriteInstance = new SpriteInstance(w.BaseSprite, m);
 
             if (w.BaseSprite != null)
-                spriteInstance.scale = ((SpriteParticle)w.BaseSprite).scale;
+                spriteInstance.scale = ((SpriteParticle) w.BaseSprite).scale;
 
             if (vm != null)
                 spriteInstance.move = vm.Clone();
@@ -62,14 +59,14 @@ namespace Project.Model.Instances
             nextBeamInstanceID = previousBeamInstanceID = -1;
 
             //for beam weapons
-            var tms = Manager.GetMillisecondsNow();
+            double tms = Manager.GetMillisecondsNow();
 
             if (w.IsBeam)
             {
-                var dif = tms - LastFireTime;
+                double dif = tms - LastFireTime;
                 //make sure the last fired weapon is the same type, and that the cooldown is not too much to make a beam
                 if (LastFireWeapon.ContainsKey(parentShipID) && LastFireWeapon[parentShipID].weapon == w &&
-                    dif < w.CoolDown * 1.5)
+                    dif < w.CoolDown*1.5)
                 {
                     previousBeamInstanceID = LastFireWeapon[parentShipID].ID;
                     LastFireWeapon[parentShipID].nextBeamInstanceID = ID;
@@ -86,6 +83,9 @@ namespace Project.Model.Instances
         public weapon weapon { get; private set; }
 
         #region IDrawableObject Members
+
+        [XmlIgnore]
+        public GameControlServer parentGCS { get; set; }
 
         public IshipAreaSynch parentArea { get; set; }
         public SpriteInstance spriteInstance { get; set; }
@@ -122,16 +122,16 @@ namespace Project.Model.Instances
             return VectorMove.wrapAngle(si.spriteInstance.LookAngle + w.AngleOfFire);
         }
 
-        public static WeaponInstance addShot(map m, ShipInstance si, weapon w)
+        public static WeaponInstance addShot(Map m, ShipInstance si, weapon w)
         {
             var vm = new VectorMove(si.spriteInstance.move.Position);
-            var ang = si.spriteInstance.LookAngle;
+            float ang = si.spriteInstance.LookAngle;
             ang = GetFireAngle(w, si);
 
             vm.setAngleAndVelocity(ang,
                                    si.spriteInstance.move.Velocity + si.spriteInstance.currentGravity + w.Velocity);
 
-            var owner = si.ID;
+            long owner = si.ID;
             var wi = new WeaponInstance(m.parentGCS, w, m, vm, owner, SetID.CreateSetNew());
             wi.TempInvinShipID = owner;
 

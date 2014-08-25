@@ -27,14 +27,13 @@ namespace Project.Model.Instances
         public BuildingType buildingType = BuildingType.Civilian;
         public int falldistance;
         public bool falling;
-        [XmlIgnore]
-        public GameControlServer parentGCS { get; set; }
 
         public BuildingInstance()
         {
         }
 
-        private BuildingInstance(GameControlServer gcs, building b, IshipAreaSynch m, VectorMove move, float lookAng, BuildingType btype,
+        private BuildingInstance(GameControlServer gcs, building b, IshipAreaSynch m, VectorMove move, float lookAng,
+                                 BuildingType btype,
                                  SetID cfg,
                                  InstanceOwner controller = null)
         {
@@ -58,6 +57,9 @@ namespace Project.Model.Instances
         #region IDrawableObject Members
 
         [XmlIgnore]
+        public GameControlServer parentGCS { get; set; }
+
+        [XmlIgnore]
         public IshipAreaSynch parentArea { get; set; }
 
         public SpriteInstance spriteInstance { get; set; }
@@ -69,10 +71,11 @@ namespace Project.Model.Instances
 
         #endregion
 
-        public static BuildingInstance addBuilding(GameControlServer gcs, BuildingInstance oldBI, IshipAreaSynch m, SetID cfg)
+        public static BuildingInstance addBuilding(GameControlServer gcs, BuildingInstance oldBI, IshipAreaSynch m,
+                                                   SetID cfg)
         {
-            var bm = loadXML.loadedBuildings[oldBI.buildingModel.name];
-            var bi = new BuildingInstance(gcs,bm, m, oldBI.spriteInstance.move, oldBI.spriteInstance.LookAngle,
+            building bm = loadXML.loadedBuildings[oldBI.buildingModel.name];
+            var bi = new BuildingInstance(gcs, bm, m, oldBI.spriteInstance.move, oldBI.spriteInstance.LookAngle,
                                           oldBI.buildingType, cfg,
                                           oldBI.instanceOwner);
             bi.armour = oldBI.armour;
@@ -81,11 +84,12 @@ namespace Project.Model.Instances
             return bi;
         }
 
-        public static BuildingInstance addBuilding(GameControlServer gcs, building b, IshipAreaSynch parent, InstanceOwner controller,
+        public static BuildingInstance addBuilding(GameControlServer gcs, building b, IshipAreaSynch parent,
+                                                   InstanceOwner controller,
                                                    VectorMove position,
                                                    BuildingType btype, SetID cfg)
         {
-            var bi = new BuildingInstance(gcs,b, parent, position, 0, btype, cfg, controller);
+            var bi = new BuildingInstance(gcs, b, parent, position, 0, btype, cfg, controller);
             parent.buildings.Add(bi);
             bi.parentArea = parent;
             return bi;
@@ -103,7 +107,7 @@ namespace Project.Model.Instances
         {
             if (armour == buildingModel.MaxArmour)
                 return;
-            var p = armour/buildingModel.MaxArmour;
+            double p = armour/buildingModel.MaxArmour;
 
             foreach (var s in buildingModel.DestructFrames)
             {

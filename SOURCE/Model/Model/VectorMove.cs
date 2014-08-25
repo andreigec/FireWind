@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Project.Networking;
 
 namespace Project.Model
 {
@@ -98,12 +97,12 @@ namespace Project.Model
 
         public static VectorMove DeserialisePosition(List<string> args)
         {
-            var angle = float.Parse(Shared.PopFirstListItem(args));
-            var velocity = double.Parse(Shared.PopFirstListItem(args));
-            var width = int.Parse(Shared.PopFirstListItem(args));
-            var height = int.Parse(Shared.PopFirstListItem(args));
-            var mx = float.Parse(Shared.PopFirstListItem(args));
-            var my = float.Parse(Shared.PopFirstListItem(args));
+            float angle = float.Parse(Shared.PopFirstListItem(args));
+            double velocity = double.Parse(Shared.PopFirstListItem(args));
+            int width = int.Parse(Shared.PopFirstListItem(args));
+            int height = int.Parse(Shared.PopFirstListItem(args));
+            float mx = float.Parse(Shared.PopFirstListItem(args));
+            float my = float.Parse(Shared.PopFirstListItem(args));
 
             return new VectorMove(angle, velocity, new Rect(mx, my, width, height));
         }
@@ -161,7 +160,7 @@ namespace Project.Model
 
         public void UpdateVelocity(double ChangeAmount, double min = 0, double max = -1)
         {
-            var newvel = Velocity + ChangeAmount;
+            double newvel = Velocity + ChangeAmount;
             if (newvel < min)
                 Velocity = min;
             else if (newvel > max && max != -1)
@@ -176,14 +175,14 @@ namespace Project.Model
                 return;
 
             //if the desired angle is between the current angle and the max change, just set
-            var dif = Math.Abs(currentangle - desiredangle);
+            float dif = Math.Abs(currentangle - desiredangle);
             if (maxChangeAmount >= dif)
             {
                 currentangle = desiredangle;
                 return;
             }
 
-            var currentangle2 = currentangle;
+            float currentangle2 = currentangle;
             if (currentangle2 > 0)
             {
                 desiredangle -= currentangle;
@@ -236,7 +235,7 @@ namespace Project.Model
                 p = gt.ElapsedGameTime.TotalMilliseconds/100;
             }
 
-            var ang = Angle;
+            float ang = Angle;
             ang = (ang/180f)*3.14159f;
             var x = (float) Math.Cos(ang);
             var y = (float) Math.Sin(ang);
@@ -246,7 +245,7 @@ namespace Project.Model
 
         public static void ExtendPoint(ref Vector2 point, float angle, double radius)
         {
-            var ang = angle;
+            float ang = angle;
             ang = (ang/180f)*3.14159f;
             var x = (float) Math.Cos(ang);
             var y = (float) Math.Sin(ang);
@@ -267,7 +266,7 @@ namespace Project.Model
 
         public static float angleInBetween(float Angle, float angle2)
         {
-            var dif = Math.Abs(Angle - angle2)%360;
+            float dif = Math.Abs(Angle - angle2)%360;
 
             if (dif > 180f)
                 return 360f - dif;
@@ -284,7 +283,7 @@ namespace Project.Model
         {
             double a = Math.Abs(one.X - two.X);
             double b = Math.Abs(one.Y - two.Y);
-            var c = Math.Sqrt(a*a + b*b);
+            double c = Math.Sqrt(a*a + b*b);
             return c;
         }
     }

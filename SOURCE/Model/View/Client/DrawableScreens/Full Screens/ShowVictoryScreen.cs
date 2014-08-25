@@ -1,8 +1,6 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Project.Model.mapInfo;
-using Project.Networking;
 using Project.View.Client.Cameras;
 
 namespace Project.View.Client.ClientScreens
@@ -36,7 +34,7 @@ namespace Project.View.Client.ClientScreens
 
         public void KeyboardUpdate(GameTime gt, KeyboardClass kbc)
         {
-            var handled = menucreate.HandleKey(kbc);
+            bool handled = menucreate.HandleKey(kbc);
             if (handled)
                 return;
 
@@ -58,7 +56,7 @@ namespace Project.View.Client.ClientScreens
             menucreate = new MenuOptionsCreate();
             menucreate.rootOptions = new MenuOptions(null, false);
 
-            var one = menucreate.rootOptions.addChild(Localisation.CompletedLevel, false);
+            MenuOptions one = menucreate.rootOptions.addChild(Localisation.CompletedLevel, false);
             menucreate.currentOption = one;
         }
     }

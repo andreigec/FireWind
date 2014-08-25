@@ -1,5 +1,5 @@
 ﻿using System;
-using Project.View.Client.DrawableScreens.WPF_Screens;
+using ANDREICSLIB;
 
 namespace Project.Networking
 {
@@ -12,16 +12,21 @@ namespace Project.Networking
 
     public class ConnectDetails : IConnectDetails
     {
-        public int TCPport { get; set; }
-        public int UDPport { get; set; }
-        public string ip { get; set; }
-
-        public ConnectDetails(string ipIN, int TCPIN = GameInitConfig.DefaultTCPPort, int UDPIN = GameInitConfig.DefaultUDPPort)
+        public ConnectDetails(string ipIN, int TCPIN = GameInitConfig.DefaultTCPPort,
+                              int UDPIN = GameInitConfig.DefaultUDPPort)
         {
             ip = ipIN;
             TCPport = TCPIN;
             UDPport = UDPIN;
         }
+
+        #region IConnectDetails Members
+
+        public int TCPport { get; set; }
+        public int UDPport { get; set; }
+        public string ip { get; set; }
+
+        #endregion
 
         public override int GetHashCode()
         {
@@ -32,7 +37,7 @@ namespace Project.Networking
         public override bool Equals(object obj)
         {
             var cd = obj as ConnectDetails;
-            return ip.Equals(cd.ip)&&TCPport.Equals(cd.TCPport)&&UDPport.Equals(cd.UDPport);
+            return ip.Equals(cd.ip) && TCPport.Equals(cd.TCPport) && UDPport.Equals(cd.UDPport);
         }
     }
 
@@ -52,14 +57,10 @@ namespace Project.Networking
 
         #endregion
 
-        public int TCPport { get; set; }
-        public int UDPport { get; set; }
-        public string ip { get; set; }
-        public ConnectDetails CreateConnectDetails()
-        {
-            return new ConnectDetails(ip, TCPport, UDPport);
-        }
-        
+        public bool LANOnly;
+        public const int DefaultTCPPort = 3001;
+        public const int DefaultUDPPort = 3003;
+
         /// <summary>
         /// ask for servers, then quit when we get them
         /// </summary>
@@ -70,21 +71,21 @@ namespace Project.Networking
         public string serverName = "FireWind Server";
         public ServerType serverType;
 
-        public const int DefaultTCPPort = 3001;
-        public const int DefaultUDPPort = 3003;
         /// <summary>
         /// SERVER
         /// </summary>
-        public GameInitConfig(bool dedicated, string serverName, int maxPlayers, int udpPort =DefaultUDPPort, int tcpPort =DefaultTCPPort,
+        public GameInitConfig(bool dedicated, string serverName, int maxPlayers,bool LANOnly, int udpPort = DefaultUDPPort,
+                              int tcpPort = DefaultTCPPort,
                               string rconPW = "zz"
-                              )
+            )
         {
+            this.LANOnly = LANOnly;
             TCPport = tcpPort;
             UDPport = udpPort;
             if (dedicated)
-                serverType= ServerType.DedicatedServer;
+                serverType = ServerType.DedicatedServer;
             else
-                serverType= ServerType.ListenServer;
+                serverType = ServerType.ListenServer;
 
             this.serverName = serverName;
             this.maxPlayers = maxPlayers;
@@ -94,13 +95,23 @@ namespace Project.Networking
         /// <summary>
         /// CLIENT
         /// </summary>
-        public GameInitConfig(String IPAddress, bool heartbeatonly = false, int udpPort =DefaultUDPPort, int tcpPort =DefaultTCPPort)
+        public GameInitConfig(String IPAddress, bool heartbeatonly = false, int udpPort = DefaultUDPPort,
+                              int tcpPort = DefaultTCPPort)
         {
             serverType = ServerType.Client;
             TCPport = tcpPort;
             UDPport = udpPort;
             ip = IPAddress;
             this.heartbeatonly = heartbeatonly;
+
+            //set lan only depending on if server supplied ip is in lan
+            try
+            {
+                LANOnly = NetExtras.IsLanIP(System.Net.IPAddress.Parse(IPAddress));
+            }
+            catch
+            {
+            }
         }
 
         /// <summary>
@@ -109,6 +120,19 @@ namespace Project.Networking
         public GameInitConfig()
         {
             serverType = ServerType.SinglePlayerServer;
+        }
+
+        #region IConnectDetails Members
+
+        public int TCPport { get; set; }
+        public int UDPport { get; set; }
+        public string ip { get; set; }
+
+        #endregion
+
+        public ConnectDetails CreateConnectDetails()
+        {
+            return new ConnectDetails(ip, TCPport, UDPport);
         }
 
         /// <summary>

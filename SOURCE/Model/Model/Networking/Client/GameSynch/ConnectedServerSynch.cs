@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
-using Project.Model;
 using Project.Model.Instances;
 using Project.Model.Networking;
-using Project.Model.Networking.Server.GameSynch;
 using Project.Networking.mapInfoSynch;
 
 namespace Project.Networking
@@ -22,7 +20,7 @@ namespace Project.Networking
         public void Cleanup(ConnectedIPs server)
         {
             SynchInfo.Remove(server.ID);
-            
+
             if (parentSynchMain.gcs != null && parentSynchMain.gcs.gameRegion != null)
             {
                 parentSynchMain.gcs.gameRegion.Cleanup(server);
@@ -32,7 +30,7 @@ namespace Project.Networking
         public bool Synchronise(ConnectedServer server)
         {
             Init(server);
-            var SynchInfoL = SynchInfo[server.ID];
+            SynchStatusConnectedServer SynchInfoL = SynchInfo[server.ID];
             if (SynchInfo == null)
                 return false;
 
@@ -59,29 +57,30 @@ namespace Project.Networking
             //update all player ships that are in a map
             if (GameControlClient.playerShipClass != null)
             {
-                var ps = GameControlClient.playerShipClass.PlayerShip;
-                if (ps != null && ps.parentArea is map)
+                ShipInstance ps = GameControlClient.playerShipClass.PlayerShip;
+                if (ps != null && ps.parentArea is Map)
                 {
                     somecreate = somecreate | ps.Synchronise(server);
                 }
 
-                var ss = GameControlClient.playerShipClass.SupportCraft;
+                List<ShipInstance> ss = GameControlClient.playerShipClass.SupportCraft;
                 if (ss != null)
                 {
-                    foreach (var sss in ss)
+                    foreach (ShipInstance sss in ss)
                     {
-                        if (sss.parentArea is map)
+                        if (sss.parentArea is Map)
                         {
                             somecreate = somecreate | sss.Synchronise(server);
                         }
                     }
                 }
-
             }
 
             //update all player shots with server
             if (parentSynchMain.gcs != null && parentSynchMain.gcs.gameRegion != null)
-                foreach (var sh in parentSynchMain.gcs.gameRegion.GetPlayerShots(parentSynchMain.gcs.parentSynch.myID))
+                foreach (
+                    WeaponInstance sh in
+                        parentSynchMain.gcs.gameRegion.GetPlayerShots(parentSynchMain.gcs.parentSynch.myID))
                 {
                     somecreate = somecreate | sh.Synchronise(server);
                 }
@@ -118,7 +117,7 @@ namespace Project.Networking
             if (SynchInfo.Created.WaitForResponse)
                 return;
 
-            var m = Message.CreateMessage(Message.Messages.Connect, "tempnickname" + DateTime.Now.ToLongTimeString());
+            Message m = Message.CreateMessage(Message.Messages.Connect, "tempnickname" + DateTime.Now.ToLongTimeString());
             parentSynchMain.gcs.parentSynch.AddMessageToWriteBuffer(m, server);
             server.AddResponseRequirement(m.ID, SynchInfo, SynchInfo.Created, true);
         }
@@ -129,7 +128,7 @@ namespace Project.Networking
             if (SynchInfo.HeartbeatSent.Value)
                 return;
 
-            var mess = Message.CreateMessage(Message.Messages.RequestSectors,"");
+            Message mess = Message.CreateMessage(Message.Messages.RequestSectors, "");
             parentSynchMain.gcs.parentSynch.AddMessageToWriteBuffer(mess, this);
 
             SynchInfo.HeartbeatSent.Value = true;
@@ -142,7 +141,7 @@ namespace Project.Networking
             param.AddRange(cfg.SerialiseCreate());
 
             //send message
-            var mess = Message.CreateMessage(Message.Messages.SendingVars, param);
+            Message mess = Message.CreateMessage(Message.Messages.SendingVars, param);
             parentSynchMain.gcs.parentSynch.AddMessageToWriteBuffer(mess, this);
         }
 
@@ -161,18 +160,18 @@ namespace Project.Networking
                 param.Add("-1");
 
             //send message
-            var mess = Message.CreateMessage(Message.Messages.SendingVars, param);
+            Message mess = Message.CreateMessage(Message.Messages.SendingVars, param);
             parentSynchMain.gcs.parentSynch.AddMessageToWriteBuffer(mess, this);
             //parentSynchMain.gcs.parentSynch.AddResponseRequirement(server, mess.ID, SynchInfo.Value, SynchInfo.Value.Created, true);
         }
 
-        public void requestShotCreation(map m, ShipInstance si, weapon w) //called from code
+        public void requestShotCreation(Map m, ShipInstance si, weapon w) //called from code
         {
             var o = new List<string>();
             o.Add(Message.sendVars.RequestShotCreate.ToString("d"));
             o.AddRange(WeaponInstance.SerialiseShotCreationRequest(m, si, w));
 
-            var mess = Message.CreateMessage(Message.Messages.SendingVars, o);
+            Message mess = Message.CreateMessage(Message.Messages.SendingVars, o);
             parentSynchMain.gcs.parentSynch.AddMessageToWriteBuffer(mess, this);
         }
 
@@ -194,9 +193,9 @@ namespace Project.Networking
             var param = new List<string>();
             param.Add(sectorID.ToString());
             param.AddRange(psc.SerialiseCreate());
-            
+
             //send message
-            var mess = Message.CreateMessage(Message.Messages.JoinGame, param);
+            Message mess = Message.CreateMessage(Message.Messages.JoinGame, param);
             parentSynchMain.AddMessageToWriteBuffer(mess, this);
         }
     }

@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
 using Microsoft.Xna.Framework;
 using Project.Model;
-using Project.View.Client.DrawableScreens.WPF_Screens;
 
 namespace Project.Networking
 {
@@ -57,13 +52,13 @@ namespace Project.Networking
 
         public void SingleThread()
         {
-            var orig = DateTime.Now;
-            var old = DateTime.Now;
+            DateTime orig = DateTime.Now;
+            DateTime old = DateTime.Now;
 
             while (enabled)
             {
                 //update server internally
-                var newTime = DateTime.Now;
+                DateTime newTime = DateTime.Now;
                 //var ts = two - orig;
 
                 var gt = new GameTime(newTime - orig, newTime - old, false);
@@ -102,13 +97,13 @@ namespace Project.Networking
 
         public void ServerUpdateThread() //THREADED BY StartServer
         {
-            var orig = DateTime.Now;
-            var old = DateTime.Now;
+            DateTime orig = DateTime.Now;
+            DateTime old = DateTime.Now;
 
             while (enabled)
             {
                 //update server internally
-                var newTime = DateTime.Now;
+                DateTime newTime = DateTime.Now;
                 //var ts = two - orig;
 
                 var gt = new GameTime(newTime - orig, newTime - old, false);
@@ -121,7 +116,7 @@ namespace Project.Networking
 
         public void SendToAll()
         {
-            foreach (var c in connectedClients)
+            foreach (ConnectedClient c in connectedClients)
             {
                 SendAndFlushWriteBuffer(c);
             }
@@ -135,9 +130,9 @@ namespace Project.Networking
             //handle shiparea wide synchronisations, like removal
             ConnectedClient.SynchroniseMain(gcs, connectedClients);
 
-            for (var a = 0; a < connectedClients.Count; a++)
+            for (int a = 0; a < connectedClients.Count; a++)
             {
-                var c = connectedClients[a];
+                ConnectedClient c = connectedClients[a];
                 if (isConnected(c) == false || c.ForceDisconnect)
                 {
                     Manager.FireLogEvent("disconnect of client" + c.ID, MessagePriority.High, false, myID);
@@ -151,12 +146,12 @@ namespace Project.Networking
                     getMessages(c);
 
                     //read all and handle messages
-                    while (c.messageReadQueue.Count>0)
+                    while (c.messageReadQueue.Count > 0)
                     {
-                        var m = popMessage(c);
+                        Message m = popMessage(c);
                         handleComm(m, false, c);
                     }
-                    
+
                     SendAndFlushWriteBuffer(c);
 
                     //update client
@@ -175,7 +170,7 @@ namespace Project.Networking
         {
             if (muteEx)
             {
-                var timeout = "Client timeout:";
+                string timeout = "Client timeout:";
                 Manager.FireLogEvent(timeout + client.alias, MessagePriority.High, false, client.ID);
             }
 
@@ -220,20 +215,21 @@ namespace Project.Networking
                 //blocks until a client has connected to the server
                 if (tcpListener.Pending())
                 {
-                    var client = tcpListener.AcceptTcpClient();
+                    TcpClient client = tcpListener.AcceptTcpClient();
                     client.SendTimeout = 5;
 
                     var cc = new ConnectedClient(this, "temp", client, null);
                     cc.UDPSendHere = new IPEndPoint(IPAddress.Any, 0);
 
                     if (HandshakeConnections(udpClient, cc) == false)
-                        {
-                            client.Close();
-                            return;
-                        }    
+                    {
+                        client.Close();
+                        return;
+                    }
 
                     connectedClients.Add(cc);
-                    Manager.FireLogEvent("Opened connection to client:ID" + cc.ID, MessagePriority.High, false, cc.ID, null);
+                    Manager.FireLogEvent("Opened connection to client:ID" + cc.ID, MessagePriority.High, false, cc.ID,
+                                         null);
                 }
             }
             catch (Exception ex)

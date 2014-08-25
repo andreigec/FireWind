@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
 using Project.Networking;
-using Project.View.Client.DrawableScreens.WPF_Screens;
 
 namespace Project.Model.Networking.Server.GameSynch
 {
@@ -13,13 +9,13 @@ namespace Project.Model.Networking.Server.GameSynch
     /// </summary>
     public class Heartbeat
     {
-        public long id;
-        public SectorConfig Config;
-        public string name;
-        public bool active = true;
         public ConnectDetails CD;
+        public SectorConfig Config;
+        public bool active = true;
+        public long id;
+        public string name;
 
-        public Heartbeat(long idIN, SectorConfig configIN, string nameIN,ConnectDetails CDIN)
+        public Heartbeat(long idIN, SectorConfig configIN, string nameIN, ConnectDetails CDIN)
         {
             id = idIN;
             Config = configIN;
@@ -39,9 +35,9 @@ namespace Project.Model.Networking.Server.GameSynch
         }
 
         public List<string> SerialiseCreate()
-            {
-                var ret = new List<String>();
-            
+        {
+            var ret = new List<String>();
+
             ret.Add(id.ToString());
             ret.AddRange(Config.SerialiseCreate());
             ret.Add(name);
@@ -51,35 +47,34 @@ namespace Project.Model.Networking.Server.GameSynch
             ret.Add(CD.UDPport.ToString());
 
             return ret;
-            }
+        }
 
-         private static Heartbeat DeserialiseCreateI(List<string> args)
-         {
-             var ID = long.Parse(Shared.PopFirstListItem(args));
-             var config = SectorConfig.DeserialiseCreate(args);
-             var Name = Shared.PopFirstListItem(args);
-             
-             var ip = Shared.PopFirstListItem(args);
-             var tcp = int.Parse(Shared.PopFirstListItem(args));
-             var udp = int.Parse(Shared.PopFirstListItem(args));
-             var cd = new ConnectDetails(ip, tcp, udp);
+        private static Heartbeat DeserialiseCreateI(List<string> args)
+        {
+            long ID = long.Parse(Shared.PopFirstListItem(args));
+            SectorConfig config = SectorConfig.DeserialiseCreate(args);
+            string Name = Shared.PopFirstListItem(args);
 
-             var H = new Heartbeat(ID, config, Name, cd);
-             return H;
-         }
+            string ip = Shared.PopFirstListItem(args);
+            int tcp = int.Parse(Shared.PopFirstListItem(args));
+            int udp = int.Parse(Shared.PopFirstListItem(args));
+            var cd = new ConnectDetails(ip, tcp, udp);
+
+            var H = new Heartbeat(ID, config, Name, cd);
+            return H;
+        }
 
         public static List<Heartbeat> DeserialiseCreate(List<string> args)
         {
-            var count = int.Parse(Shared.PopFirstListItem(args));
+            int count = int.Parse(Shared.PopFirstListItem(args));
             var ret = new List<Heartbeat>();
-            for (int a=0;a<count;a++)
+            for (int a = 0; a < count; a++)
             {
-                var sl = DeserialiseCreateI(args);
+                Heartbeat sl = DeserialiseCreateI(args);
                 ret.Add(sl);
             }
 
             return ret;
         }
     }
-
 }

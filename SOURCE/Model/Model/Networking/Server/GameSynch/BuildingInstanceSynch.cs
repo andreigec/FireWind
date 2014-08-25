@@ -42,7 +42,7 @@ namespace Project.Model.Instances
         public bool Synchronise(ConnectedIPs client)
         {
             Init(client);
-            var SynchInfo = this.SynchInfo[client.ID];
+            SynchStatusMoveObjectInstance SynchInfo = this.SynchInfo[client.ID];
             if (SynchInfo == null)
                 return false;
 
@@ -51,7 +51,7 @@ namespace Project.Model.Instances
                 RemoteCreate(client, SynchInfo);
                 return true;
             }
-                RemoteUpdate(client, SynchInfo);
+            RemoteUpdate(client, SynchInfo);
             return false;
         }
 
@@ -75,18 +75,18 @@ namespace Project.Model.Instances
             o.Add(Message.sendVars.BuildingRemove.ToString("d"));
             o.Add(ID.ToString());
 
-            var m = Message.CreateMessage(Message.Messages.SendingVars, o);
+            Message m = Message.CreateMessage(Message.Messages.SendingVars, o);
             parentGCS.parentSynch.AddMessageToWriteBuffer(m, connection);
             connection.AddResponseRequirement(m.ID, SynchInfo, SynchInfo.Deleted, false);
         }
 
         public bool IsDirty(ConnectedIPs connection)
         {
-            var sd = LastServerPlayerUpdate[connection.ID];
+            DirtyBuilding sd = LastServerPlayerUpdate[connection.ID];
             if (sd == null)
                 return true;
 
-            var armourdirty = armour != sd.LastArmour;
+            bool armourdirty = armour != sd.LastArmour;
 
             if (armourdirty)
             {
@@ -117,8 +117,8 @@ namespace Project.Model.Instances
             o.Add(Message.sendVars.CreateBuilding.ToString("d"));
             o.AddRange(SerialiseCreate());
 
-            var m = Message.CreateMessage(Message.Messages.SendingVars, o);
-            
+            Message m = Message.CreateMessage(Message.Messages.SendingVars, o);
+
             parentGCS.parentSynch.AddMessageToWriteBuffer(m, cc);
             cc.AddResponseRequirement(m.ID, SynchInfo, SynchInfo.Created, true);
         }
@@ -132,7 +132,7 @@ namespace Project.Model.Instances
             o.Add(Message.sendVars.UpdateBuilding.ToString("d"));
             o.AddRange(SerialiseUpdate());
 
-            var m = Message.CreateMessage(Message.Messages.SendingVars, o);
+            Message m = Message.CreateMessage(Message.Messages.SendingVars, o);
             parentGCS.parentSynch.AddMessageToWriteBuffer(m, cc);
         }
 
@@ -160,31 +160,32 @@ namespace Project.Model.Instances
         /// <param name="args">list of variables serialised previously</param>
         /// <param name="r">region to use to find the parent area/map referenced in the serialised variables</param>
         /// <returns></returns>
-        public static BuildingInstance DeserialiseCreate(List<string> args, region r, bool stripID = false,
-                                                         map overload = null)
+        public static BuildingInstance DeserialiseCreate(List<string> args, Region r, bool stripID = false,
+                                                         Map overload = null)
         {
-            var name = Shared.PopFirstListItem(args);
-            var sprite = SpriteInstance.DeserialisePosition(args);
-            var instance = InstanceOwner.DeserialiseCreate(args);
-            var pid = long.Parse(Shared.PopFirstListItem(args));
-            var id = long.Parse(Shared.PopFirstListItem(args));
+            string name = Shared.PopFirstListItem(args);
+            Tuple<VectorMove, float, float> sprite = SpriteInstance.DeserialisePosition(args);
+            InstanceOwner instance = InstanceOwner.DeserialiseCreate(args);
+            long pid = long.Parse(Shared.PopFirstListItem(args));
+            long id = long.Parse(Shared.PopFirstListItem(args));
             var bid = (BuildingType) int.Parse(Shared.PopFirstListItem(args));
             if (stripID)
                 id = -1;
 
             //create building
-            map a;
+            Map a;
             if (overload != null)
                 a = overload;
             else
-                a = r.getArea(pid) as map;
+                a = r.getArea(pid) as Map;
             SetID type;
             if (stripID)
                 type = SetID.CreateSetNew();
             else
                 type = SetID.CreateSetForce(id);
 
-            var bi = new BuildingInstance(r.parentGCS, loadXML.loadedBuildings[name], a, sprite.Item1, sprite.Item2, bid, type,
+            var bi = new BuildingInstance(r.parentGCS, loadXML.loadedBuildings[name], a, sprite.Item1, sprite.Item2, bid,
+                                          type,
                                           instance);
             bi.spriteInstance.currentGravity = sprite.Item3;
             a.buildings.Add(bi);
@@ -207,11 +208,11 @@ namespace Project.Model.Instances
             return o;
         }
 
-        public static void DeserialiseUpdate(List<string> args, region r)
+        public static void DeserialiseUpdate(List<string> args, Region r)
         {
             //1
-            var id = int.Parse(Shared.PopFirstListItem(args));
-            var bi_up = r.getBuildingInstance(id);
+            int id = int.Parse(Shared.PopFirstListItem(args));
+            BuildingInstance bi_up = r.getBuildingInstance(id);
             if (bi_up == null)
             {
                 Manager.FireLogEvent("building not found:" + id.ToString(), SynchMain.MessagePriority.Low, true);

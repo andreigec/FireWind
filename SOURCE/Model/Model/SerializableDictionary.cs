@@ -20,7 +20,7 @@ namespace Project.Model
             var keySerializer = new XmlSerializer(typeof (TKey));
             var valueSerializer = new XmlSerializer(typeof (TValue));
 
-            var wasEmpty = reader.IsEmptyElement;
+            bool wasEmpty = reader.IsEmptyElement;
             reader.Read();
 
             if (wasEmpty)
@@ -51,7 +51,7 @@ namespace Project.Model
             var keySerializer = new XmlSerializer(typeof (TKey));
             var valueSerializer = new XmlSerializer(typeof (TValue));
 
-            foreach (var key in Keys)
+            foreach (TKey key in Keys)
             {
                 writer.WriteStartElement("item");
 
@@ -60,7 +60,7 @@ namespace Project.Model
                 writer.WriteEndElement();
 
                 writer.WriteStartElement("value");
-                var value = this[key];
+                TValue value = this[key];
                 valueSerializer.Serialize(writer, value);
                 writer.WriteEndElement();
 

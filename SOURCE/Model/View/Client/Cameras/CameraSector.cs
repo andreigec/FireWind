@@ -14,10 +14,10 @@ namespace Project.View.Client.Cameras
         {
         }
 
-        public void adjustZoom(map m)
+        public void adjustZoom(Map m)
         {
             float w = ViewportWidth;
-            var z = w/m.width;
+            float z = w/m.width;
 
             _zoom = z;
         }
@@ -25,8 +25,8 @@ namespace Project.View.Client.Cameras
         public void FocusOnPoint(Vector2 pos)
         {
             Pos = pos;
-            var diff1 = ((ViewportHeight/_zoom)/2);
-            var diff2 = pos.Y + diff1;
+            float diff1 = ((ViewportHeight/_zoom)/2);
+            float diff2 = pos.Y + diff1;
             if (diff2 > 0)
                 Pos.Y = diff1*-1;
         }

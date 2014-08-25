@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Net.Sockets;
 using System.Xml.Serialization;
 using Project.Model;
 using Project.Model.Networking;
@@ -26,7 +25,7 @@ namespace Project.Networking
         public bool Synchronise(ConnectedClient client)
         {
             Init(client);
-            var SynchInfof = SynchInfo[client.ID];
+            SynchStatusConnectedClient SynchInfof = SynchInfo[client.ID];
             if (SynchInfof == null)
                 return false;
 
@@ -44,11 +43,11 @@ namespace Project.Networking
             //only prompt client to join map if all the objects have been created
             if (SynchInfof.TryForPostACK && somecreate == false)
             {
-
                 addPostActivities(this, SynchInfof.JoinMap, SynchInfof.JoinPSC);
 
-                Manager.FireLogEvent("client joined game:" + SynchInfof.JoinMap.ID + "-" + SynchInfof.JoinMap.parentSector.Config,
-                        SynchMain.MessagePriority.High, false, ID);
+                Manager.FireLogEvent(
+                    "client joined game:" + SynchInfof.JoinMap.ID + "-" + SynchInfof.JoinMap.parentSector.Config,
+                    SynchMain.MessagePriority.High, false, ID);
 
                 //we dont want to prompt client again
                 SynchInfof.JoinMap = null;
@@ -103,18 +102,18 @@ namespace Project.Networking
             o.Add(cc.ID.ToString());
             o.Add(cc.faction.ToString());
 
-            var m = Message.CreateMessage(Message.Messages.SendingVars, o);
+            Message m = Message.CreateMessage(Message.Messages.SendingVars, o);
             parentSynchMain.gcs.parentSynch.AddMessageToWriteBuffer(m, cc);
             cc.AddResponseRequirement(m.ID, SynchInfo, SynchInfo.GivenID, true);
         }
 
-        public static void addPostActivities(ConnectedClient cc, map m, PlayerShipClass psc) //CALLED FROM CODE
+        public static void addPostActivities(ConnectedClient cc, Map m, PlayerShipClass psc) //CALLED FROM CODE
         {
             var o = new List<string>();
 
             o.AddRange(psc.SerialiseCreateLight());
 
-            var mess = Message.CreateMessage(Message.Messages.JoinGameACK, o);
+            Message mess = Message.CreateMessage(Message.Messages.JoinGameACK, o);
             cc.parentSynchMain.gcs.parentSynch.AddMessageToWriteBuffer(mess, cc);
         }
 
@@ -126,26 +125,27 @@ namespace Project.Networking
             o.Add(victorID.ToString());
             o.Add(dest.ID.ToString());
 
-            var mess = Message.CreateMessage(Message.Messages.SendingVars, o);
+            Message mess = Message.CreateMessage(Message.Messages.SendingVars, o);
             cc.parentSynchMain.gcs.parentSynch.AddMessageToWriteBuffer(mess, cc);
         }
 
-        public void SendJoinableSectors()//CALLED FROM CODE
+        public void SendJoinableSectors() //CALLED FROM CODE
         {
             var o = new List<string>();
 
             //can selectively send sectors the player can join here
-            var sl = parentSynchMain.gcs.gameRegion.sectors;
+            List<Sector> sl = parentSynchMain.gcs.gameRegion.sectors;
 
             o.Add(sl.Count.ToString());
 
-            foreach (var s in sl)
+            foreach (Sector s in sl)
             {
-                var h = new Heartbeat(s.ID, s.Config, parentSynchMain.gcs.gameConfig.serverName, parentSynchMain.gcs.gameConfig.CreateConnectDetails());
+                var h = new Heartbeat(s.ID, s.Config, parentSynchMain.gcs.gameConfig.serverName,
+                                      parentSynchMain.gcs.gameConfig.CreateConnectDetails());
                 o.AddRange(h.SerialiseCreate());
             }
 
-            var mess = Message.CreateMessage(Message.Messages.SendSectors, o);
+            Message mess = Message.CreateMessage(Message.Messages.SendSectors, o);
             parentSynchMain.gcs.parentSynch.AddMessageToWriteBuffer(mess, this);
 
             //synch now

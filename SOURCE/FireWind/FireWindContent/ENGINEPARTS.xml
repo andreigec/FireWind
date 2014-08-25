@@ -3,15 +3,15 @@
   <Asset Type="Generic:List[Project.ShipEnginePart]">
     <Item>
       <name>Stock Engine</name>
-      <Cost>1000</Cost>
+      <Cost>100</Cost>
       <AccelModifier>1</AccelModifier>
       <BrakeModifier>1</BrakeModifier>
       <MaxAccelModifier>1</MaxAccelModifier>
-      <MaxSpeedModifier>1</MaxSpeedModifier>
+      <MaxSpeedModifier>1.5</MaxSpeedModifier>
     </Item>
     <Item>
       <name>V2 Engine</name>
-      <Cost>2000</Cost>
+      <Cost>200</Cost>
       <AccelModifier>2</AccelModifier>
       <BrakeModifier>2</BrakeModifier>
       <MaxAccelModifier>2</MaxAccelModifier>

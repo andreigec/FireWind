@@ -37,7 +37,7 @@ namespace Project.View.Client.ClientScreens
 
         public void KeyboardUpdate(GameTime gt, KeyboardClass kbc)
         {
-            var handled = menucreate.HandleKey(kbc);
+            bool handled = menucreate.HandleKey(kbc);
             if (handled)
                 return;
 
@@ -46,7 +46,7 @@ namespace Project.View.Client.ClientScreens
                 GameControlClient.EndGame(false);
                 GameControlClient.ResetToBaseScreen(true);
                 Manager.FireLogEvent("Removed Ship is my ship, returning to base",
-                                 SynchMain.MessagePriority.High, false);
+                                     SynchMain.MessagePriority.High, false);
             }
         }
 
@@ -63,20 +63,20 @@ namespace Project.View.Client.ClientScreens
             menucreate.rootOptions = new MenuOptions(null, false);
 
             //select world
-            var rebuildval = ShipBaseItemsMIXIN.GetRebuildCost(GameControlClient.playerShipClass.PlayerShip);
+            int rebuildval = ShipBaseItemsMIXIN.GetRebuildCost(GameControlClient.playerShipClass.PlayerShip);
             int cost;
             if (GameControlClient.playerShipClass.Credits < rebuildval)
                 cost = GameControlClient.playerShipClass.Credits;
             else
                 cost = rebuildval;
 
-            var coststr = Localisation.DestroyShip;
+            string coststr = Localisation.DestroyShip;
             if (cost > 0)
                 coststr += Environment.NewLine + Localisation.For + " " + cost.ToString() + " " + Localisation.Credits;
 
             coststr += Environment.NewLine + Localisation.PressToContinue;
 
-            var one = menucreate.rootOptions.addChild(coststr, false);
+            MenuOptions one = menucreate.rootOptions.addChild(coststr, false);
             menucreate.currentOption = one;
         }
     }

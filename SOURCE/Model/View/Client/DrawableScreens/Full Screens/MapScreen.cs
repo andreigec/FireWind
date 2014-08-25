@@ -6,17 +6,16 @@ using Microsoft.Xna.Framework.Graphics;
 using Project.Model;
 using Project.Model.Instances;
 using Project.View.Client.Cameras;
-using Project.View.Client.ClientScreens;
 using Project.View.Client.DrawableScreens;
 
 namespace Project
 {
     public partial class MapScreen
     {
-        public static map drawThis;
+        public static Map drawThis;
         //private readonly MenuOptionsCreate menucreate;
 
-        public MapScreen(map toDraw)
+        public MapScreen(Map toDraw)
         {
             drawThis = toDraw;
         }
@@ -30,7 +29,7 @@ namespace Project
 
         public static IDrawableObject GetNearestShipBuilding(Camera2D thisCamera, Vector2 originalScreenPoint)
         {
-            var worldloc = thisCamera.ToWorldLocation(originalScreenPoint);
+            Vector2 worldloc = thisCamera.ToWorldLocation(originalScreenPoint);
             //get the nearest planet and zoom to that
             double mindist = -1;
             IDrawableObject minsec = null;
@@ -38,9 +37,9 @@ namespace Project
             var obs = new List<IDrawableObject>();
             obs.AddRange(drawThis.buildings);
             obs.AddRange(drawThis.ships);
-            foreach (var s in obs)
+            foreach (IDrawableObject s in obs)
             {
-                var tempmindist = VectorMove.getDistanceBetweenVectors(worldloc,
+                double tempmindist = VectorMove.getDistanceBetweenVectors(worldloc,
                                                                           s.spriteInstance.move.Position.Middle);
                 if (minsec == null || mindist > tempmindist)
                 {
@@ -61,7 +60,7 @@ namespace Project
         {
             var cm = cam as CameraMap;
             //adjust to ship that is being controlled
-            var ps = GameControlClient.playerShipClass;
+            PlayerShipClass ps = GameControlClient.playerShipClass;
             if (GameControlClient.playerShipClass != null &&
                 ShipInstance.IsOnMap(GameControlClient.playerShipClass.PlayerShip, drawThis))
             {
@@ -89,18 +88,18 @@ namespace Project
         {
             //draw sky
             cam.spriteBatch.Begin();
-            XNA.DrawCamRectangle(cam.spriteBatch, Color.SkyBlue);
+            XNA.DrawCamRectangle(cam.spriteBatch, Color.Black);
             cam.spriteBatch.End();
 
             cam.spriteBatch.Begin(0, BlendState.Opaque, SamplerState.LinearClamp, null, null, null,
                                   cam.get_transformation());
-            //deadzones
+            //end zones
             Rectangle r;
-            var height = drawThis.height;
-            var width = drawThis.width;
-            var deadzone = map.deadzone;
-            var deadzoneMaxX = drawThis.deadzoneMaxX;
-            var deadzoneMinX = drawThis.deadzoneMinX;
+            int height = drawThis.height;
+            int width = drawThis.width;
+            int deadzone = Map.deadzone;
+            int deadzoneMaxX = drawThis.deadzoneMaxX;
+            int deadzoneMinX = drawThis.deadzoneMinX;
 
             r = new Rectangle(0, -height, deadzone, height);
             cam.spriteBatch.Draw(XNA.PixelTexture, r, Color.LightSalmon);
@@ -116,13 +115,13 @@ namespace Project
 
         private static void drawBuildings(Camera2D cam, GameTime gt)
         {
-            var ok = false;
+            bool ok = false;
             while (ok == false)
             {
                 try
                 {
-                    var a = 0;
-                    foreach (var b in drawThis.buildings)
+                    int a = 0;
+                    foreach (BuildingInstance b in drawThis.buildings)
                     {
                         b.Draw(cam, gt);
                         a++;
@@ -137,12 +136,12 @@ namespace Project
 
         private static void drawShips(Camera2D cam, GameTime gt)
         {
-            var ok = false;
+            bool ok = false;
             while (ok == false)
             {
                 try
                 {
-                    foreach (var s in drawThis.ships)
+                    foreach (ShipInstance s in drawThis.ships)
                     {
                         s.Draw(cam, gt);
                     }
@@ -156,12 +155,12 @@ namespace Project
 
         private static void drawShots(Camera2D cam, GameTime gt)
         {
-            var ok = false;
+            bool ok = false;
             while (ok == false)
             {
                 try
                 {
-                    foreach (var s in drawThis.shots)
+                    foreach (WeaponInstance s in drawThis.shots)
                     {
                         s.Draw(cam, gt);
                     }
@@ -175,9 +174,9 @@ namespace Project
 
         private static void DrawWeaponBeams(Camera2D cam, GameTime gt)
         {
-            for (var a = 0; a < drawThis.shots.Count; a++)
+            for (int a = 0; a < drawThis.shots.Count; a++)
             {
-                var s = drawThis.shots[a];
+                WeaponInstance s = drawThis.shots[a];
 
                 if (s.weapon.IsBeam == false)
                     continue;
@@ -185,26 +184,26 @@ namespace Project
                 //if a single shot of a beam, draw a rectangle going the same was as multiple shots would
                 if (s.nextBeamInstanceID == -1 && s.previousBeamInstanceID == -1)
                 {
-                    var pos1 = s.spriteInstance.move.Position.Middle;
-                    var pos2 = pos1;
+                    Vector2 pos1 = s.spriteInstance.move.Position.Middle;
+                    Vector2 pos2 = pos1;
                     VectorMove.UpdatePosition(ref pos2, VectorMove.wrapAngle(s.spriteInstance.move.Angle + 90f), 5);
 
-                    var spos1 = cam.ToLocalLocation(pos1);
-                    var spos2 = cam.ToLocalLocation(pos2);
+                    Vector2 spos1 = cam.ToLocalLocation(pos1);
+                    Vector2 spos2 = cam.ToLocalLocation(pos2);
 
                     XNA.DrawLine(cam.spriteBatch, 10, Color.Red, spos1, spos2);
                 }
                 else if (s.nextBeamInstanceID != -1)
                 {
-                    var pos1 = s.spriteInstance.move.Position.Middle;
+                    Vector2 pos1 = s.spriteInstance.move.Position.Middle;
                     if (s.nextBeamInstanceID != -1)
                     {
-                        var p = drawThis.GetShot(s.nextBeamInstanceID);
+                        WeaponInstance p = drawThis.GetShot(s.nextBeamInstanceID);
                         if (p != null)
                         {
-                            var pos2 = p.spriteInstance.move.Position.Middle;
-                            var spos1 = cam.ToLocalLocation(pos1);
-                            var spos2 = cam.ToLocalLocation(pos2);
+                            Vector2 pos2 = p.spriteInstance.move.Position.Middle;
+                            Vector2 spos1 = cam.ToLocalLocation(pos1);
+                            Vector2 spos2 = cam.ToLocalLocation(pos2);
 
                             //check both occur in the screen
                             if (cam.InFrame(spos1) || cam.InFrame(spos2))
@@ -219,25 +218,25 @@ namespace Project
 
         private static void DrawPointerToShip(Camera2D cam, ShipInstance ps, ShipInstance si)
         {
-            var start = ps.spriteInstance.move.Position.Middle;
-            var end = si.spriteInstance.move.Position.Middle;
+            Vector2 start = ps.spriteInstance.move.Position.Middle;
+            Vector2 end = si.spriteInstance.move.Position.Middle;
 
             const int dist = 300;
-            var angle = VectorMove.getAngleToOtherVector(start, end);
+            float angle = VectorMove.getAngleToOtherVector(start, end);
             //extend
-            var visend = start;
+            Vector2 visend = start;
             VectorMove.UpdatePosition(ref visend, angle, dist);
             //get local pos
-            var local = cam.ToLocalLocation(visend);
+            Vector2 local = cam.ToLocalLocation(visend);
 
             //get the image we want to show
             var sb = loadXML.loadedSprites["Icons"] as SpriteBase;
             if (sb == null)
                 return;
-            var sa = sb.sprites["Icon_12"];
+            SpriteAnimation sa = sb.sprites["Icon_12"];
 
             //colour
-            var drawColour = Color.Green;
+            Color drawColour = Color.Green;
             if (ps.instanceOwner.FactionOwner != si.instanceOwner.FactionOwner)
                 drawColour = Color.Red;
 
@@ -245,15 +244,15 @@ namespace Project
         }
 
         public static void drawHUD(Camera2D cam, GameTime gt, PlayerShipClass playerShipClass, bool ShipDirections,
-                                   map m)
+                                   Map m)
         {
             if (playerShipClass == null)
                 return;
 
-            var start = Vector2.Zero;
+            Vector2 start = Vector2.Zero;
             double current = 0;
             double max = 100;
-            var percentage = 0f;
+            float percentage = 0f;
 
             const int startx = 5;
             const int meterheight = 30;
@@ -266,7 +265,7 @@ namespace Project
             {
                 //TODO:scale for window height
 
-                var playerShip = playerShipClass.PlayerShip;
+                ShipInstance playerShip = playerShipClass.PlayerShip;
 
                 //Energy
                 start = new Vector2(startx + 35, cam.ViewportHeight - meterheight);
@@ -307,9 +306,9 @@ namespace Project
                 if (ShipDirections)
                 {
                     //draw icons to ships outside player screen
-                    foreach (var s in drawThis.ships)
+                    foreach (ShipInstance s in drawThis.ships)
                     {
-                        var pos = cam.ToLocalLocation(s.spriteInstance.move.Position.Middle);
+                        Vector2 pos = cam.ToLocalLocation(s.spriteInstance.move.Position.Middle);
                         if (cam.InFrame(pos) == false)
                             DrawPointerToShip(cam, playerShip, s);
                     }
@@ -321,7 +320,7 @@ namespace Project
             //money
             start = new Vector2(startx + meterwidth*4.5f, cam.ViewportHeight - meterheight);
             current = playerShipClass.Credits;
-            var creditstr = "Credits:" + current.ToString();
+            string creditstr = "Credits:" + current.ToString();
             cam.DrawString(creditstr, Color.Thistle, start);
 
             //close sprite batch at the end
@@ -331,9 +330,9 @@ namespace Project
         private static void DrawMeter(Camera2D cam, Vector2 startposIN, int length, int width, float percentage,
                                       Color backColour, Color foreColour)
         {
-            var startleftraw = startposIN;
+            Vector2 startleftraw = startposIN;
             var endright = new Vector2(startposIN.X + length, startposIN.Y);
-            var mod = startposIN.X + (length*percentage);
+            float mod = startposIN.X + (length*percentage);
 
             //avail
             var startleft = new Vector2(mod, startposIN.Y);
@@ -346,22 +345,22 @@ namespace Project
         private static void DrawWeaponMeterAddons(Camera2D cam, Vector2 startposIN, int length, int width,
                                                   ShipInstance si)
         {
-            var me = ShipBaseItemsMIXIN.GetMaxEnergy(si);
-            var ce = si.CurrentEnergy;
-            var top = true;
-            var setonce = false;
-            var lastmid = Vector2.Zero;
+            double me = ShipBaseItemsMIXIN.GetMaxEnergy(si);
+            double ce = si.CurrentEnergy;
+            bool top = true;
+            bool setonce = false;
+            Vector2 lastmid = Vector2.Zero;
             const int mouseiconsize = 32;
 
             foreach (var w in si.EquipSlots)
             {
-                var e = w.Value.w.EnergyPerShot;
+                int e = w.Value.w.EnergyPerShot;
 
                 if (e > me)
                     continue;
 
                 var p = (float) (e/me);
-                var p2 = (length*p) + startposIN.X;
+                float p2 = (length*p) + startposIN.X;
 
                 float starty;
                 float endy;
@@ -395,7 +394,7 @@ namespace Project
                     vertpicmid = new Vector2(p2, endy);
                 }
 
-                var tint = Color.Red;
+                Color tint = Color.Red;
                 if (ce >= e)
                     tint = Color.White;
 

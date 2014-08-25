@@ -1,8 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using Project.Model;
 using Project.Model.mapInfo;
-using Project.Networking;
 using Project.View.Client.Cameras;
 
 namespace Project.View.Client.ClientScreens
@@ -36,7 +34,7 @@ namespace Project.View.Client.ClientScreens
 
         public void KeyboardUpdate(GameTime gt, KeyboardClass kbc)
         {
-            var handled = menucreate.HandleKey(kbc);
+            bool handled = menucreate.HandleKey(kbc);
             if (handled)
                 return;
 
@@ -49,7 +47,7 @@ namespace Project.View.Client.ClientScreens
                 if (menucreate.currentOption.Text.Equals(Localisation.BackToBase))
                 {
                     GameControlClient.ResetShip(GameControlClient.playerShipClass.PlayerShip,
-                                                GameControlClient.synchMain.gcs.gameRegion,false);
+                                                GameControlClient.synchMain.gcs.gameRegion, false);
                     GameControlClient.EndGame(false);
                     GameControlClient.ResetToBaseScreen(true);
                 }
@@ -73,7 +71,7 @@ namespace Project.View.Client.ClientScreens
             menucreate.rootOptions = new MenuOptions(null, false);
 
             //select world
-            var one = menucreate.rootOptions.addChild(Localisation.ReturnToGame, false);
+            MenuOptions one = menucreate.rootOptions.addChild(Localisation.ReturnToGame, false);
 
             menucreate.rootOptions.addChild(Localisation.BackToBase, false);
 

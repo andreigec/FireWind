@@ -9,7 +9,7 @@ using Project.Networking.mapInfoSynch;
 
 namespace Project
 {
-    public partial class sector : ISynchroniseInterfaceShipArea<ConnectedClient, SynchStatus, SynchStatusMain>
+    public partial class Sector : ISynchroniseInterfaceShipArea<ConnectedClient, SynchStatus, SynchStatusMain>
     {
         #region IshipAreaSynch Members
 
@@ -49,7 +49,7 @@ namespace Project
         public bool Synchronise(ConnectedClient client)
         {
             Init(client);
-            var SynchInfo = this.SynchInfo[client.ID];
+            SynchStatus SynchInfo = this.SynchInfo[client.ID];
             if (SynchInfo == null)
                 return false;
 
@@ -58,7 +58,7 @@ namespace Project
                 RemoteCreate(client, SynchInfo);
                 return true;
             }
-            
+
             return RemoteUpdate(client, SynchInfo);
         }
 
@@ -79,18 +79,18 @@ namespace Project
         public bool RemoteUpdate(ConnectedClient client, SynchStatus synchInfo)
         {
             bool somecreate = false;
-            foreach (var sh in ships)
+            foreach (ShipInstance sh in ships)
             {
-                somecreate=somecreate| sh.Synchronise(client);
+                somecreate = somecreate | sh.Synchronise(client);
             }
-            somecreate=somecreate|thismap.Synchronise(client);
-            
+            somecreate = somecreate | thismap.Synchronise(client);
+
             return somecreate;
         }
 
         #endregion
 
-        private void addCreateSectorToQueue(ConnectedClient cc, SynchStatus SynchInfo)//called from code
+        private void addCreateSectorToQueue(ConnectedClient cc, SynchStatus SynchInfo) //called from code
         {
             if (SynchInfo.Created.WaitForResponse)
                 return;
@@ -99,7 +99,7 @@ namespace Project
             o.Add(Message.sendVars.CreateSectorMap.ToString("d"));
             o.AddRange(SerialiseCreate(false));
 
-            var m = Message.CreateMessage(Message.Messages.SendingVars, o);
+            Message m = Message.CreateMessage(Message.Messages.SendingVars, o);
             parentGCS.parentSynch.AddMessageToWriteBuffer(m, cc);
             cc.AddResponseRequirement(m.ID, SynchInfo, SynchInfo.Created, true);
         }
@@ -117,26 +117,26 @@ namespace Project
             //send terrain
             ret.AddRange(thismap.SerialiseUpdateTerrain(thismap.terrain.changed, thismap));
             //number of ships
-            var numships = 0;
+            int numships = 0;
             if (includeBuildingsAndShips)
                 numships = ships.Count;
             ret.Add(numships.ToString());
             if (includeBuildingsAndShips)
             {
-                foreach (var sh in ships)
+                foreach (ShipInstance sh in ships)
                 {
                     ret.AddRange(sh.SerialiseCreate(false));
                 }
             }
 
             //number of buildings
-            var numbuild = 0;
+            int numbuild = 0;
             if (includeBuildingsAndShips)
                 numbuild = thismap.buildings.Count;
             ret.Add(numbuild.ToString());
             if (includeBuildingsAndShips)
             {
-                foreach (var bl in thismap.buildings)
+                foreach (BuildingInstance bl in thismap.buildings)
                 {
                     ret.AddRange(bl.SerialiseCreate());
                 }
@@ -145,16 +145,16 @@ namespace Project
             return ret;
         }
 
-        public static sector DeserialiseCreate(List<string> args, GameControlServer gcs, ConnectedIPs client,
+        public static Sector DeserialiseCreate(List<string> args, GameControlServer gcs, ConnectedIPs client,
                                                bool isHomePlanet,
                                                int faction = -1)
         {
-            var width = int.Parse(Shared.PopFirstListItem(args));
-            var height = int.Parse(Shared.PopFirstListItem(args));
-            var seed = int.Parse(Shared.PopFirstListItem(args));
-            var sid = int.Parse(Shared.PopFirstListItem(args));
-            var mid = int.Parse(Shared.PopFirstListItem(args));
-            var cfg = SectorConfig.DeserialiseCreate(args);
+            int width = int.Parse(Shared.PopFirstListItem(args));
+            int height = int.Parse(Shared.PopFirstListItem(args));
+            int seed = int.Parse(Shared.PopFirstListItem(args));
+            int sid = int.Parse(Shared.PopFirstListItem(args));
+            int mid = int.Parse(Shared.PopFirstListItem(args));
+            SectorConfig cfg = SectorConfig.DeserialiseCreate(args);
 
 
             //strip ids if homeplanet from client, we want to give server ids back
@@ -163,15 +163,16 @@ namespace Project
                 sid = mid = -1;
             }
 
-            var sec = CreateSector(gcs,width, height, cfg, seed, SetID.CreateSetForce(sid), SetID.CreateSetForce(mid),
+            Sector sec = CreateSector(gcs, width, height, cfg, seed, SetID.CreateSetForce(sid),
+                                      SetID.CreateSetForce(mid),
                                       gcs.gameRegion);
             gcs.gameRegion.addSector(sec);
 
             //update terrain
-            map.DeserialiseUpdateTerrain(args, gcs.gameRegion);
+            Map.DeserialiseUpdateTerrain(args, gcs.gameRegion);
 
             //ships
-            var sc = int.Parse(Shared.PopFirstListItem(args));
+            int sc = int.Parse(Shared.PopFirstListItem(args));
             while (sc > 0 && isHomePlanet)
             {
                 ShipInstance.DeserialiseCreate(args, gcs.gameRegion, sec);
@@ -179,7 +180,7 @@ namespace Project
             }
 
             //buildings
-            var bc = int.Parse(Shared.PopFirstListItem(args));
+            int bc = int.Parse(Shared.PopFirstListItem(args));
             while (bc > 0 && isHomePlanet)
             {
                 BuildingInstance.DeserialiseCreate(args, gcs.gameRegion, true, sec.thismap);

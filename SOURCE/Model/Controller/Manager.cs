@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
+using ANDREICSLIB;
 using Project.Networking;
 
 namespace Project.Model
@@ -21,10 +18,18 @@ namespace Project.Model
         public static Random r;
 
         #region logging
-        public delegate void LogAddDel(int clientID, String text, Message m, SynchMain.MessagePriority priority, bool isError);
+
+        #region Delegates
+
+        public delegate void LogAddDel(
+            int clientID, String text, Message m, SynchMain.MessagePriority priority, bool isError);
+
+        #endregion
+
         private static event LogAddDel LogAdd;
 
-        public static void FireLogEvent(int clientID, String text, Message m, SynchMain.MessagePriority priority, bool isError)
+        public static void FireLogEvent(int clientID, String text, Message m, SynchMain.MessagePriority priority,
+                                        bool isError)
         {
             try
             {
@@ -36,7 +41,8 @@ namespace Project.Model
             }
         }
 
-        public static void FireLogEvent(string prependMessage, SynchMain.MessagePriority priority, bool isError, int clientID = -1, Message m = null)
+        public static void FireLogEvent(string prependMessage, SynchMain.MessagePriority priority, bool isError,
+                                        int clientID = -1, Message m = null)
         {
             if (LogAdd == null)
                 return;
@@ -56,9 +62,38 @@ namespace Project.Model
         {
             LogAdd -= l;
         }
+
         #endregion logging
 
         #region game
+
+        public enum AppConfigValues
+        {
+            DisplayFPS
+        }
+
+        /// <summary>
+        /// on first get, will extract from config file and use for future ref
+        /// </summary>
+        public static bool ConfigSingleThread = true;
+
+        public static int ConfigUpdateMS = 10; //100 fps
+        public static int ConfigConnectionListenMS = 2000; //2 sec
+        public static int ConfigConnectionRetryMS = 1000; //1 sec
+
+        private static int? DisplayFPS = 17; //60 fps
+
+        public static int ConfigDisplayMS
+        {
+            get
+            {
+                if (DisplayFPS == null)
+                {
+                    DisplayFPS = 1000/GetAppConfigValueInt(AppConfigValues.DisplayFPS);
+                }
+                return (int) DisplayFPS;
+            }
+        }
 
         public static void StartGame(out SynchMain sm, GameInitConfig gic, int seed = 1)
         {
@@ -71,7 +106,7 @@ namespace Project.Model
             sm.Init(gic);
 
             //add my ip
-            gic.ip = Shared.GetMyIPAddress();
+            gic.ip = gic.LANOnly ? NetExtras.GetLocalAddress() : NetExtras.GetExternalDefaultLocalAddress();
         }
 
         public static void EndGame(ref SynchMain sm, bool closewindow)
@@ -90,37 +125,11 @@ namespace Project.Model
             return ts.TotalMilliseconds;
         }
 
-        /// <summary>
-        /// on first get, will extract from config file and use for future ref
-        /// </summary>
-        public static bool ConfigSingleThread = true;
-        public static int ConfigUpdateMS = 10;//100 fps
-        public static int ConfigConnectionListenMS = 2000;//2 sec
-        public static int ConfigConnectionRetryMS = 1000;//1 sec
-
-        private static int? DisplayFPS = 17;//60 fps
-        public static int ConfigDisplayMS
-        {
-            get
-            {
-                if (DisplayFPS == null)
-                {
-                    DisplayFPS = 1000/GetAppConfigValueInt(AppConfigValues.DisplayFPS);
-                }
-                return (int)DisplayFPS;
-            }
-        }
-
-        public enum AppConfigValues
-        {
-            DisplayFPS
-        }
-
         private static string GetAppConfigDefault(AppConfigValues type)
         {
             switch (type)
             {
-                    case AppConfigValues.DisplayFPS:
+                case AppConfigValues.DisplayFPS:
                     return "60";
 
                 default:
@@ -134,7 +143,7 @@ namespace Project.Model
             //if it doesnt exist, create default
             if (ConfigurationManager.ConnectionStrings[types] == null)
             {
-                var c = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                Configuration c = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
                 String def = GetAppConfigDefault(type);
                 c.ConnectionStrings.ConnectionStrings.Add(new ConnectionStringSettings(types, def));
                 // Save the configuration file.
@@ -165,6 +174,4 @@ namespace Project.Model
 
         #endregion game
     }
-
-
 }

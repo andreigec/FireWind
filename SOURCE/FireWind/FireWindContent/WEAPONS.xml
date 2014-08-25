@@ -3,7 +3,7 @@
   <Asset Type="Generic:List[Project.weapon]">
     <Item>
       <name>WEAPON_GAUSS</name>
-      <Cost>1000</Cost>
+      <Cost>100</Cost>
       <CoolDown>100</CoolDown>
       <Damage>20</Damage>
       <EnergyPerShot>10</EnergyPerShot>
@@ -14,11 +14,11 @@
 
     <Item>
       <name>WEAPON_BEAM</name>
-      <Cost>1000</Cost>
+      <Cost>100</Cost>
       <BeamRadius>2</BeamRadius>
       <CoolDown>50</CoolDown>
       <Damage>15</Damage>
-      <EnergyPerShot>10</EnergyPerShot>      
+      <EnergyPerShot>10</EnergyPerShot>   
       <IsBeam>1</IsBeam>
       <SlotPictureName>WEAPONPIC_LASER</SlotPictureName>
       <Velocity>150</Velocity>
@@ -27,7 +27,7 @@
 
     <Item>
       <name>WEAPON_BOMB</name>
-      <Cost>2000</Cost>
+      <Cost>200</Cost>
       <AngleOfFire>270</AngleOfFire>
       <CoolDown>1000</CoolDown>
       <Damage>50</Damage>

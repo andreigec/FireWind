@@ -1,5 +1,4 @@
 using System;
-using System.Net;
 using System.Net.Sockets;
 
 namespace Project.Networking
@@ -12,7 +11,7 @@ namespace Project.Networking
         public bool heartbeatonly = false;
 
         public ConnectedClient(SynchMain sm, String alias, TcpClient client, UdpClient uc)
-            : base(sm,client, uc)
+            : base(sm, client, uc)
         {
             //client = new TcpClient();
             this.alias = alias;
@@ -22,7 +21,5 @@ namespace Project.Networking
         public ConnectedClient()
         {
         }
-
-
     }
 }

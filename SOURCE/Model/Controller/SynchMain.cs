@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+using System.IO;
+using System.IO.Compression;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using Microsoft.Xna.Framework;
 using Project.Model;
-using Project.Model.mapInfo;
 using Project.View.Client.DrawableScreens.WPF_Screens;
 
 namespace Project.Networking
@@ -16,14 +14,31 @@ namespace Project.Networking
     public partial class SynchMain
     {
         //message stuff
+
+        #region MessagePriority enum
+
+        public enum MessagePriority
+        {
+            Information,
+            Low,
+            High
+        }
+
+        #endregion
+
         public const char separator = '|';
         public static string startMessage = separator + ">" + separator;
         public static string endMessage = separator + "<" + separator;
+        public List<ConnectedClient> connectedClients = new List<ConnectedClient>();
+        public ConnectedServer connectedServer;
 
         /// <summary>
         /// aborts threads if set to false
         /// </summary>
         public bool enabled = true;
+
+        public int myFaction = -102;
+        public int myID = -100;
 
         //udpclient for client and server
         public UdpClient udpClient;
@@ -36,26 +51,11 @@ namespace Project.Networking
             gcs = GameControlServer.CreateGameControlServer(this, cfg);
 
             //start udp/tcp and threads
-            var success = InitialiseConnections(cfg);
+            bool success = InitialiseConnections(cfg);
             if (success == false)
                 return false;
             return true;
         }
-
-        public enum MessagePriority
-        {
-            Information,
-            Low,
-            High
-        }
-
-        //FOR BOTH
-        public int myID = -100;
-        //FOR SERVERS
-        public List<ConnectedClient> connectedClients = new List<ConnectedClient>();
-        //FOR CLIENTS
-        public int myFaction = -102;
-        public ConnectedServer connectedServer;
 
         private bool InitialiseConnections(GameInitConfig gic)
         {
@@ -69,20 +69,20 @@ namespace Project.Networking
                 udpClient = InitUDPClient(gic.UDPport);
 
                 //if the player is hosting externally, need to start the server to listen and respond to clients
-                var success = StartServer(gic);
+                bool success = StartServer(gic);
                 return success;
             }
             //otherwise the player is connecting to a server
             else
             {
-                var success = ConnectToIP(gic);
+                bool success = ConnectToIP(gic);
                 return success;
             }
         }
 
         public static UdpClient InitUDPClientConnect(ConnectedIPs client, String ip, int udpPort)
         {
-            var udpClient = InitUDPClient(udpPort, ip);
+            UdpClient udpClient = InitUDPClient(udpPort, ip);
 
             var ipend = new IPEndPoint(IPAddress.Parse(ip), udpPort);
             client.UDPSendHere = ipend;
@@ -125,14 +125,14 @@ namespace Project.Networking
 
                 //we need to get all messages, and find where they originated from, then add to the relevent message queue
                 var _client = new IPEndPoint(IPAddress.Any, 0);
-                var data = udpClient.Receive(ref _client);
-                var str = Encoding.ASCII.GetString(data, 0, data.Length);
+                byte[] data = udpClient.Receive(ref _client);
+                string str = Encoding.ASCII.GetString(data, 0, data.Length);
 
                 //determine origin
                 ConnectedIPs client = null;
                 if (connectedClients != null)
                 {
-                    foreach (var c in connectedClients)
+                    foreach (ConnectedClient c in connectedClients)
                     {
                         if (c.UDPSendHere.Equals(_client))
                         {
@@ -175,10 +175,10 @@ namespace Project.Networking
                         return;
 
                     //convert queued messages to string
-                    var bufftcp = "";
-                    var buffudp = "";
+                    string bufftcp = "";
+                    string buffudp = "";
 
-                    foreach (var m in client.messageWriteQueue)
+                    foreach (Message m in client.messageWriteQueue)
                     {
                         if (m.messageType == Message.Messages.SendingVars && m.IsUDPBoundMessage())
                             buffudp += m;
@@ -210,11 +210,69 @@ namespace Project.Networking
             }
         }
 
+        public static void CopyTo(Stream src, Stream dest)
+        {
+            byte[] bytes = new byte[4096];
+
+            int cnt;
+
+            while ((cnt = src.Read(bytes, 0, bytes.Length)) != 0)
+            {
+                dest.Write(bytes, 0, cnt);
+            }
+        }
+
+        public static byte[] EncryptCompress(string tosend)
+        {
+            return Encoding.ASCII.GetBytes(tosend);
+
+            var bytes = Encoding.UTF8.GetBytes(tosend);
+
+            using (var msi = new MemoryStream(bytes))
+            using (var mso = new MemoryStream())
+            {
+                using (var gs = new GZipStream(mso, CompressionMode.Compress))
+                {
+                    //msi.CopyTo(gs);
+                    CopyTo(msi, gs);
+                }
+                var ret = mso.ToArray();
+                return ret;
+            }
+        }
+
+        public static string DecryptExpand(byte[] received, int toindex = -1)
+        {
+            
+            if (toindex==-1)
+                return Encoding.ASCII.GetString(received);
+
+            return Encoding.ASCII.GetString(received, 0, toindex);
+            
+            MemoryStream msi;
+            if (toindex == -1)
+                msi = new MemoryStream(received);
+            else
+                msi = new MemoryStream(received, 0, toindex);
+
+            var mso = new MemoryStream();
+
+            using (var gs = new GZipStream(msi, CompressionMode.Decompress))
+            {
+                //gs.CopyTo(mso);
+                CopyTo(gs, mso);
+            }
+
+            var ret = Encoding.UTF8.GetString(mso.ToArray());
+            return ret;
+        }
+
+
         public static string ReadTCPString(TcpClient tcl)
         {
             var message = new byte[4096];
             int bytesRead;
-            var ns = tcl.GetStream();
+            NetworkStream ns = tcl.GetStream();
 
             try
             {
@@ -234,29 +292,30 @@ namespace Project.Networking
             }
 
             //message has successfully been received
-            return Encoding.ASCII.GetString(message, 0, bytesRead);
+            return DecryptExpand(message, bytesRead);
         }
 
         public static void SendTCPString(string info, ConnectedIPs client)
         {
-            var tcl = client.tcpClient;
+            var tosend = EncryptCompress(info);
+
+            TcpClient tcl = client.tcpClient;
             //send queued messages - TCP
-            var buffer = Encoding.ASCII.GetBytes(info);
-            var stream = tcl.GetStream();
-            stream.Write(buffer, 0, buffer.Length);
+            NetworkStream stream = tcl.GetStream();
+            stream.Write(tosend, 0, tosend.Length);
             //clear write queue
             stream.Flush();
         }
 
-        public static String ReadUDPString(UdpClient uc, ConnectedIPs client, int? TimeoutMS = null)
+        public static String ReadUDPString(UdpClient uc, ConnectedIPs client, int? TimeoutMS = 500)
         {
             if (TimeoutMS != null)
             {
                 SetUDPTimeout(uc, (int)TimeoutMS);
             }
-            else if (uc.Client.ReceiveTimeout<=0)
+            else if (uc.Client.ReceiveTimeout <= 0)
             {
-                SetUDPTimeout(uc, (int)ConnectWF.HeartbeatTimeoutMS);
+                SetUDPTimeout(uc, ConnectWF.HeartbeatTimeoutMS);
             }
 
             byte[] ret = null;
@@ -269,20 +328,21 @@ namespace Project.Networking
                 return null;
             }
 
-            return Encoding.ASCII.GetString(ret);
+            return DecryptExpand(ret);
         }
 
         public static void SendUDPString(String text, UdpClient uc, ConnectedIPs client)
         {
-            var buffer = Encoding.ASCII.GetBytes(text);
+            var tosend = EncryptCompress(text);
+
             //if we are sending to the server, just send without an endpoint
             if (client == null || client is ConnectedServer)
             {
-                uc.Send(buffer, buffer.Length);
+                uc.Send(tosend, tosend.Length);
             }
             else
             {
-                uc.Send(buffer, buffer.Length, client.UDPSendHere);
+                uc.Send(tosend, tosend.Length, client.UDPSendHere);
             }
         }
 
@@ -301,7 +361,7 @@ namespace Project.Networking
             }
 
             //stop tcp
-            foreach (var c in connectedClients)
+            foreach (ConnectedClient c in connectedClients)
             {
                 c.tcpClient.Close();
             }
@@ -320,7 +380,7 @@ namespace Project.Networking
 
         public bool isConnected(ConnectedIPs client)
         {
-            var connected = true;
+            bool connected = true;
             if (client.tcpClient.Client.Poll(0, SelectMode.SelectRead))
             {
                 if (!client.tcpClient.Connected) connected = false;
@@ -351,7 +411,7 @@ namespace Project.Networking
             GetUDPMessages();
 
             //add TCP messages        
-            var str = "";
+            string str = "";
             while (clientStream.tcpClient.Available > 0)
                 str += ReadTCPString(clientStream.tcpClient);
 
@@ -383,7 +443,6 @@ namespace Project.Networking
                         {
                             c.messageReadQueueRaw = c.messageReadQueueRaw.Substring(startm);
                         }
-
                     } while (startm > 0);
 
                     //no message = error
@@ -399,7 +458,7 @@ namespace Project.Networking
                     messagestr = messagestr.Substring(0, messagestr.Length - endMessage.Length);
                     messagestr = messagestr.Substring(startMessage.Length);
 
-                    var m = Message.DeserialiseMessage(messagestr);
+                    Message m = Message.DeserialiseMessage(messagestr);
                     c.messageReadQueue.Add(m);
                 }
                 catch (Exception ex)
@@ -413,10 +472,10 @@ namespace Project.Networking
             if (c.messageReadQueue.Count > 0)
             {
                 //remove duplicates of messages
-                 TrimDupes(c);    
+                TrimDupes(c);
             }
         }
-        
+
         private Message.sendVars? GetMessageInfo(Message m)
         {
             Message.sendVars svc;
@@ -433,12 +492,12 @@ namespace Project.Networking
 
         private void TrimDupes(ConnectedIPs c)
         {
-            retry:
+        retry:
             //get message
-            for (var a = c.messageReadQueue.Count - 1; a > 0; a--)
+            for (int a = c.messageReadQueue.Count - 1; a > 0; a--)
             {
-                var m = c.messageReadQueue[a];
-                var svc = GetMessageInfo(m);
+                Message m = c.messageReadQueue[a];
+                Message.sendVars? svc = GetMessageInfo(m);
                 if (svc == null)
                     continue;
 
@@ -454,17 +513,18 @@ namespace Project.Networking
         {
             bool removed = false;
             //get message
-            for (var a = firstIndex - 1; a > 0; a--)
+            for (int a = firstIndex - 1; a > 0; a--)
             {
-                var m = c.messageReadQueue[a];
-                var svc = GetMessageInfo(m);
+                Message m = c.messageReadQueue[a];
+                Message.sendVars? svc = GetMessageInfo(m);
                 if (svc == null)
                     continue;
 
                 if (svc == firstSV)
                 {
-                    Manager.FireLogEvent("from message:"+firstSV.ToString()+" index:"+firstIndex.ToString()+
-                                          " we removed:"+svc.ToString()+" index:"+a.ToString(),MessagePriority.Low,false);
+                    Manager.FireLogEvent("from message:" + firstSV.ToString() + " index:" + firstIndex.ToString() +
+                                         " we removed:" + svc.ToString() + " index:" + a.ToString(), MessagePriority.Low,
+                                         false);
                     c.messageReadQueue.Remove(m);
                     removed = true;
                 }
@@ -472,14 +532,14 @@ namespace Project.Networking
 
             return removed;
         }
-        
+
         public Message popMessage(ConnectedIPs c, bool waitForValidReponse = false,
-                                         long getResponseToMessageID = -1)
+                                  long getResponseToMessageID = -1)
         {
             //try and get a good message
             if (c.messageReadQueue.Count > 0)
             {
-                foreach (var m1 in c.messageReadQueue)
+                foreach (Message m1 in c.messageReadQueue)
                 {
                     if ((getResponseToMessageID == -1) ||
                         (getResponseToMessageID != -1 && m1.ResponseID == getResponseToMessageID))
@@ -509,7 +569,7 @@ namespace Project.Networking
                 SendTCPString(gcs.gameConfig.heartbeatonly.ToString(), connectedServer);
 
                 //wait for ok
-                var okrecv = ReadTCPString(client.tcpClient);
+                string okrecv = ReadTCPString(client.tcpClient);
                 if (okrecv == null || okrecv.Equals(okstr) == false)
                 {
                     Manager.FireLogEvent("error on heartbeat handshake", MessagePriority.High, true);
@@ -538,7 +598,7 @@ namespace Project.Networking
             if (client is ConnectedServer)
             {
                 //wait until server sends tcp ok packet
-                var okrecv = ReadTCPString(client.tcpClient);
+                string okrecv = ReadTCPString(client.tcpClient);
                 if (okrecv == null || okrecv.Equals(okstr) == false)
                 {
                     Manager.FireLogEvent("Error on tcp connect. Are the ports forwarded?", MessagePriority.High, true);
@@ -549,7 +609,7 @@ namespace Project.Networking
                 SendUDPString(okstr, uc, client);
 
                 //wait until server sends OK
-                var okrecvudp = ReadUDPString(uc, client);
+                string okrecvudp = ReadUDPString(uc, client);
                 if (okrecvudp == null || okrecvudp.Equals(okstr) == false)
                 {
                     Manager.FireLogEvent("Error on udp connect. Are the ports forwarded?", MessagePriority.High, true);
@@ -563,7 +623,7 @@ namespace Project.Networking
                 SendTCPString(okstr, client);
 
                 //read a udp packet sent from the client to get ip and port
-                var r = ReadUDPString(uc, client);
+                string r = ReadUDPString(uc, client);
                 if (r == null || r.Equals(okstr) == false)
                 {
                     Manager.FireLogEvent("Error on udp connect. Are the ports forwarded?", MessagePriority.High, true);
@@ -577,7 +637,5 @@ namespace Project.Networking
         }
 
         #endregion connections
-
-
     }
 }

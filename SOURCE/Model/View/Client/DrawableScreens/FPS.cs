@@ -17,7 +17,7 @@ namespace Project.View.Client
 
         public int getFPS()
         {
-            if (fpsDTL.Count <= Math.Ceiling(maxsamples * .1f))
+            if (fpsDTL.Count <= Math.Ceiling(maxsamples*.1f))
                 return 0;
 
             //avg
@@ -31,9 +31,9 @@ namespace Project.View.Client
             if (fpsDTL.Count >= maxsamples)
                 fpsDTL.RemoveAt(0);
 
-            var now = DateTime.Now;
+            DateTime now = DateTime.Now;
 
-            var ts = now - fpsDT;
+            TimeSpan ts = now - fpsDT;
             fpsDT = now;
 
             var ms = (int) ts.TotalMilliseconds;

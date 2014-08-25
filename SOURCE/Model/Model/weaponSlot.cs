@@ -20,7 +20,7 @@ namespace Project.Model
             this.w = w;
         }
 
-        #region ILoadXMLBase Members
+        #region IPurchasable Members
 
         [XmlIgnore]
         [ContentSerializerIgnore]
@@ -29,10 +29,6 @@ namespace Project.Model
             get { return w.name; }
             set { }
         }
-
-        #endregion
-
-        #region IPurchasable Members
 
         [XmlIgnore]
         [ContentSerializerIgnore]
@@ -49,10 +45,10 @@ namespace Project.Model
             return w.Cost;
         }
 
-        public void fire(GameTime gt, map m, ShipInstance si)
+        public void fire(GameTime gt, Map m, ShipInstance si)
         {
             //test cooldown between shots
-            var canshoot = Shared.TimeSinceElapsed(ref LastShotTimeStamp, gt, w.CoolDown);
+            bool canshoot = Shared.TimeSinceElapsed(ref LastShotTimeStamp, gt, w.CoolDown);
             if (canshoot == false)
                 return;
 

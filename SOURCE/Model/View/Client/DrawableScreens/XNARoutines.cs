@@ -15,10 +15,10 @@ namespace Project.View.Client.DrawableScreens
 
         public static void DrawImage(Camera2D cam, SpriteBase sb, SpriteAnimation sa, Vector2 pos, Color c, float angle)
         {
-            var cy = sa.startImageCount/sb.columnCount;
-            var cx = sa.startImageCount%sb.columnCount;
+            int cy = sa.startImageCount/sb.columnCount;
+            int cx = sa.startImageCount%sb.columnCount;
 
-            var r = angle/180f;
+            float r = angle/180f;
             r = r*3.14159f;
 
             var middle = new Vector2(((float) sb.FrameWidth/2), ((float) sb.FrameHeight/2));
